@@ -73,6 +73,7 @@
 chotdanchu/
 ├─ README.md            ← 지금 이 파일
 ├─ CLAUDE.md            ← Claude Code가 매번 읽는 프로젝트 지침
+├─ .github/            ← PR 템플릿
 ├─ docs/
 │  ├─ plan.md           ← 기획 요약, 제안서 500자
 │  ├─ agent-design.md   ← 에이전트 구현 방식, 도구 목록
