@@ -12,13 +12,13 @@
       "id": "spec-writing",
       "name": "기획서 작성",
       "description": "화면 흐름과 기능 정책을 문서로 정리해 개발과 디자인에 전달하는 역량",
-      "synonyms": ["PRD 작성", "화면 설계서 작성", "스토리보드 작성"]
+      "synonyms": ["PRD 작성", "스토리보드 작성", "정책서 작성"]
     },
     {
       "id": "data-analysis",
       "name": "데이터 분석",
       "description": "지표와 데이터를 보고 문제와 개선점을 찾는 역량",
-      "synonyms": ["SQL 활용", "지표 분석", "데이터 기반 의사결정"]
+      "synonyms": ["SQL 활용", "로그 데이터 분석", "데이터 기반 의사결정"]
     },
     {
       "id": "user-research",
@@ -28,7 +28,7 @@
     },
     {
       "id": "market-analysis",
-      "name": "시장·경쟁사 분석",
+      "name": "시장/경쟁사 분석",
       "description": "시장 흐름과 경쟁 서비스를 조사해 기획에 반영하는 역량",
       "synonyms": ["시장 조사", "경쟁사 벤치마킹", "트렌드 분석"]
     },
@@ -36,7 +36,7 @@
       "id": "kpi-management",
       "name": "성과 지표 관리",
       "description": "서비스 목표를 지표로 세우고 달성 여부를 추적하는 역량",
-      "synonyms": ["KPI 설정", "성과 지표 모니터링", "OKR 운영"]
+      "synonyms": ["KPI 설정", "목표 달성도 추적", "OKR 운영"]
     },
     {
       "id": "prioritization",
@@ -52,15 +52,15 @@
     },
     {
       "id": "collaboration",
-      "name": "협업·조율",
+      "name": "협업/조율",
       "description": "개발, 디자인, 운영 등 유관 부서와 의견을 조율하는 역량",
-      "synonyms": ["유관 부서 협업", "이해관계자 조율", "커뮤니케이션"]
+      "synonyms": ["유관 부서 협업", "이해관계자 조율", "회의 운영/이슈 공유"]
     },
     {
       "id": "ux-design",
       "name": "UX 설계",
       "description": "사용자 경험을 고려해 화면과 흐름을 설계하는 역량",
-      "synonyms": ["UX/UI 설계", "와이어프레임 제작", "사용자 흐름 설계"]
+      "synonyms": ["화면 설계", "와이어프레임 제작", "사용자 흐름 설계"]
     },
     {
       "id": "tech-understanding",
@@ -70,7 +70,7 @@
     },
     {
       "id": "experiment",
-      "name": "가설 검증·실험",
+      "name": "가설 검증/실험",
       "description": "가설을 세우고 실험으로 효과를 확인하는 역량",
       "synonyms": ["A/B 테스트", "가설 검증", "실험 설계"]
     },
@@ -84,7 +84,7 @@
       "id": "new-service-planning",
       "name": "신규 서비스 기획",
       "description": "아이디어를 서비스 콘셉트로 만들어 출시까지 이끄는 역량",
-      "synonyms": ["신규 서비스 기획", "서비스 론칭", "신규 사업 기획"]
+      "synonyms": ["신규 서비스 발굴", "서비스 론칭", "신규 사업 기획"]
     }
   ]
 }
