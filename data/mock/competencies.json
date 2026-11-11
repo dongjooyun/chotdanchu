@@ -1,0 +1,90 @@
+{
+  "role": "서비스기획",
+  "version": 1,
+  "competencies": [
+    {
+      "id": "requirements-definition",
+      "name": "요구사항 정의",
+      "description": "사용자와 이해관계자의 요구를 정리해 기능 요구사항으로 만드는 역량",
+      "synonyms": ["요구사항 분석", "기능 정의", "요구사항 명세"]
+    },
+    {
+      "id": "spec-writing",
+      "name": "기획서 작성",
+      "description": "화면 흐름과 기능 정책을 문서로 정리해 개발과 디자인에 전달하는 역량",
+      "synonyms": ["PRD 작성", "화면 설계서 작성", "스토리보드 작성"]
+    },
+    {
+      "id": "data-analysis",
+      "name": "데이터 분석",
+      "description": "지표와 데이터를 보고 문제와 개선점을 찾는 역량",
+      "synonyms": ["SQL 활용", "지표 분석", "데이터 기반 의사결정"]
+    },
+    {
+      "id": "user-research",
+      "name": "사용자 리서치",
+      "description": "인터뷰와 설문으로 사용자의 니즈와 불편을 파악하는 역량",
+      "synonyms": ["사용자 인터뷰", "설문 조사", "사용자 니즈 파악"]
+    },
+    {
+      "id": "market-analysis",
+      "name": "시장·경쟁사 분석",
+      "description": "시장 흐름과 경쟁 서비스를 조사해 기획에 반영하는 역량",
+      "synonyms": ["시장 조사", "경쟁사 벤치마킹", "트렌드 분석"]
+    },
+    {
+      "id": "kpi-management",
+      "name": "성과 지표 관리",
+      "description": "서비스 목표를 지표로 세우고 달성 여부를 추적하는 역량",
+      "synonyms": ["KPI 설정", "성과 지표 모니터링", "OKR 운영"]
+    },
+    {
+      "id": "prioritization",
+      "name": "우선순위 설정",
+      "description": "한정된 자원 안에서 기능의 우선순위를 정하고 로드맵을 짜는 역량",
+      "synonyms": ["백로그 관리", "로드맵 수립", "기능 우선순위 결정"]
+    },
+    {
+      "id": "project-management",
+      "name": "프로젝트 관리",
+      "description": "일정과 진척을 관리하며 프로젝트를 끝까지 이끄는 역량",
+      "synonyms": ["일정 관리", "프로젝트 리딩", "진척 관리"]
+    },
+    {
+      "id": "collaboration",
+      "name": "협업·조율",
+      "description": "개발, 디자인, 운영 등 유관 부서와 의견을 조율하는 역량",
+      "synonyms": ["유관 부서 협업", "이해관계자 조율", "커뮤니케이션"]
+    },
+    {
+      "id": "ux-design",
+      "name": "UX 설계",
+      "description": "사용자 경험을 고려해 화면과 흐름을 설계하는 역량",
+      "synonyms": ["UX/UI 설계", "와이어프레임 제작", "사용자 흐름 설계"]
+    },
+    {
+      "id": "tech-understanding",
+      "name": "개발 이해",
+      "description": "기술 제약을 이해하고 개발자와 원활히 소통하는 역량",
+      "synonyms": ["개발자와 소통", "API 이해", "기술 이해도"]
+    },
+    {
+      "id": "experiment",
+      "name": "가설 검증·실험",
+      "description": "가설을 세우고 실험으로 효과를 확인하는 역량",
+      "synonyms": ["A/B 테스트", "가설 검증", "실험 설계"]
+    },
+    {
+      "id": "service-operation",
+      "name": "서비스 운영 개선",
+      "description": "운영 중인 서비스의 문제를 찾아 개선안을 내는 역량",
+      "synonyms": ["운영 이슈 대응", "서비스 개선", "운영 프로세스 개선"]
+    },
+    {
+      "id": "new-service-planning",
+      "name": "신규 서비스 기획",
+      "description": "아이디어를 서비스 콘셉트로 만들어 출시까지 이끄는 역량",
+      "synonyms": ["신규 서비스 기획", "서비스 론칭", "신규 사업 기획"]
+    }
+  ]
+}
