@@ -8,7 +8,7 @@
           "id": "requirements-definition",
           "name": "요구사항 정의",
           "description": "사용자와 이해관계자의 요구를 정리해 기능 요구사항으로 만드는 역량",
-          "synonyms": ["현업 요청 사항 정리", "기능 정의", "요구사항 명세"]
+          "synonyms": ["현업 요청 사항 정리", "기능 정의", "유저 스토리 작성"]
         },
         {
           "id": "spec-writing",
