@@ -14,7 +14,7 @@
           "id": "spec-writing",
           "name": "기획서 작성",
           "description": "화면 흐름과 기능 정책을 문서로 정리해 개발과 디자인에 전달하는 역량",
-          "synonyms": ["PRD 작성", "스토리보드 작성", "정책서 작성"]
+          "synonyms": ["PRD 작성", "화면설계서(스토리보드) 작성", "정책서 작성"]
         },
         {
           "id": "data-analysis",
@@ -62,7 +62,7 @@
           "id": "ux-design",
           "name": "UX 설계",
           "description": "사용자 경험을 고려해 화면과 흐름을 설계하는 역량",
-          "synonyms": ["화면 설계", "와이어프레임 제작", "사용자 흐름 설계"]
+          "synonyms": ["프로토타입 제작", "와이어프레임 제작", "사용자 흐름 설계"]
         },
         {
           "id": "tech-understanding",
