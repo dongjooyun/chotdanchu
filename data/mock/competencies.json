@@ -56,7 +56,7 @@
           "id": "collaboration",
           "name": "협업·조율",
           "description": "개발, 디자인, 운영 등 유관 부서와 의견을 조율하는 역량",
-          "synonyms": ["유관 부서 협업", "이해관계자 조율", "회의 운영/이슈 공유"]
+          "synonyms": ["유관 부서 협업", "이해관계자 조율", "회의 운영·이슈 공유"]
         },
         {
           "id": "ux-design",
@@ -103,7 +103,7 @@
           "id": "market-research",
           "name": "시장·소비자 조사",
           "description": "시장과 소비자 데이터를 조사해 기회와 니즈를 찾는 역량",
-          "synonyms": ["소비자 인사이트 도출", "경쟁 브랜드 분석", "FGI/설문 조사"]
+          "synonyms": ["소비자 인사이트 도출", "경쟁 브랜드 분석", "FGI·설문 조사"]
         },
         {
           "id": "campaign-planning",
@@ -133,7 +133,7 @@
           "id": "content-marketing",
           "name": "콘텐츠 마케팅",
           "description": "고객이 관심을 가질 콘텐츠를 만들어 브랜드와 서비스를 알리는 역량",
-          "synonyms": ["콘텐츠 기획/제작", "블로그/뉴스레터 운영", "카피라이팅"]
+          "synonyms": ["콘텐츠 기획·제작", "블로그·뉴스레터 운영", "카피라이팅"]
         },
         {
           "id": "sns-channel-management",
@@ -151,7 +151,7 @@
           "id": "crm-marketing",
           "name": "CRM 마케팅",
           "description": "고객 데이터를 나누어 맞춤 메시지로 재방문과 재구매를 이끄는 역량",
-          "synonyms": ["고객 세그먼트 설계", "푸시/문자 발송 운영", "재구매 유도"]
+          "synonyms": ["고객 세그먼트 설계", "푸시·문자 발송 운영", "재구매 유도"]
         },
         {
           "id": "customer-journey",
@@ -222,7 +222,7 @@
           "id": "event-promotion",
           "name": "이벤트·프로모션 운영",
           "description": "이용자 대상 이벤트를 준비하고 진행하며 혜택을 정확히 지급하는 역량",
-          "synonyms": ["이벤트 진행", "쿠폰/혜택 운영", "당첨자 관리"]
+          "synonyms": ["이벤트 진행", "쿠폰·혜택 운영", "당첨자 관리"]
         },
         {
           "id": "settlement-refund",
@@ -246,7 +246,7 @@
           "id": "operation-manual",
           "name": "운영 매뉴얼 작성",
           "description": "운영 담당자가 같은 기준으로 일할 수 있게 업무 방법을 문서로 정리하는 역량",
-          "synonyms": ["업무 가이드 작성", "FAQ 작성/관리", "응대 스크립트 제작"]
+          "synonyms": ["업무 가이드 작성", "FAQ 작성·관리", "응대 스크립트 제작"]
         },
         {
           "id": "cross-team-coordination",
