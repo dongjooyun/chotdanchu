@@ -31,21 +31,12 @@
 | `compute_indicators` | 10가지 지표 계산, 확인 불가 처리 | 코드 | LLM이 숫자를 만들지 않음 |
 | `search_job_postings` | 같은 기업·직무 3년차 공고, 없으면 유사 기업 | 코드 + LLM 판단 | **최대 리스크: 합법적 출처 확보** |
 | `extract_competencies` | 공고에서 요구 역량 추출·정규화 | LLM (작은 모델) | 직무별 역량 사전과 매칭 |
-| `start_matchup` / `get_preference` | 맞대결 출제, 선호 가중치 계산 | 코드 | Bradley-Terry, 적응형 출제 |
+| `start_matchup` / `get_preference` | 맞대결 출제, 선호 가중치 계산 | 코드 | Bradley-Terry, 고정 대진 8강 토너먼트(7판) |
 | `render_report` | 지표 + 선호 + 역량 갭 → 리포트 | LLM 문장 + 코드 레이아웃 | 면접 역질문 포함 |
 
 ## 세션 상태
 
-브라우저 localStorage에 보관, 매 요청에 서버로 전송. 개인 식별 정보 없음.
-
-```json
-{
-  "role": "서비스기획",
-  "preference": { "성장성": 0.22, "재무 체력": 0.18, "근속": 0.12 },
-  "preference_label": "성장 우선형",
-  "analyzed": [{ "corp_code": "00000000", "name": "하늘커머스(주)" }]
-}
-```
+브라우저 localStorage에 보관, 매 요청에 서버로 전송. 개인 식별 정보 없음. 최근 분석 기록과 그 판단 로그도 같이 저장해 다시 열어볼 수 있다. 전체 모양과 예시는 [`schema.md`](schema.md) 6장, 타입은 `lib/types.ts`의 `SessionState`.
 
 ## 비용 관리 (API 크레딧 약 20달러)
 
