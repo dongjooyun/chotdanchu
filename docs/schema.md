@@ -68,7 +68,7 @@
 | `profitability` | 수익성 | `operating_margin` 영업이익률(%) | `operating_income` 영업이익(억원), `extra.prev` 전년 |
 | `hiring_flow` | 고용 흐름 | `headcount_change_12m` 12개월 인원 증감률(%), `extra.annual_attrition` | 같음, `extra.monthly_attrition` |
 | `compensation` | 보상 | `avg_salary` 평균 연봉 추정(만원, 범위), `extra.industry_avg` | 같음 |
-| `tenure` | 근속 | `avg_tenure` 평균 근속(년, 상장사만) | 확인 불가 |
+| `tenure` | 근속 | `avg_tenure` 평균 근속(년, 사업보고서 제출 법인만) | 같음 (사업보고서를 내는 비상장이면 자동, 아니면 확인 불가) |
 | `tech_investment` | 기술 투자 | `rnd_ratio` 매출 대비 R&D(%) | `registered_patents` 등록 특허(건) |
 | `funding_stage` | 투자 단계 | 등급 없음 | `cumulative_funding` 누적 투자(억원), `label` 라운드, `period` 최근 투자 시점 |
 | `risk` | 리스크 | `label` 해당 없음 / 경미 / 해당, `extra`에 해당 항목 | 같음 |
