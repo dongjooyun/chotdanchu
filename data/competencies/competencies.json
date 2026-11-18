@@ -193,7 +193,7 @@
           "id": "marketing-analytics",
           "name": "마케팅 데이터 분석",
           "description": "마케팅 활동의 결과를 데이터로 정리해 다음 의사결정에 쓰는 역량",
-          "synonyms": ["구글 애널리틱스 활용", "성과 리포트 작성", "대시보드 구축"]
+          "synonyms": ["구글 애널리틱스 활용", "성과 리포트 작성", "SQL 데이터 추출"]
         },
         {
           "id": "partnership-pr",
