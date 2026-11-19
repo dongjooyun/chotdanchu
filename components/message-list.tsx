@@ -2,10 +2,11 @@
 
 import { CandidateChips } from "@/components/candidate-chips";
 import { CompanyCard } from "@/components/company-card";
+import { InlineLog } from "@/components/inline-log";
 import { MatchupPair } from "@/components/matchup-card";
 import { QuickReplies, type QuickReply } from "@/components/quick-replies";
 import { ReportCard } from "@/components/report-card";
-import type { ChatWidget } from "@/lib/chat";
+import type { ChatWidget, LogLine } from "@/lib/chat";
 import { SAMPLE_MATCHUP_PAIR } from "@/lib/samples";
 
 export type MessageWidget = ChatWidget | { type: "matchup" } | { type: "report" };
@@ -16,6 +17,8 @@ export interface ChatMessage {
   text: string;
   widget?: MessageWidget;
   replies?: QuickReply[];
+  /** 이 답을 만들 때 에이전트가 한 일. 말풍선 아래 짧게 보여준다 */
+  log?: LogLine[];
 }
 
 function Widget({
@@ -67,6 +70,7 @@ export function MessageList({
                 </span>
                 {m.text}
               </div>
+              {m.log && <InlineLog lines={m.log} />}
               {m.widget && <Widget widget={m.widget} active={active} onPickCompany={onPickCompany} />}
               {m.replies && m.replies.length > 0 && (
                 <QuickReplies replies={m.replies} onSelect={active ? onSelectReply : undefined} />
