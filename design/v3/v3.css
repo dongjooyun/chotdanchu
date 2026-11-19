@@ -96,6 +96,17 @@ button {
 .cap.m {
   max-width: 380px;
 }
+/* 모바일은 바깥 여백을 줄여서 리포트 카드(340px)가 그대로 들어가게 한다 */
+.screen.m .body {
+  padding: 8px;
+}
+.screen.m .chat {
+  padding: 0 8px 10px;
+}
+.w320 {
+  width: 320px;
+  max-width: 100%;
+}
 
 /* ---------- 헤더 ---------- */
 .app-header {
