@@ -2,6 +2,7 @@ import { AgentLogPanel } from "@/components/agent-log-panel";
 import { AppHeader } from "@/components/app-header";
 import { CandidateChips } from "@/components/candidate-chips";
 import { CardCollection } from "@/components/card-collection";
+import { GradeBadge } from "@/components/grade-badge";
 import { InlineLog } from "@/components/inline-log";
 import { ChatInput } from "@/components/chat-input";
 import { CompanyCard } from "@/components/company-card";
@@ -54,6 +55,12 @@ export default function CatalogPage() {
       />
       <ChatInput />
 
+      <h2 className="text-base font-bold">등급 배지 (한 색, 채움으로 구분)</h2>
+      <div className="flex items-center gap-2 text-xs">
+        <GradeBadge grade="A" /> 꽉 채움 <GradeBadge grade="B" /> 옅게 채움 <GradeBadge grade="C" /> 테두리만{" "}
+        <GradeBadge grade={null} /> 점선
+      </div>
+
       <h2 className="text-base font-bold">02 선호 파악 (맞대결)</h2>
       <div className="max-w-[380px]">
         <p className="mb-1 text-xs text-muted">모바일 폭 380px 확인용</p>
@@ -67,7 +74,7 @@ export default function CatalogPage() {
       {startup && <CompanyCard company={startup} />}
       {general && <CompanyCard company={general} />}
 
-      <h2 className="text-base font-bold">06 판단 리포트</h2>
+      <h2 className="text-base font-bold">06 판단 리포트 카드 (앞면 결론, 뒷면 근거)</h2>
       <ReportCard />
 
       <h2 className="text-base font-bold">07 판단 로그 (말풍선 안 진행 기록, 옆 패널)</h2>
