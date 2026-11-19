@@ -104,16 +104,31 @@ function Back({ d }: { d: ReportCardData }) {
  */
 export function ReportCard({ data = SAMPLE_REPORT_CARD }: { data?: ReportCardData }) {
   const [side, setSide] = useState<"front" | "back">("front");
+  // 뒤집을 때마다 광택이 한 번 지나가도록 애니메이션 클래스를 다시 붙인다
+  const [shine, setShine] = useState(0);
+  const face = "card-face min-h-[480px] rounded-xl border-2 border-fg bg-box p-3";
+
+  function flip() {
+    setSide(side === "front" ? "back" : "front");
+    setShine((n) => n + 1);
+  }
+
   return (
     <LofiBox label="리포트 카드">
-      <div className="mx-auto w-full max-w-[340px]">
-        <div className="min-h-[480px] rounded-xl border-2 border-fg bg-box p-3">
-          {side === "front" ? <Front d={data} /> : <Back d={data} />}
+      <div className="card-flip mx-auto w-full max-w-[340px]">
+        <div className={`card-flip-inner ${side === "back" ? "is-back" : ""} ${shine > 0 ? "is-shining" : ""}`}>
+          {/* key를 바꿔 면을 다시 그리면 광택 애니메이션이 처음부터 다시 돈다 */}
+          <div key={`f${shine}`} className={face} aria-hidden={side === "back"}>
+            <Front d={data} />
+          </div>
+          <div key={`b${shine}`} className={`${face} card-face-back`} aria-hidden={side === "front"}>
+            <Back d={data} />
+          </div>
         </div>
         <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
           <button
             type="button"
-            onClick={() => setSide(side === "front" ? "back" : "front")}
+            onClick={flip}
             className="rounded border border-line py-1.5 hover:bg-tag"
           >
             {side === "front" ? "뒷면 보기 (근거)" : "앞면 보기"}

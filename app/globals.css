@@ -48,3 +48,66 @@ body {
   color: var(--fg);
   font-family: var(--font-sans);
 }
+
+/* 리포트 카드 뒤집기 (PRD 06). 앞·뒷면을 같은 칸에 겹쳐 두고 Y축으로 돌린다 */
+.card-flip {
+  perspective: 1200px;
+}
+.card-flip-inner {
+  display: grid;
+  transition: transform 0.7s cubic-bezier(0.3, 0.7, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.card-flip-inner.is-back {
+  transform: rotateY(180deg);
+}
+.card-face {
+  grid-area: 1 / 1;
+  position: relative;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.card-face-back {
+  transform: rotateY(180deg);
+}
+
+/* 홀로그램 광택: 무지개빛이 은은하게 깔리고, 뒤집을 때 빛줄기가 한 번 지나간다 */
+.card-face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: conic-gradient(from 210deg at 70% 30%, #ff7ad933, #ffe86633, #6ef3ff33, #b28cff33, #ff7ad933);
+  mix-blend-mode: soft-light;
+  opacity: 0.6;
+}
+.card-face::after {
+  content: "";
+  position: absolute;
+  inset: -50% -100%;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 40%, rgb(255 255 255 / 0.55) 50%, transparent 60%);
+  transform: translateX(-60%);
+}
+.card-flip-inner.is-shining .card-face::after {
+  animation: card-shine 0.9s ease-out;
+}
+@keyframes card-shine {
+  from {
+    transform: translateX(-60%);
+  }
+  to {
+    transform: translateX(60%);
+  }
+}
+
+/* 움직임을 줄이도록 설정한 사용자에게는 돌리지 않고 바로 바꾼다 */
+@media (prefers-reduced-motion: reduce) {
+  .card-flip-inner {
+    transition: none;
+  }
+  .card-flip-inner.is-shining .card-face::after {
+    animation: none;
+  }
+}
