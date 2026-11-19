@@ -1,6 +1,8 @@
 import { AgentLogPanel } from "@/components/agent-log-panel";
 import { AppHeader } from "@/components/app-header";
 import { CandidateChips } from "@/components/candidate-chips";
+import { CardCollection } from "@/components/card-collection";
+import { InlineLog } from "@/components/inline-log";
 import { ChatInput } from "@/components/chat-input";
 import { CompanyCard } from "@/components/company-card";
 import { Disclaimer } from "@/components/disclaimer";
@@ -68,9 +70,20 @@ export default function CatalogPage() {
       <h2 className="text-base font-bold">06 판단 리포트</h2>
       <ReportCard />
 
-      <h2 className="text-base font-bold">07 판단 로그 패널</h2>
+      <h2 className="text-base font-bold">07 판단 로그 (말풍선 안 진행 기록, 옆 패널)</h2>
+      <p className="text-xs text-muted">&quot;판단&quot; 배지는 에이전트가 직접 고른 줄에만 붙고, 코드가 한 일은 흐린 배지로 보입니다.</p>
+      <InlineLog lines={SAMPLE_LOG} />
       <div className="md:max-w-[320px]">
         <AgentLogPanel lines={SAMPLE_LOG} />
+      </div>
+
+      <h2 className="text-base font-bold">내 카드 모음</h2>
+      <div className="md:max-w-[320px]">
+        <CardCollection
+          records={[
+            { companyId: "mock-001", name: startup?.name ?? "목업 기업", analyzedAt: "2026-11-19T00:00:00.000Z", label: null, log: [] },
+          ]}
+        />
       </div>
 
       <Disclaimer />
