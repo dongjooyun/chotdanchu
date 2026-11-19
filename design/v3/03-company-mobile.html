@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>첫단추 시안 v3, 03 기업 카드 (모바일)</title>
+  <link rel="stylesheet" href="v3.css">
+</head>
+<body>
+  <div class="cap m"><strong>시안 03 기업 카드 (결론 먼저, 지표 펼치기)</strong> · 모바일 380px · 주 버튼은 기업 카드로 저장하기 하나 · 값은 모두 시안용 예시입니다</div>
+  <div class="screen m">
+    <header class="app-header" data-el="헤더">
+      <div class="brand">
+        <span class="logo-slot" data-el="로고 자리" role="img" aria-label="로고 자리"></span>
+        <div>
+          <h1>첫단추</h1>
+          <p>첫 회사, 3년 뒤까지 보고 고르세요.</p>
+        </div>
+      </div>
+      <span class="mode-pill" data-el="모드 배지">목업 모드</span>
+    </header>
+    <div class="body">
+      <div>
+        <span class="state-h">예시 기업: 한결전자 (상장 일반 기업, 지표는 접힌 상태)</span>
+        <section class="chat" data-el="채팅 영역">
+        <div class="infobar" data-el="고정 정보줄">
+          <span class="grp"><span class="k">직무</span><strong>서비스기획</strong><button class="chip-btn" type="button">바꾸기</button></span>
+          <span class="grp"><span class="k">회사</span><strong>주식회사 한결전자</strong><button class="chip-btn" type="button">다른 회사</button></span>
+        </div>
+        <div class="msgs">
+          <div class="row user">
+            <div class="bubble" data-el="사용자 말풍선">이 회사로 할게요</div>
+          </div>
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">주식회사 한결전자을(를) 확인했어요. 결론부터 보여 드릴게요.</div>
+            <ul class="ilog" data-el="진행 기록">
+              <li><span class="lb" data-el="도구 호출 배지">도구 호출</span><span>get_company_profile: 한결전자 기업개황 조회</span></li>
+              <li><span class="lb judge" data-el="판단 배지">판단</span><span>상장 법인이라 OpenDART 재무와 사업보고서로 지표를 계산해요 <span class="why">(코스닥 상장)</span></span></li>
+              <li><span class="lb" data-el="도구 호출 배지">도구 호출</span><span>compute_indicators: 지표 8개 계산</span></li>
+            </ul>
+            
+            <article class="ccard" data-el="기업 카드">
+              <div class="top"><strong>주식회사 한결전자</strong><span class="tb" data-el="유형 배지"><span>상장</span><span>일반 기업</span></span><span class="mock-tag">목업 데이터</span></div>
+              <p class="meta">판정 근거: 설립 27년, 코스닥 상장</p>
+              <p class="meta">전자집적회로 제조업 · 경기 이천시 · 설립 1999</p>
+              <div class="conclusion">
+                <p class="line">지표 8개 중 8개를 공식 출처로 확인했어요</p>
+                <div class="dist" data-el="등급 분포"><span class="meta">등급 분포</span><span class="x"><span class="g a s" data-el="등급 배지" aria-label="등급 A">A</span> 6</span><span class="x"><span class="g b s" data-el="등급 배지" aria-label="등급 B">B</span> 1</span><span class="x"><span class="g c s" data-el="등급 배지" aria-label="등급 C">C</span> 1</span></div>
+              </div>
+              <details class="toggle">
+                <summary data-el="지표 펼치기 버튼"><span class="t-closed">지표 자세히 보기</span><span class="t-open">지표 접기</span></summary>
+                <div class="igrid">
+                  <div class="ic" data-el="지표 칸"><div class="hd"><b>재무 체력</b><span class="g c s" data-el="등급 배지" aria-label="등급 C">C</span></div><div><span class="meta">부채비율</span> <span class="val">263%</span></div><div class="src">출처: OpenDART 재무 (목업) · 기준 2025</div></div>
+                  <div class="ic" data-el="지표 칸"><div class="hd"><b>성장성</b><span class="g a s" data-el="등급 배지" aria-label="등급 A">A</span></div><div><span class="meta">매출 증가율</span> <span class="val">37.9%</span></div><div class="src">출처: OpenDART 재무 (목업) · 기준 2025</div></div>
+                  <div class="ic" data-el="지표 칸"><div class="hd"><b>수익성</b><span class="g a s" data-el="등급 배지" aria-label="등급 A">A</span></div><div><span class="meta">영업이익률</span> <span class="val">10.4%</span></div><div class="src">출처: OpenDART 재무 (목업) · 기준 2025</div></div>
+                  <div class="ic" data-el="지표 칸"><div class="hd"><b>고용 흐름</b><span class="g a s" data-el="등급 배지" aria-label="등급 A">A</span></div><div><span class="meta">12개월 인원 증감</span> <span class="val">+17.7% (추정)</span></div><div class="src">출처: 국민연금 가입 사업장 (목업) · 기준 2026-09</div></div>
+                  <div class="ic" data-el="지표 칸"><div class="hd"><b>보상</b><span class="g b s" data-el="등급 배지" aria-label="등급 B">B</span></div><div><span class="meta">평균 연봉</span> <span class="val">7,470만원 (추정)</span></div><div class="src">출처: 국민연금 가입 사업장 (목업) · 기준 2026-09</div></div>
+                  <div class="ic" data-el="지표 칸"><div class="hd"><b>근속</b><span class="g a s" data-el="등급 배지" aria-label="등급 A">A</span></div><div><span class="meta">평균 근속</span> <span class="val">15년</span></div><div class="src">출처: OpenDART 직원 현황 (목업) · 기준 2025</div></div>
+                  <div class="ic" data-el="지표 칸"><div class="hd"><b>기술 투자</b><span class="g a s" data-el="등급 배지" aria-label="등급 A">A</span></div><div><span class="meta">매출 대비 R&D</span> <span class="val">29.16%</span></div><div class="src">출처: 사업보고서 연구개발활동 (목업) · 기준 2025</div></div>
+                  <div class="ic" data-el="지표 칸"><div class="hd"><b>리스크</b><span class="g a s" data-el="등급 배지" aria-label="등급 A">A</span></div><div><span class="meta">위험 신호</span> <span class="val">해당 없음</span></div><div class="src">출처: 국세청 사업자 상태 (목업) · 기준 2026-11</div></div>
+                  <div class="ic" data-el="정보 투명도 칸"><div class="hd"><b>정보 투명도</b><span class="g a s" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="src">지표 8개 모두 공식 출처로 확인</div></div>
+                </div>
+              </details>
+              <div class="brief" data-el="하는 일 세 줄 요약"><b>하는 일 세 줄 요약</b><ul><li>전자집적회로를 설계하고 제조해 판매해요</li><li>주요 고객은 가전과 산업용 장비 제조사예요</li><li>연구개발에 매출의 일부를 꾸준히 투자해요</li></ul><p class="note">예비 기능 · 사업보고서가 있는 기업만 표시해요</p></div>
+              <div class="save-row"><button class="btn-primary" type="button" data-el="기업 카드로 저장하기">기업 카드로 저장하기</button></div>
+            </article>
+          </div>
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">내 기준에 맞춰 최종 판정할까요? 카드 7판, 1분</div>
+            <div class="quick" data-el="빠른 응답 버튼"><button class="btn" type="button">맞춰 보기</button><button class="btn" type="button">건너뛰기</button></div>
+          </div>
+        </div>
+        <form class="inputbar" data-el="입력창" onsubmit="return false">
+          <input type="text" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력">
+          <button class="btn" type="button" disabled>보내기</button>
+        </form>
+        </section>
+      </div>
+      <section class="panel" data-el="판단 로그 패널">
+        <details>
+          <summary>에이전트 판단 로그 보기 (3)</summary>
+          <ol class="logs">
+          <li class="li">
+            <div class="hd"><span class="no">#1</span><span class="lb" data-el="도구 호출 배지">도구 호출</span><span class="md">목업</span></div>
+            <p>get_company_profile: 한결전자 기업개황 조회</p>
+          </li>
+          <li class="li agent">
+            <div class="hd"><span class="no">#2</span><span class="lb judge" data-el="판단 배지">판단</span><span class="md">목업</span></div>
+            <p>상장 법인이라 OpenDART 재무와 사업보고서로 지표를 계산해요</p>
+            <p class="why">이유: 코스닥 상장</p>
+          </li>
+          <li class="li">
+            <div class="hd"><span class="no">#3</span><span class="lb" data-el="도구 호출 배지">도구 호출</span><span class="md">목업</span></div>
+            <p>compute_indicators: 지표 8개 계산</p>
+          </li>
+          </ol>
+        </details>
+      </section>
+      <section class="panel" data-el="내 카드 모음">
+        <h2>내 카드 0장</h2>
+        <p class="empty" data-el="내 카드 모음 빈 상태">기업을 분석하면 카드가 여기에 모여요</p>
+      </section>
+    </div>
+    <p class="disc" data-el="면책 문구">공개 데이터 기반 참고 정보이며 기업 평가가 아닙니다. 수치마다 출처와 기준 시점을 확인해 주세요.</p>
+  </div>
+</body>
+</html>
