@@ -34,7 +34,7 @@ function Widget({
     case "candidates":
       return <CandidateChips candidates={widget.candidates} onPick={onPickCompany} disabled={!active} />;
     case "company":
-      return <CompanyCard company={widget.company} />;
+      return <CompanyCard company={widget.company} graded={widget.graded} />;
     case "matchup":
       return <MatchupPair cards={SAMPLE_MATCHUP_PAIR} disabled />;
     case "report":
