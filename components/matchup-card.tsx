@@ -1,7 +1,8 @@
 "use client";
 
+import { GradeBadge } from "@/components/grade-badge";
 import { LofiBox } from "@/components/lofi-box";
-import { INDICATOR_LABELS, type IndicatorId, type MatchupCard as MatchupCardData } from "@/lib/types";
+import { INDICATOR_LABELS, type Grade, type IndicatorId, type MatchupCard as MatchupCardData } from "@/lib/types";
 
 /** 맞대결 카드 한 장: 기업명 없이 지표별 등급만 보인다 (PRD 02) */
 function MatchupCardView({ card, onPick, disabled }: { card: MatchupCardData; onPick?: () => void; disabled?: boolean }) {
@@ -12,7 +13,7 @@ function MatchupCardView({ card, onPick, disabled }: { card: MatchupCardData; on
         {(Object.entries(card.grades) as [IndicatorId, string][]).map(([id, g]) => (
           <li key={id} className="flex justify-between gap-1">
             <span className="truncate">{INDICATOR_LABELS[id]}</span>
-            <span className="rounded bg-tag px-1">{g === "unavailable" ? "확인 불가" : g}</span>
+            <GradeBadge grade={g as Grade | "unavailable"} size="sm" />
           </li>
         ))}
       </ul>
