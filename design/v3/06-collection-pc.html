@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>첫단추 시안 v3, 06 내 카드 모음 (PC)</title>
+  <link rel="stylesheet" href="v3.css">
+</head>
+<body>
+  <div class="cap"><strong>시안 06 내 카드 모음</strong> · PC 1280px 화면, 본문 최대 1024px · PC는 오른쪽 패널 2열 (320px) · 값은 모두 시안용 예시입니다</div>
+  <div class="screen pc">
+    <header class="app-header" data-el="헤더">
+      <div class="brand">
+        <span class="logo-slot" data-el="로고 자리" role="img" aria-label="로고 자리"></span>
+        <div>
+          <h1>첫단추</h1>
+          <p>첫 회사, 3년 뒤까지 보고 고르세요.</p>
+        </div>
+      </div>
+      <span class="mode-pill" data-el="모드 배지">목업 모드</span>
+    </header>
+    <div class="body">
+      <div class="col">
+      <div>
+        <span class="state-h">상태 1: 카드가 쌓인 모습 (최대 10장 중 7장)</span>
+        <section class="chat" data-el="채팅 영역">
+        <div class="infobar" data-el="고정 정보줄">
+          <span class="grp"><span class="k">직무</span><strong>서비스기획</strong><button class="chip-btn" type="button">바꾸기</button></span>
+          <span class="grp"><span class="k">회사</span><strong>아직 없음</strong></span>
+        </div>
+        <div class="msgs">
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">분석한 카드는 내 카드 모음에 모여요. 다른 회사도 이어서 볼까요?</div>
+            <div class="quick" data-el="빠른 응답 버튼" data-el2="다음 행동"><button class="btn" type="button">다른 회사 보기</button><button class="btn" type="button">직무 바꾸기</button></div>
+          </div>
+        </div>
+        <form class="inputbar" data-el="입력창" onsubmit="return false">
+          <input type="text" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력">
+          <button class="btn" type="button" disabled>보내기</button>
+        </form>
+        </section>
+      </div>
+      <div>
+        <span class="state-h">상태 2: 카드가 없을 때</span>
+        <div class="w320"><section class="panel" data-el="내 카드 모음">
+        <h2>내 카드 0장</h2>
+        <p class="empty" data-el="내 카드 모음 빈 상태">기업을 분석하면 카드가 여기에 모여요</p>
+      </section>
+        </div>
+      </div>
+      </div>
+      <aside class="aside">
+      <section class="panel" data-el="내 카드 모음">
+        <h2>내 카드 7장</h2>
+        <ol class="cgrid c2">
+          <li class="mini"><span class="no">No. 001</span><span class="nm">별하늘랩스</span><span class="fl" data-el="판정 라벨">도전</span><span class="dt">2026-11-19</span></li>
+          <li class="mini"><span class="no">No. 002</span><span class="nm">몽돌커머스</span><span class="fl" data-el="판정 라벨">정보 보강</span><span class="dt">2026-11-19</span></li>
+          <li class="mini"><span class="no">No. 003</span><span class="nm">청솔기계</span><span class="fl" data-el="판정 라벨">안정</span><span class="dt">2026-11-19</span></li>
+          <li class="mini"><span class="no">No. 004</span><span class="nm">한결전자</span><span class="fl" data-el="판정 라벨">최적</span><span class="dt">2026-11-20</span></li>
+          <li class="mini"><span class="no">No. 005</span><span class="nm">푸른들제약</span><span class="fl" data-el="판정 라벨">안정</span><span class="dt">2026-11-20</span></li>
+          <li class="mini"><span class="no">No. 006</span><span class="nm">너울철강</span><span class="fl" data-el="판정 라벨">고려</span><span class="dt">2026-11-20</span></li>
+          <li class="mini"><span class="no">No. 007</span><span class="nm">햇살에너지</span><span class="fl" data-el="판정 라벨">도전</span><span class="dt">2026-11-20</span></li>
+        </ol>
+        <p class="foot-note">같은 브라우저에 최대 10장까지 모여요.</p>
+      </section>
+      <section class="panel" data-el="판단 로그 패널">
+        <h2>에이전트 판단 로그</h2>
+        <ol class="logs">
+          <li class="li">
+            <div class="hd"><span class="no">#1</span><span class="lb" data-el="안내 배지">안내</span><span class="md">목업</span></div>
+            <p>카드 7장이 브라우저에 저장돼 있어요</p>
+          </li>
+        </ol>
+      </section>
+      </aside>
+    </div>
+    <p class="disc" data-el="면책 문구">공개 데이터 기반 참고 정보이며 기업 평가가 아닙니다. 수치마다 출처와 기준 시점을 확인해 주세요.</p>
+  </div>
+</body>
+</html>
