@@ -1,0 +1,332 @@
+{
+  "version": 1,
+  "roles": [
+    {
+      "role": "서비스기획",
+      "competencies": [
+        {
+          "id": "requirements-definition",
+          "name": "요구사항 정의",
+          "description": "사용자와 이해관계자의 요구를 정리해 기능 요구사항으로 만드는 역량",
+          "synonyms": ["현업 요청 사항 정리", "기능 정의", "유저 스토리 작성"]
+        },
+        {
+          "id": "spec-writing",
+          "name": "기획서 작성",
+          "description": "화면 흐름과 기능 정책을 문서로 정리해 개발과 디자인에 전달하는 역량",
+          "synonyms": ["PRD 작성", "화면설계서(스토리보드) 작성", "정책서 작성"]
+        },
+        {
+          "id": "data-analysis",
+          "name": "데이터 분석",
+          "description": "지표와 데이터를 보고 문제와 개선점을 찾는 역량",
+          "synonyms": ["SQL 활용", "데이터 추출과 해석", "데이터 기반 의사결정"]
+        },
+        {
+          "id": "user-research",
+          "name": "사용자 리서치",
+          "description": "인터뷰와 설문으로 사용자의 니즈와 불편을 파악하는 역량",
+          "synonyms": ["사용자 인터뷰", "설문 조사", "사용자 니즈 파악"]
+        },
+        {
+          "id": "market-analysis",
+          "name": "시장·경쟁사 분석",
+          "description": "시장 흐름과 경쟁 서비스를 조사해 기획에 반영하는 역량",
+          "synonyms": ["업계 동향 파악", "경쟁사 벤치마킹", "트렌드 분석"]
+        },
+        {
+          "id": "kpi-management",
+          "name": "성과 지표 관리",
+          "description": "서비스 목표를 지표로 세우고 달성 여부를 추적하는 역량",
+          "synonyms": ["KPI 설정", "목표 달성도 추적", "OKR 운영"]
+        },
+        {
+          "id": "prioritization",
+          "name": "우선순위 설정",
+          "description": "한정된 자원 안에서 기능의 우선순위를 정하고 로드맵을 짜는 역량",
+          "synonyms": ["백로그 관리", "로드맵 수립", "MVP 범위 설정"]
+        },
+        {
+          "id": "project-management",
+          "name": "프로젝트 관리",
+          "description": "일정과 진척을 관리하며 프로젝트를 끝까지 이끄는 역량",
+          "synonyms": ["일정 관리", "마일스톤 관리", "진척 관리"]
+        },
+        {
+          "id": "collaboration",
+          "name": "협업·조율",
+          "description": "개발, 디자인, 운영 등 유관 부서와 의견을 조율하는 역량",
+          "synonyms": ["유관 부서 협업", "이해관계자 조율", "회의 운영·이슈 공유"]
+        },
+        {
+          "id": "ux-design",
+          "name": "UX 설계",
+          "description": "사용자 경험을 고려해 화면과 흐름을 설계하는 역량",
+          "synonyms": ["프로토타입 제작", "와이어프레임 제작", "사용자 흐름 설계"]
+        },
+        {
+          "id": "tech-understanding",
+          "name": "개발 이해",
+          "description": "기술 제약을 이해하고 개발자와 원활히 소통하는 역량",
+          "synonyms": ["개발자와 소통", "API 이해", "기술 타당성 검토"]
+        },
+        {
+          "id": "experiment",
+          "name": "가설 검증·실험",
+          "description": "가설을 세우고 실험으로 효과를 확인하는 역량",
+          "synonyms": ["A/B 테스트", "실험 결과 해석", "실험 설계"]
+        },
+        {
+          "id": "service-operation",
+          "name": "서비스 운영 개선",
+          "description": "운영 중인 서비스의 문제를 찾아 개선안을 내는 역량",
+          "synonyms": ["운영 이슈 대응", "이용 불편 개선안 도출", "운영 프로세스 개선"]
+        },
+        {
+          "id": "new-service-planning",
+          "name": "신규 서비스 기획",
+          "description": "아이디어를 서비스 콘셉트로 만들어 출시까지 이끄는 역량",
+          "synonyms": ["신규 서비스 발굴", "서비스 론칭", "서비스 콘셉트 도출"]
+        },
+        {
+          "id": "leading-experience",
+          "name": "리딩 경험",
+          "description": "프로젝트나 기획 파트를 이끌고 후배의 업무를 돕는 경험을 갖춘 역량",
+          "synonyms": ["기획 파트 리드", "주니어 멘토링", "팀 단위 업무 총괄"]
+        },
+        {
+          "id": "domain-expertise",
+          "name": "도메인 전문성(커머스·결제)",
+          "description": "커머스와 결제 서비스의 구조와 업무 흐름을 깊이 이해하고 기획에 반영하는 역량",
+          "synonyms": ["커머스 서비스 경험", "결제 서비스 기획", "주문 정산 흐름 이해"]
+        },
+        {
+          "id": "qa-release",
+          "name": "QA·릴리즈 관리",
+          "description": "출시 전 품질을 점검하고 배포 과정을 관리해 안정적으로 서비스를 내놓는 역량",
+          "synonyms": ["QA 시나리오 작성", "배포 전 검수 체크리스트", "릴리즈 노트 작성"]
+        },
+        {
+          "id": "business-planning",
+          "name": "사업 기획·수익 모델",
+          "description": "서비스가 어떻게 수익을 내는지 구조를 짜고 사업성을 따져 보는 역량",
+          "synonyms": ["수익 모델 설계", "사업 계획서 작성", "손익 시뮬레이션"]
+        },
+        {
+          "id": "regulation-policy",
+          "name": "규제·정책 파악",
+          "description": "서비스와 관련된 법, 제도, 감독 규정의 변화를 파악해 기획에 반영하는 역량",
+          "synonyms": ["정책 변화 모니터링", "법·제도 변경 검토", "감독 규정 조사"]
+        }
+      ]
+    },
+    {
+      "role": "마케팅",
+      "competencies": [
+        {
+          "id": "marketing-strategy",
+          "name": "마케팅 전략 수립",
+          "description": "목표 고객과 채널 방향을 정해 연간 마케팅 계획을 세우는 역량",
+          "synonyms": ["연간 마케팅 플랜", "STP 전략", "마케팅 믹스 설계"]
+        },
+        {
+          "id": "market-research",
+          "name": "시장·소비자 조사",
+          "description": "시장과 소비자 데이터를 조사해 기회와 니즈를 찾는 역량",
+          "synonyms": ["소비자 인사이트 도출", "경쟁 브랜드 분석", "FGI·설문 조사"]
+        },
+        {
+          "id": "campaign-planning",
+          "name": "캠페인 기획·운영",
+          "description": "목표에 맞는 캠페인을 설계하고 집행까지 관리하는 역량",
+          "synonyms": ["프로모션 기획", "캠페인 일정 관리", "온/오프라인 캠페인 집행"]
+        },
+        {
+          "id": "performance-marketing",
+          "name": "퍼포먼스 광고 운영",
+          "description": "광고 매체를 운영하며 성과 지표를 개선하는 역량",
+          "synonyms": ["디스플레이 광고 운영", "ROAS 개선", "소재 A/B 테스트"]
+        },
+        {
+          "id": "ad-budget-management",
+          "name": "광고 예산 관리",
+          "description": "한정된 광고비를 목표에 맞게 나누고 집행 현황을 관리하는 역량",
+          "synonyms": ["광고비 집행 관리", "예산 배분 계획", "CPA·CPC 관리"]
+        },
+        {
+          "id": "search-marketing",
+          "name": "검색 마케팅",
+          "description": "검색 결과에서 서비스가 잘 노출되도록 최적화하고 광고를 운영하는 역량",
+          "synonyms": ["SEO 최적화", "키워드 광고 운영", "검색 노출 개선"]
+        },
+        {
+          "id": "content-marketing",
+          "name": "콘텐츠 마케팅",
+          "description": "고객이 관심을 가질 콘텐츠를 만들어 브랜드와 서비스를 알리는 역량",
+          "synonyms": ["콘텐츠 기획·제작", "블로그·뉴스레터 운영", "카피라이팅"]
+        },
+        {
+          "id": "sns-channel-management",
+          "name": "SNS 채널 운영",
+          "description": "SNS 채널을 꾸준히 운영하며 팔로워와 소통하는 역량",
+          "synonyms": ["인스타그램 운영", "팔로워 소통 관리", "숏폼 영상 운영"]
+        },
+        {
+          "id": "brand-management",
+          "name": "브랜드 관리",
+          "description": "브랜드의 이미지와 메시지가 일관되게 전달되도록 관리하는 역량",
+          "synonyms": ["브랜드 포지셔닝", "브랜드 톤앤매너 관리", "브랜드 가이드라인 운영"]
+        },
+        {
+          "id": "crm-marketing",
+          "name": "CRM 마케팅",
+          "description": "고객 데이터를 나누어 맞춤 메시지로 재방문과 재구매를 이끄는 역량",
+          "synonyms": ["고객 세그먼트 설계", "푸시·문자 발송 운영", "재구매 유도"]
+        },
+        {
+          "id": "customer-journey",
+          "name": "고객 여정 설계",
+          "description": "고객이 인지부터 구매까지 거치는 단계를 그리고 이탈 구간을 개선하는 역량",
+          "synonyms": ["퍼널 설계", "전환율 개선", "고객 접점 분석"]
+        },
+        {
+          "id": "marketing-analytics",
+          "name": "마케팅 데이터 분석",
+          "description": "마케팅 활동의 결과를 데이터로 정리해 다음 의사결정에 쓰는 역량",
+          "synonyms": ["구글 애널리틱스 활용", "성과 리포트 작성", "SQL 데이터 추출"]
+        },
+        {
+          "id": "partnership-pr",
+          "name": "제휴·홍보",
+          "description": "외부 파트너와 언론을 통해 서비스의 인지도를 넓히는 역량",
+          "synonyms": ["제휴 마케팅", "보도자료 작성", "인플루언서 협업"]
+        },
+        {
+          "id": "growth-retention",
+          "name": "그로스·리텐션",
+          "description": "이용자 유입과 유지 지표를 함께 보며 서비스 성장을 이끄는 역량",
+          "synonyms": ["그로스 해킹", "LTV 관리", "코호트 분석"]
+        },
+        {
+          "id": "agency-management",
+          "name": "대행사·파트너 관리",
+          "description": "광고 대행사와 외부 파트너의 업무와 성과를 관리하는 역량",
+          "synonyms": ["광고 대행사 협의", "에이전시 성과 점검", "대행 계약 조건 협상"]
+        },
+        {
+          "id": "budget-ownership",
+          "name": "예산 책임",
+          "description": "마케팅 예산의 계획과 결과에 책임지고 경영진에 보고하는 역량",
+          "synonyms": ["손익 책임", "경영진 예산 보고", "예산 승인 요청"]
+        }
+      ]
+    },
+    {
+      "role": "운영",
+      "competencies": [
+        {
+          "id": "cs-handling",
+          "name": "고객 문의 응대",
+          "description": "서비스 이용자의 문의와 불만을 받아 정확하고 빠르게 해결하는 역량",
+          "synonyms": ["CS 티켓 처리", "1:1 문의 답변", "불만 고객 대응"]
+        },
+        {
+          "id": "voc-analysis",
+          "name": "VOC 분석",
+          "description": "이용자가 남긴 의견을 모아 유형별로 나누고 개선 과제로 정리하는 역량",
+          "synonyms": ["문의 유형 분류", "고객 의견 취합", "개선 과제 도출"]
+        },
+        {
+          "id": "incident-response",
+          "name": "장애·이슈 대응",
+          "description": "서비스 장애와 긴급 이슈가 생겼을 때 빠르게 전파하고 수습하는 역량",
+          "synonyms": ["장애 상황 전파", "긴급 이슈 처리", "재발 방지 대책 수립"]
+        },
+        {
+          "id": "operation-process",
+          "name": "운영 프로세스 설계",
+          "description": "서비스 운영 업무의 흐름을 정리하고 더 효율적인 방식으로 바꾸는 역량",
+          "synonyms": ["업무 흐름 정립", "운영 체계 구축", "프로세스 개선안 도출"]
+        },
+        {
+          "id": "operation-policy",
+          "name": "운영 정책 관리",
+          "description": "이용 약관과 운영 기준을 세우고 바뀐 내용을 이용자에게 알리는 역량",
+          "synonyms": ["이용약관 관리", "운영 기준 수립", "정책 변경 공지"]
+        },
+        {
+          "id": "user-monitoring",
+          "name": "이용자·콘텐츠 모니터링",
+          "description": "신고와 부적절한 게시물을 확인하고 기준에 따라 처리하는 역량",
+          "synonyms": ["신고 접수 처리", "부적절 콘텐츠 검수", "이용자 제재 처리"]
+        },
+        {
+          "id": "operation-kpi",
+          "name": "운영 지표 관리",
+          "description": "응답 속도와 처리량 같은 운영 지표를 정하고 현황을 점검하는 역량",
+          "synonyms": ["SLA 관리", "처리 시간 관리", "운영 현황 보고"]
+        },
+        {
+          "id": "event-promotion",
+          "name": "이벤트·프로모션 운영",
+          "description": "이용자 대상 이벤트를 준비하고 진행하며 혜택을 정확히 지급하는 역량",
+          "synonyms": ["이벤트 진행", "쿠폰·혜택 운영", "당첨자 관리"]
+        },
+        {
+          "id": "settlement-refund",
+          "name": "정산·환불 관리",
+          "description": "결제 취소와 환불, 정산 내역을 점검해 오류 없이 처리하는 역량",
+          "synonyms": ["결제 취소 처리", "환불 심사", "정산 내역 검수"]
+        },
+        {
+          "id": "vendor-management",
+          "name": "협력사 관리",
+          "description": "운영 일부를 맡긴 외부 업체의 업무 품질과 계약 이행을 점검하는 역량",
+          "synonyms": ["외주 업체 관리", "위탁 운영 관리", "계약 이행 점검"]
+        },
+        {
+          "id": "operation-automation",
+          "name": "운영 자동화",
+          "description": "반복되는 운영 업무를 도구로 줄여 처리 시간을 단축하는 역량",
+          "synonyms": ["챗봇 시나리오 관리", "반복 업무 자동화", "운영 툴 개선"]
+        },
+        {
+          "id": "operation-manual",
+          "name": "운영 매뉴얼 작성",
+          "description": "운영 담당자가 같은 기준으로 일할 수 있게 업무 방법을 문서로 정리하는 역량",
+          "synonyms": ["업무 가이드 작성", "FAQ 작성·관리", "응대 스크립트 제작"]
+        },
+        {
+          "id": "cross-team-coordination",
+          "name": "유관 부서 조율",
+          "description": "운영에서 발견한 문제를 개발과 기획 부서에 전달하고 처리 일정을 맞추는 역량",
+          "synonyms": ["개발팀 이슈 전달", "기획팀 요청 협의", "부서 간 일정 조율"]
+        },
+        {
+          "id": "team-leading",
+          "name": "운영 조직 리딩",
+          "description": "운영 담당자들의 업무를 나누고 교육하며 운영팀을 이끄는 역량",
+          "synonyms": ["운영팀 리더 경험", "담당자 업무 배분", "신규 인력 교육"]
+        },
+        {
+          "id": "data-driven-operation",
+          "name": "데이터 기반 운영 분석(SQL/엑셀)",
+          "description": "SQL과 엑셀로 운영 데이터를 직접 다뤄 개선 근거를 만드는 역량",
+          "synonyms": ["SQL 쿼리 작성", "엑셀 피벗 분석", "운영 데이터 추출·가공"]
+        },
+        {
+          "id": "launch-operation",
+          "name": "신규 서비스 운영 준비",
+          "description": "새 서비스를 열기 전에 운영 인력과 절차를 미리 준비하는 역량",
+          "synonyms": ["서비스 오픈 준비", "오픈 체크리스트 수립", "운영 인력 규모 산정"]
+        },
+        {
+          "id": "operation-project",
+          "name": "운영 프로젝트 관리",
+          "description": "운영 개선 과제를 중장기 계획으로 세우고 일정과 위험을 관리하며 끝까지 실행하는 역량",
+          "synonyms": ["중·장기 과제 실행", "프로젝트 리스크 관리", "과제 진척 점검"]
+        }
+      ]
+    }
+  ]
+}
