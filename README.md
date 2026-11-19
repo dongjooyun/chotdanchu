@@ -126,5 +126,5 @@ npm run dev
 
 - 브라우저에서 http://localhost:3000 을 엽니다. 기본은 목업 모드(`USE_MOCK=true`)라 API 키 없이 처음부터 끝까지 돌아갑니다.
 - 화면의 모든 요소를 한곳에서 보려면 http://localhost:3000/catalog (개발용 위젯 카탈로그)를 엽니다.
-- PR 전에는 `npm run build`와 `npm run lint`가 통과하는지 확인합니다.
+- PR 전에는 `npm run build`, `npm run lint`, `npm test`가 통과하는지 확인합니다. `npm test`는 지표 등급 계산과 역량 매칭을 검사합니다(새 라이브러리 없이 Node 내장 테스트를 씁니다).
 - Claude 데스크톱 앱에서는 `.claude/launch.json`의 `chotdanchu-dev`로 Browser 창 미리보기를 띄울 수 있습니다.
