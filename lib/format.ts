@@ -47,7 +47,7 @@ function num(n: number | null): string {
 export function formatIndicatorValue(x: IndicatorValue): string {
   if (x.status === "unavailable") return "확인 불가";
   if (x.metric === "risk_flags") return x.label ?? "해당 없음";
-  if (x.metric === "cumulative_funding") return `${x.label ?? ""} 누적 ${num(x.value)}${x.unit}`.trim();
+  if (x.metric === "cumulative_funding") return `${x.label ?? ""} ${num(x.value)}${x.unit}`.trim();
   if (x.range) return `${num(x.range[0])}~${num(x.range[1])}${x.unit} (추정)`;
   if (x.metric === "operating_income" && x.extra?.prev !== undefined) {
     return `${num(x.value)}${x.unit} (전년 ${num(x.extra.prev)}${x.unit})`;
