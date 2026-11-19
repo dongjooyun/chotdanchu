@@ -31,7 +31,18 @@ function IndicatorCell({ x }: { x: IndicatorValue }) {
   );
 }
 
-/** 기업 카드: 맨 위 유형 배지와 판정 근거, 아래 지표 칸들, 정보 투명도 자리 */
+/**
+ * 결론 한 줄: 지표 몇 개를 공식 출처로 확인했고 몇 개가 확인 불가인지. 숫자는 데이터에서 센다.
+ * 예: 지표 9개 중 8개 확인 -> "지표 9개 중 8개를 공식 출처로 확인했어요 · 확인 불가 1개"
+ */
+function summaryLine(company: Company): string {
+  const total = company.indicators.length;
+  const missing = company.indicators.filter((x) => x.status === "unavailable").length;
+  const found = total - missing;
+  return `지표 ${total}개 중 ${found}개를 공식 출처로 확인했어요${missing > 0 ? ` · 확인 불가 ${missing}개` : ""}`;
+}
+
+/** 기업 카드: 결론(유형, 확인 개수, 등급 분포)을 먼저 보여주고 지표 칸들은 펼쳐서 본다 */
 export function CompanyCard({ company }: { company: Company }) {
   return (
     <LofiBox label="기업 카드">
@@ -46,15 +57,23 @@ export function CompanyCard({ company }: { company: Company }) {
       <p className="text-xs text-muted">
         {company.industry} · {company.address} · 설립 {company.foundedOn?.slice(0, 4) ?? "-"}
       </p>
-      <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {company.indicators.map((x) => (
-          <IndicatorCell key={x.id} x={x} />
-        ))}
-        <div className="rounded border border-dashed border-line p-2 text-xs">
-          <span className="font-semibold">{INDICATOR_LABELS.transparency}</span>
-          <div className="mt-1 text-muted">[정보 투명도: 계산 전]</div>
-        </div>
+      <div className="mt-2 rounded border border-line bg-box p-2">
+        <p className="text-sm font-semibold">{summaryLine(company)}</p>
+        {/* 등급 분포(A 3 · B 5 · C 1)는 지표 계산(CDC-24)이 붙이면 채운다 */}
+        <p className="mt-1 text-xs text-muted">[등급 분포: 계산 전]</p>
       </div>
+      <details className="mt-2">
+        <summary className="cursor-pointer text-sm">지표 자세히 보기</summary>
+        <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {company.indicators.map((x) => (
+            <IndicatorCell key={x.id} x={x} />
+          ))}
+          <div className="rounded border border-dashed border-line p-2 text-xs">
+            <span className="font-semibold">{INDICATOR_LABELS.transparency}</span>
+            <div className="mt-1 text-muted">[정보 투명도: 계산 전]</div>
+          </div>
+        </div>
+      </details>
       <p className="mt-2 text-[10px] text-muted">
         [하는 일 세 줄 요약 자리] 사업보고서가 있는 기업만 표시 (예비 기능)
       </p>
