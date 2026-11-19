@@ -1353,5 +1353,1380 @@
     ],
     "externalLinks": [],
     "isMock": true
+  },
+  {
+    "id": "mock-011",
+    "corpCode": null,
+    "bizRegNo": null,
+    "bizRegNoSource": null,
+    "name": "뭉게구름데이터(주)",
+    "ceoName": "오이슬(가상)",
+    "address": "서울 구로구",
+    "industry": "포털 및 기타 인터넷 정보매개 서비스업",
+    "industryCode": "63120",
+    "foundedOn": "2020-03-02",
+    "disclosure": "unlisted",
+    "nature": "startup",
+    "natureBasis": "설립 6년, 2025년 Series B 투자 유치 공식 발표 (가상)",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "runway_months",
+        "status": "unavailable",
+        "value": null,
+        "unit": "개월",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_income",
+        "status": "unavailable",
+        "value": null,
+        "unit": "억원",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": 11.4,
+        "unit": "%",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "monthly_attrition": 3.3,
+          "headcount": 44
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 5900,
+        "range": [
+          5540,
+          6250
+        ],
+        "unit": "만원",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "industry_avg": 5000
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "registered_patents",
+        "status": "ok",
+        "value": 0,
+        "unit": "건",
+        "period": "2026-11",
+        "source": {
+          "name": "특허청 KIPRIS (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "funding_stage",
+        "metric": "cumulative_funding",
+        "status": "ok",
+        "value": 292.8,
+        "unit": "억원",
+        "period": "2025-12",
+        "label": "Series B",
+        "source": {
+          "name": "기업 공식 발표 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "국세청 사업자 상태 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": true
+  },
+  {
+    "id": "mock-012",
+    "corpCode": null,
+    "bizRegNo": null,
+    "bizRegNoSource": null,
+    "name": "주식회사 뭉게구름데이터",
+    "ceoName": "유자람(가상)",
+    "address": "광주 북구",
+    "industry": "포털 및 기타 인터넷 정보매개 서비스업",
+    "industryCode": "63120",
+    "foundedOn": "2023-06-12",
+    "disclosure": "unlisted",
+    "nature": "startup",
+    "natureBasis": "설립 3년, 기술·플랫폼 기반 성장형 사업 (가상)",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "runway_months",
+        "status": "unavailable",
+        "value": null,
+        "unit": "개월",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_income",
+        "status": "unavailable",
+        "value": null,
+        "unit": "억원",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": -7.6,
+        "unit": "%",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "monthly_attrition": 3.2,
+          "headcount": 169
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 3650,
+        "range": [
+          3430,
+          3870
+        ],
+        "unit": "만원",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "industry_avg": 5000
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "registered_patents",
+        "status": "ok",
+        "value": 0,
+        "unit": "건",
+        "period": "2026-11",
+        "source": {
+          "name": "특허청 KIPRIS (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "funding_stage",
+        "metric": "cumulative_funding",
+        "status": "unavailable",
+        "value": null,
+        "unit": "억원",
+        "period": null,
+        "source": null,
+        "reason": "no_source"
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "국세청 사업자 상태 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": true
+  },
+  {
+    "id": "mock-013",
+    "corpCode": null,
+    "bizRegNo": null,
+    "bizRegNoSource": null,
+    "name": "시냇물핀테크(주)",
+    "ceoName": "윤초롱(가상)",
+    "address": "서울 영등포구",
+    "industry": "그 외 기타 금융 지원 서비스업",
+    "industryCode": "66199",
+    "foundedOn": "2017-04-03",
+    "disclosure": "audited",
+    "nature": "startup",
+    "natureBasis": "설립 9년, 2025년 Series B 투자 유치 공식 발표 (가상)",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "runway_months",
+        "status": "ok",
+        "value": 35.0,
+        "unit": "개월",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "ok",
+        "value": 19.6,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_income",
+        "status": "ok",
+        "value": 38.0,
+        "unit": "억원",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "prev": -5.4
+        }
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": 34.8,
+        "unit": "%",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "monthly_attrition": 2.5,
+          "headcount": 131
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 5970,
+        "range": [
+          5610,
+          6330
+        ],
+        "unit": "만원",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "industry_avg": 5600
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "registered_patents",
+        "status": "ok",
+        "value": 5,
+        "unit": "건",
+        "period": "2026-11",
+        "source": {
+          "name": "특허청 KIPRIS (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "funding_stage",
+        "metric": "cumulative_funding",
+        "status": "ok",
+        "value": 130.4,
+        "unit": "억원",
+        "period": "2025-12",
+        "label": "Series B",
+        "source": {
+          "name": "기업 공식 발표 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "국세청 사업자 상태 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": true
+  },
+  {
+    "id": "mock-014",
+    "corpCode": null,
+    "bizRegNo": null,
+    "bizRegNoSource": null,
+    "name": "주식회사 꽃잎커머스",
+    "ceoName": "이하늘(가상)",
+    "address": "서울 강남구",
+    "industry": "전자상거래 소매 중개업",
+    "industryCode": "47912",
+    "foundedOn": "2015-12-01",
+    "disclosure": "audited",
+    "nature": "startup",
+    "natureBasis": "설립 11년, 2023년 Seed 투자 유치 공식 발표 (가상)",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "runway_months",
+        "status": "ok",
+        "value": 16.8,
+        "unit": "개월",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "ok",
+        "value": 14.5,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_income",
+        "status": "ok",
+        "value": -21.4,
+        "unit": "억원",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "prev": -45.9
+        }
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": -11.6,
+        "unit": "%",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "monthly_attrition": 2.4,
+          "headcount": 104
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 4110,
+        "range": [
+          3860,
+          4360
+        ],
+        "unit": "만원",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "industry_avg": 4300
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "registered_patents",
+        "status": "ok",
+        "value": 1,
+        "unit": "건",
+        "period": "2026-11",
+        "source": {
+          "name": "특허청 KIPRIS (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "funding_stage",
+        "metric": "cumulative_funding",
+        "status": "ok",
+        "value": 7.6,
+        "unit": "억원",
+        "period": "2023-06",
+        "label": "Seed",
+        "source": {
+          "name": "기업 공식 발표 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "국세청 사업자 상태 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": true
+  },
+  {
+    "id": "mock-015",
+    "corpCode": null,
+    "bizRegNo": null,
+    "bizRegNoSource": null,
+    "name": "단비핀테크(주)",
+    "ceoName": "임가온(가상)",
+    "address": "서울 중구",
+    "industry": "그 외 기타 금융 지원 서비스업",
+    "industryCode": "66199",
+    "foundedOn": "2019-02-18",
+    "disclosure": "audited",
+    "nature": "startup",
+    "natureBasis": "설립 7년, 2023년 Seed 투자 유치 공식 발표 (가상)",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "runway_months",
+        "status": "ok",
+        "value": 26.9,
+        "unit": "개월",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "ok",
+        "value": -13.5,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_income",
+        "status": "ok",
+        "value": -90.8,
+        "unit": "억원",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "prev": -47.8
+        }
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": 13.2,
+        "unit": "%",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "monthly_attrition": 3.7,
+          "headcount": 88
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 5990,
+        "range": [
+          5630,
+          6340
+        ],
+        "unit": "만원",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "industry_avg": 5600
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "registered_patents",
+        "status": "ok",
+        "value": 0,
+        "unit": "건",
+        "period": "2026-11",
+        "source": {
+          "name": "특허청 KIPRIS (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "funding_stage",
+        "metric": "cumulative_funding",
+        "status": "ok",
+        "value": 7.6,
+        "unit": "억원",
+        "period": "2023-07",
+        "label": "Seed",
+        "source": {
+          "name": "기업 공식 발표 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "국세청 사업자 상태 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": true
+  },
+  {
+    "id": "mock-016",
+    "corpCode": null,
+    "bizRegNo": null,
+    "bizRegNoSource": null,
+    "name": "주식회사 라온플랫폼",
+    "ceoName": "장누리(가상)",
+    "address": "경기 성남시 분당구",
+    "industry": "포털 및 기타 인터넷 정보매개 서비스업",
+    "industryCode": "63120",
+    "foundedOn": "2018-08-27",
+    "disclosure": "audited",
+    "nature": "startup",
+    "natureBasis": "설립 8년, 2025년 Series B 투자 유치 공식 발표 (가상)",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "runway_months",
+        "status": "ok",
+        "value": 28.7,
+        "unit": "개월",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "ok",
+        "value": 107.5,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_income",
+        "status": "ok",
+        "value": -94.9,
+        "unit": "억원",
+        "period": "2025",
+        "source": {
+          "name": "감사보고서 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "prev": -47.5
+        }
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": 14.4,
+        "unit": "%",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "monthly_attrition": 3.3,
+          "headcount": 37
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 3920,
+        "range": [
+          3680,
+          4150
+        ],
+        "unit": "만원",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "industry_avg": 5000
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "registered_patents",
+        "status": "ok",
+        "value": 11,
+        "unit": "건",
+        "period": "2026-11",
+        "source": {
+          "name": "특허청 KIPRIS (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "funding_stage",
+        "metric": "cumulative_funding",
+        "status": "ok",
+        "value": 160.4,
+        "unit": "억원",
+        "period": "2025-04",
+        "label": "Series B",
+        "source": {
+          "name": "기업 공식 발표 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "국세청 사업자 상태 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": true
+  },
+  {
+    "id": "mock-017",
+    "corpCode": null,
+    "bizRegNo": null,
+    "bizRegNoSource": null,
+    "name": "그루터기물류(주)",
+    "ceoName": "정다솜(가상)",
+    "address": "인천 연수구",
+    "industry": "화물운송 중개, 대리 및 관련 서비스업",
+    "industryCode": "52941",
+    "foundedOn": "2004-06-14",
+    "disclosure": "unlisted",
+    "nature": "general",
+    "natureBasis": "설립 22년, 투자 유치 신호 없음",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "debt_ratio",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_margin",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": -18.8,
+        "unit": "%",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "annual_attrition": 19.3,
+          "headcount": 125
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 3890,
+        "range": [
+          3650,
+          4120
+        ],
+        "unit": "만원",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "industry_avg": 4000
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "rnd_ratio",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "국세청 사업자 상태 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": true
+  },
+  {
+    "id": "mock-018",
+    "corpCode": null,
+    "bizRegNo": null,
+    "bizRegNoSource": null,
+    "name": "주식회사 청솔기계",
+    "ceoName": "조새봄(가상)",
+    "address": "경남 김해시",
+    "industry": "그 외 기타 일반 목적용 기계 제조업",
+    "industryCode": "29199",
+    "foundedOn": "1998-03-30",
+    "disclosure": "unlisted",
+    "nature": "general",
+    "natureBasis": "설립 28년, 투자 유치 신호 없음",
+    "certifications": [
+      "이노비즈"
+    ],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "debt_ratio",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_margin",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": -5.5,
+        "unit": "%",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "annual_attrition": 19.0,
+          "headcount": 1691
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 4750,
+        "range": [
+          4470,
+          5040
+        ],
+        "unit": "만원",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "industry_avg": 4800
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "rnd_ratio",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "국세청 사업자 상태 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": true
+  },
+  {
+    "id": "mock-019",
+    "corpCode": null,
+    "bizRegNo": null,
+    "bizRegNoSource": null,
+    "name": "타래섬유(주)",
+    "ceoName": "주하랑(가상)",
+    "address": "대구 서구",
+    "industry": "섬유제품 염색, 정리 및 마무리 가공업",
+    "industryCode": "13300",
+    "foundedOn": "1992-09-09",
+    "disclosure": "unlisted",
+    "nature": "general",
+    "natureBasis": "설립 34년, 투자 유치 신호 없음",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "debt_ratio",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_margin",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": -13.0,
+        "unit": "%",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "annual_attrition": 20.8,
+          "headcount": 1608
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 3310,
+        "range": [
+          3110,
+          3510
+        ],
+        "unit": "만원",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "industry_avg": 3800
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "rnd_ratio",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당",
+        "source": {
+          "name": "국세청 사업자 상태 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": true
+  },
+  {
+    "id": "mock-020",
+    "corpCode": null,
+    "bizRegNo": null,
+    "bizRegNoSource": null,
+    "name": "주식회사 몽돌커머스",
+    "ceoName": "진솔(가상)",
+    "address": "경기 부천시",
+    "industry": "전자상거래 소매 중개업",
+    "industryCode": "47912",
+    "foundedOn": "2009-05-20",
+    "disclosure": "audited",
+    "nature": "general",
+    "natureBasis": "설립 17년, 투자 유치 신호 없음",
+    "certifications": [
+      "이노비즈"
+    ],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "debt_ratio",
+        "status": "ok",
+        "value": 168.9,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "OpenDART 재무 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "reserve_ratio": 828
+        }
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "ok",
+        "value": 10.4,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "OpenDART 재무 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_margin",
+        "status": "ok",
+        "value": 12.5,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "OpenDART 재무 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "op_income_per_employee": 5359
+        }
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": 6.9,
+        "unit": "%",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "annual_attrition": 14.1,
+          "headcount": 1437
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 5160,
+        "range": [
+          4850,
+          5470
+        ],
+        "unit": "만원",
+        "period": "2026-09",
+        "source": {
+          "name": "국민연금 가입 사업장 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        },
+        "extra": {
+          "industry_avg": 4300
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "rnd_ratio",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "국세청 사업자 상태 (목업)",
+          "url": "",
+          "checkedAt": "2026-11-19"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": true
   }
 ]
