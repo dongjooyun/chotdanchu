@@ -1,14 +1,6 @@
 import { LofiBox } from "@/components/lofi-box";
-import type { LogLine, LogType } from "@/lib/chat";
-
-const TYPE_LABELS: Record<LogType, string> = {
-  decision: "판단",
-  tool_call: "도구 호출",
-  fallback: "대체",
-  unavailable: "확인 불가",
-  limit: "호출 상한",
-  info: "안내",
-};
+import { LogBadge } from "@/components/log-badge";
+import type { LogLine } from "@/lib/chat";
 
 function LogList({ lines }: { lines: LogLine[] }) {
   if (lines.length === 0) {
@@ -17,10 +9,13 @@ function LogList({ lines }: { lines: LogLine[] }) {
   return (
     <ol className="flex flex-col gap-2 text-xs">
       {lines.map((l, i) => (
-        <li key={`${l.step}-${i}`} className="rounded border border-line p-2">
+        <li
+          key={`${l.step}-${i}`}
+          className={`rounded border p-2 ${l.type === "decision" || l.type === "fallback" ? "border-fg" : "border-line"}`}
+        >
           <div className="flex items-center gap-1">
             <span className="text-muted">#{l.step}</span>
-            <span className="rounded bg-tag px-1">{TYPE_LABELS[l.type]}</span>
+            <LogBadge type={l.type} />
             <span className="text-[10px] text-muted">{l.mode === "mock" ? "목업" : "실데이터"}</span>
           </div>
           <p className="mt-1">{l.title}</p>
