@@ -17,6 +17,11 @@
 | 참고 자료 | KT K-뉴딜 아카데미 기업분석 강의자료 (0824~0827) | 비공개 교안 | 지표 등급 기준, 기업 선택 가치관 3유형 | 수강생 학습 자료. 기준만 인용하고 원문은 싣지 않음 | 반영 완료 |
 | AI | Anthropic Claude API | https://docs.claude.com | 에이전트 판단, 역량 추출, 리포트 문장 | 유료, 상업 이용 약관 | 사용 예정 |
 | 개발 도구 | Claude Code | https://docs.claude.com | 코드 작성 보조 | | 사용 중 |
+| 라이브러리 | Next.js 16.4.6 | https://nextjs.org | 웹 프레임워크 (화면, API 라우트) | MIT | 사용 중 |
+| 라이브러리 | React 19.3.0 | https://react.dev | 화면 구성 | MIT | 사용 중 |
+| 라이브러리 | Tailwind CSS 4.3.3 | https://tailwindcss.com | 스타일 | MIT | 사용 중 |
+| 라이브러리 | TypeScript 5 | https://www.typescriptlang.org | 타입 검사 | Apache-2.0 | 사용 중 |
+| 라이브러리 | ESLint 9, eslint-config-next | https://eslint.org | 코드 검사 | MIT | 사용 중 |
 
 ## 쓰지 않는 것
 
