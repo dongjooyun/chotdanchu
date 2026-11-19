@@ -30,6 +30,25 @@ const PREF_REPLIES: QuickReply[] = [
   { label: "건너뛰고 기본 기준으로", value: "pref:skip" },
 ];
 
+/** 리포트가 끝난 뒤 마지막 말풍선에만 붙는 다음 행동. 매 말풍선마다 붙이면 시선이 흩어진다 */
+const NEXT_REPLIES: QuickReply[] = [
+  { label: "다른 회사 보기", value: "next:company" },
+  { label: "직무 바꾸기", value: "next:role" },
+];
+
+function ChipButton({ onClick, disabled, label }: { onClick: () => void; disabled: boolean; label: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="rounded-full border border-line px-2 text-xs hover:bg-tag disabled:opacity-60"
+    >
+      {label}
+    </button>
+  );
+}
+
 const GREETING =
   "안녕하세요. 첫단추는 첫 회사가 3년 뒤 어디로 이어지는지, 공공데이터와 3년차 공고로 판단해 드리는 에이전트예요.";
 
@@ -53,6 +72,8 @@ export function ChatApp({ mode }: { mode: AppMode }) {
   // 대화가 시작된 순간의 직무. 이후 직무를 바꿔도 첫 인사 문구는 그대로 둔다
   const [introRole, setIntroRole] = useState<Role | null | undefined>(undefined);
   const [log, setLog] = useState<LogLine[]>([]);
+  /** 지금 보고 있는 회사 이름. 고정 정보줄에 보인다 */
+  const [company, setCompany] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const nextId = useRef(1);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -81,7 +102,7 @@ export function ChatApp({ mode }: { mode: AppMode }) {
       text: `[3년차 공고와 역량 갭 자리] ${role ?? "선택한"} 직무의 3년차 공고와 비교합니다. 공고 태스크(CDC-7, CDC-15)에서 채웁니다.`,
     };
     if (session.preference) {
-      push(career, { from: "agent", text: "판단 리포트예요.", widget: { type: "report" } });
+      push(career, { from: "agent", text: "판단 리포트 카드예요.", widget: { type: "report" }, replies: NEXT_REPLIES });
       return;
     }
     push(career, {
@@ -105,6 +126,7 @@ export function ChatApp({ mode }: { mode: AppMode }) {
       appendLog(data.log);
       if (data.widget?.type === "company") {
         const company = data.widget.company;
+        setCompany(company.name);
         setSession(
           addAnalysis(session, {
             companyId: company.id,
@@ -162,9 +184,20 @@ export function ChatApp({ mode }: { mode: AppMode }) {
       setSession({ ...session, preference: skippedPreference() });
       push(
         { from: "user", text: "건너뛰고 기본 기준으로" },
-        { from: "agent", text: "모든 지표를 같은 비중으로 보고 판정할게요.", widget: { type: "report" } },
+        {
+          from: "agent",
+          text: "모든 지표를 같은 비중으로 보고 판정했어요. 판단 리포트 카드예요.",
+          widget: { type: "report" },
+          replies: NEXT_REPLIES,
+        },
       );
+      return;
     }
+    if (value === "next:company") {
+      onChangeCompany();
+      return;
+    }
+    if (value === "next:role") onChangeRole();
   }
 
   /** 직무 바꾸기: 직무 버튼을 다시 보여준다. 이미 분석한 카드는 그대로 남는다 */
@@ -172,35 +205,39 @@ export function ChatApp({ mode }: { mode: AppMode }) {
     push({ from: "agent", text: "어떤 직무로 바꿀까요?", replies: ROLE_REPLIES });
   }
 
+  /** 다른 회사 보기: 같은 직무로 새 회사를 묻는다 */
+  function onChangeCompany() {
+    if (!session.role) return;
+    push({ from: "agent", text: askCompany(session.role), replies: EXAMPLE_REPLIES });
+  }
+
   return (
     <div className="flex flex-col gap-3 md:grid md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
-      <div className="flex min-w-0 flex-col gap-3">
-        <LofiBox label="채팅 영역">
-          <MessageList messages={shown} pending={pending} onSelectReply={onSelectReply} onPickCompany={onPickCompany} />
-          <div ref={bottomRef} />
-        </LofiBox>
-        <LofiBox label="직무 표시">
-          <div className="flex items-center gap-2 text-sm">
+      <LofiBox label="채팅 영역" className="flex min-w-0 flex-col gap-3">
+        {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}
+        <div className="sticky top-0 z-10 -mx-1 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line bg-box px-1 py-2 text-sm">
+          <span className="text-[10px] text-muted">[고정 정보줄]</span>
+          <span className="flex items-center gap-1">
             <span className="text-muted">직무</span>
             <strong>{session.role ?? "아직 안 고름"}</strong>
-            {session.role && (
-              <button
-                type="button"
-                onClick={onChangeRole}
-                disabled={pending}
-                className="rounded-full border border-line px-2 text-xs hover:bg-tag disabled:opacity-60"
-              >
-                바꾸기
-              </button>
-            )}
-          </div>
-        </LofiBox>
-        <ChatInput
-          onSend={onSend}
-          disabled={pending || !session.role}
-          placeholder={session.role ? "회사 이름을 입력해 주세요" : "먼저 위에서 직무를 골라 주세요"}
-        />
-      </div>
+            {session.role && <ChipButton onClick={onChangeRole} disabled={pending} label="바꾸기" />}
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="text-muted">회사</span>
+            <strong>{company ?? "아직 없음"}</strong>
+            {company && <ChipButton onClick={onChangeCompany} disabled={pending} label="다른 회사" />}
+          </span>
+        </div>
+        <MessageList messages={shown} pending={pending} onSelectReply={onSelectReply} onPickCompany={onPickCompany} />
+        <div ref={bottomRef} />
+        <div className="sticky bottom-0 -mx-1 bg-box px-1 pb-1">
+          <ChatInput
+            onSend={onSend}
+            disabled={pending || !session.role}
+            placeholder={session.role ? "회사 이름을 입력해 주세요" : "먼저 위에서 직무를 골라 주세요"}
+          />
+        </div>
+      </LofiBox>
       <div className="flex flex-col gap-3 md:sticky md:top-3">
         <AgentLogPanel lines={log} />
         <CardCollection records={session.analyzed} />
