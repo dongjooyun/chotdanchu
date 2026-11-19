@@ -3,11 +3,36 @@
 import type { ChatRequest, ChatResponse, LogLine } from "@/lib/chat";
 import { getMode } from "@/lib/config";
 import { findMockCandidates, getMockCompany, toCandidateSummary } from "@/lib/data";
+import { computeIndicators, gradeDistribution } from "@/lib/indicators";
+import { UNAVAILABLE_REASON_LABELS } from "@/lib/format";
+import { INDICATOR_LABELS, type Company } from "@/lib/types";
 
 const TEMP = "임시 규칙 (CDC-14에서 에이전트 판단으로 교체)";
 
 function line(step: number, type: LogLine["type"], title: string, reason?: string): LogLine {
   return { step, type, title, reason, mode: "mock" };
+}
+
+/**
+ * 기업 카드 응답. compute_indicators로 등급을 계산하고, 확인 불가 지표를 로그에 따로 남긴다 (PRD 07).
+ * 예: 비공시 스타트업 -> 로그 "compute_indicators: A 3 · B 2 · C 0, 확인 불가 4개" + 확인 불가 줄
+ */
+function companyResponse(company: Company, first: number, lead: LogLine[]): ChatResponse {
+  const graded = computeIndicators(company);
+  const d = gradeDistribution(graded, company.nature);
+  const missing = graded.filter((g) => g.grade === null && g.reason);
+  return {
+    reply: `${company.name}의 기업 카드입니다.`,
+    widget: { type: "company", company, graded },
+    log: [
+      ...lead,
+      line(first, "tool_call", `get_company_profile: 목업 데이터에서 지표 원시값을 읽음`),
+      line(first + 1, "tool_call", `compute_indicators: A ${d.A} · B ${d.B} · C ${d.C}, 확인 불가 ${d.none}개`),
+      ...missing.map((g, i) =>
+        line(first + 2 + i, "unavailable", `${INDICATOR_LABELS[g.id]}: 확인 불가`, g.reason ? UNAVAILABLE_REASON_LABELS[g.reason] : g.basis),
+      ),
+    ],
+  };
 }
 
 export async function POST(request: Request) {
@@ -25,14 +50,9 @@ export async function POST(request: Request) {
   if (body.pickCompanyId) {
     const company = getMockCompany(body.pickCompanyId);
     if (!company) return Response.json({ error: "없는 기업입니다" }, { status: 404 });
-    const res: ChatResponse = {
-      reply: `${company.name}의 기업 카드입니다. 등급은 지표 계산이 붙으면 표시됩니다.`,
-      widget: { type: "company", company },
-      log: [
-        line(1, "decision", `사용자가 후보 중 ${company.name}을(를) 골라 확정`, "동명 후보 중 사용자 선택"),
-        line(2, "tool_call", "get_company_profile, compute_indicators: 목업 데이터에서 지표 원시값을 읽음"),
-      ],
-    };
+    const res = companyResponse(company, 2, [
+      line(1, "decision", `사용자가 후보 중 ${company.name}을(를) 골라 확정`, "동명 후보 중 사용자 선택"),
+    ]);
     return Response.json(res);
   }
 
@@ -59,14 +79,9 @@ export async function POST(request: Request) {
     return Response.json(res);
   }
   const company = found[0];
-  const res: ChatResponse = {
-    reply: `${company.name}의 기업 카드입니다. 등급은 지표 계산이 붙으면 표시됩니다.`,
-    widget: { type: "company", company },
-    log: [
-      line(1, "tool_call", `search_company: "${message}" 후보 1곳`),
-      line(2, "decision", `후보가 하나라 묻지 않고 ${company.name}(으)로 확정`, TEMP),
-      line(3, "tool_call", "get_company_profile, compute_indicators: 목업 데이터에서 지표 원시값을 읽음"),
-    ],
-  };
+  const res = companyResponse(company, 3, [
+    line(1, "tool_call", `search_company: "${message}" 후보 1곳`),
+    line(2, "decision", `후보가 하나라 묻지 않고 ${company.name}(으)로 확정`, TEMP),
+  ]);
   return Response.json(res);
 }
