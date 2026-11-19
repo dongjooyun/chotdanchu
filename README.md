@@ -85,7 +85,9 @@ chotdanchu/
 │  ├─ workflow.md       ← 깃 협업 규칙 (브랜치, 커밋, PR)
 │  └─ prototype/        ← 더미데이터 데모 HTML
 ├─ data/mock/           ← 시연·개발용 가상 데이터
-└─ (app/, lib/ ...)     ← 개발 시작하면 생김
+├─ app/                ← 화면(page.tsx)과 API(api/chat)
+├─ components/         ← 화면 요소 (파일 kebab-case, 컴포넌트 PascalCase)
+└─ lib/                ← 설정, 타입, 데이터 로더, 세션 저장
 ```
 
 ## 팀
@@ -109,3 +111,18 @@ chotdanchu/
 ## 시작하기
 
 처음이라면 [`docs/workflow.md`](docs/workflow.md)부터 읽어 주세요. 기능을 만들기 전에는 노션의 [첫단추 PRD](https://app.notion.com/p/41c991804aa781b7a3daebcb0d6461ca)에서 해당 기능의 "완료 기준"을 먼저 확인합니다. 개발 환경 세팅부터 첫 PR까지 단계별 안내는 팀 노션 "깃허브 협업 튜토리얼"에 있습니다.
+
+### 내 컴퓨터에서 실행하기
+
+Node.js(LTS)가 설치되어 있어야 합니다.
+
+```bash
+npm install
+cp .env.example .env.local
+npm run dev
+```
+
+- 브라우저에서 http://localhost:3000 을 엽니다. 기본은 목업 모드(`USE_MOCK=true`)라 API 키 없이 처음부터 끝까지 돌아갑니다.
+- 화면의 모든 요소를 한곳에서 보려면 http://localhost:3000/catalog (개발용 위젯 카탈로그)를 엽니다.
+- PR 전에는 `npm run build`와 `npm run lint`가 통과하는지 확인합니다.
+- Claude 데스크톱 앱에서는 `.claude/launch.json`의 `chotdanchu-dev`로 Browser 창 미리보기를 띄울 수 있습니다.
