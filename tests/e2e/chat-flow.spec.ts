@@ -33,7 +33,8 @@ test("E2E-01 첫 방문: 직무 3개 버튼, 입력창은 직무를 고르기 �
     await expect(page.getByRole("button", { name: role, exact: true })).toBeVisible();
   }
   await expect(page.getByLabel("메시지 입력")).toBeDisabled();
-  await expect(page.getByText("아직 안 고름")).toBeVisible();
+  // 고정 정보줄: 직무와 회사 둘 다 미정
+  await expect(page.getByText("미정", { exact: true })).toHaveCount(2);
 });
 
 test("E2E-02 직무를 고르면 바로 회사를 묻고, 새로고침해도 직무가 남는다", async ({ page }) => {

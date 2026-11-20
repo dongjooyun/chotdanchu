@@ -241,12 +241,12 @@ export function ChatApp({ mode }: { mode: AppMode }) {
           <span className="text-[10px] text-muted">[고정 정보줄]</span>
           <span className="flex items-center gap-1">
             <span className="text-muted">직무</span>
-            <strong>{session.role ?? "아직 안 고름"}</strong>
+            <strong>{session.role ?? "미정"}</strong>
             {session.role && <ChipButton onClick={onChangeRole} disabled={pending} label="바꾸기" />}
           </span>
           <span className="flex items-center gap-1">
             <span className="text-muted">회사</span>
-            <strong>{company ?? "아직 없음"}</strong>
+            <strong>{company ?? "미정"}</strong>
             {company && <ChipButton onClick={onChangeCompany} disabled={pending} label="다른 회사" />}
           </span>
         </div>
