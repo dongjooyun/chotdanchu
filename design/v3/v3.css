@@ -2217,3 +2217,16 @@ button {
   font-size: 11px;
   line-height: 1.5;
 }
+
+/* 빠른 응답 버튼: 손가락으로 누르기 쉽게 높이 40px 이상 (01 직무 고르기 포함 모든 화면) */
+.quick .btn {
+  min-height: 40px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* 말풍선 안 한국어가 단어 중간에서 끊기지 않게 */
+.bubble {
+  word-break: keep-all;
+}
