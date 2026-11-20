@@ -88,5 +88,72 @@
         "checkedAt": "2026-11-21"
       }
     }
+  },
+  {
+    "corpCode": "01137727",
+    "indicator": {
+      "id": "tech_investment",
+      "metric": "registered_patents",
+      "status": "manual",
+      "value": 8,
+      "unit": "건",
+      "period": "2026-11",
+      "extra": {
+        "at_least": 1
+      },
+      "source": {
+        "name": "KIPRIS 국내 특허·실용신안 검색, 등록 상태, 출원인 주식회사 무신사 (수동 확인, 화면에서 센 8건 이상)",
+        "url": "https://www.kipris.or.kr",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01547845",
+    "indicator": {
+      "id": "tech_investment",
+      "metric": "registered_patents",
+      "status": "manual",
+      "value": 0,
+      "unit": "건",
+      "period": "2026-11",
+      "source": {
+        "name": "KIPRIS 국내 특허·실용신안 검색, 등록 상태, 출원인 당근마켓 검색 결과 없음 (수동 확인)",
+        "url": "https://www.kipris.or.kr",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01547845",
+    "indicator": {
+      "id": "funding_stage",
+      "metric": "cumulative_funding",
+      "status": "manual",
+      "value": 2270,
+      "unit": "억원",
+      "period": "2025-01",
+      "source": {
+        "name": "당근 회사소개 페이지 누적 투자 유치 2,270억 원 (2025년 1월 기준, 라운드 이름과 최근 투자 시점은 공식 페이지에 없음, 수동 확인)",
+        "url": "https://about.daangn.com/",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01153956",
+    "indicator": {
+      "id": "funding_stage",
+      "metric": "cumulative_funding",
+      "status": "manual",
+      "value": 1530,
+      "unit": "억원",
+      "period": "2026-05",
+      "source": {
+        "name": "컬리 주요사항보고서(유상증자결정) 2건: 2023-05 1,200억 원, 2026-05 330억 원, 제3자배정 합계 (라운드 이름과 그 이전 투자는 공시에 없음, 수동 확인)",
+        "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260506000052",
+        "checkedAt": "2026-11-21"
+      }
+    }
   }
 ]
