@@ -42,6 +42,7 @@
 | `natureBasis` | string | 유형 판정 근거 한 줄 | `설립 4년, 2025년 시리즈 A 공식 발표` |
 | `certifications` | string[] | 공공 인증(보조 신호): 이노비즈, 메인비즈, 워크넷 강소기업 | `["이노비즈"]` |
 | `indicators` | IndicatorValue[] | 아래 9개 지표 (정보 투명도 제외) | |
+| `aliases` | string[] (선택) | 사람들이 부르는 다른 이름. 검색에 쓴다 | `["당근"]` |
 | `externalLinks` | {name, url}[] | "원문 보기" 링크 (theVC, 혁신의숲 등). 데이터는 가져오지 않는다 | |
 | `isMock` | boolean | 목업이면 true | `true` |
 

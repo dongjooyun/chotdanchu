@@ -41,13 +41,15 @@ export function getCompany(id: string, mode: AppMode): Company | undefined {
 export function findCandidates(query: string, mode: AppMode): Company[] {
   const q = normalizeCompanyName(query);
   if (!q) return [];
-  return companiesFor(mode).filter((c) => normalizeCompanyName(c.name) === q);
+  return companiesFor(mode).filter(
+    (c) => normalizeCompanyName(c.name) === q || (c.aliases ?? []).some((a) => normalizeCompanyName(a) === q),
+  );
 }
 
-/** 예시 버튼과 안내 문구에 쓸 기업 이름 (중복 없이). 예: exampleNames("live") -> ["카카오"] */
+/** 예시 버튼과 안내 문구에 쓸 기업 이름 (중복 없이, 다른 이름이 있으면 그쪽). 예: exampleNames("live") -> ["카카오", "무신사", "클래스101", "당근"] */
 export function exampleNames(mode: AppMode): string[] {
   if (mode === "mock") return ["별하늘랩스", "몽돌커머스", "청솔기계"];
-  return [...new Set(realCompanies.map((c) => normalizeCompanyName(c.name)))];
+  return [...new Set(realCompanies.map((c) => c.aliases?.[0] ?? normalizeCompanyName(c.name)))];
 }
 
 /** 직무별 역량 목록. 예: getCompetencies("마케팅").length === 16 */

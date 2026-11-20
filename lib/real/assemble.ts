@@ -10,6 +10,8 @@ export interface RealTarget {
   natureBasis: string;
   /** 국민연금 행이 없을 때 쓸 업종명 */
   industry?: string;
+  /** 사람들이 부르는 다른 이름 (예: "당근") */
+  aliases?: string[];
 }
 
 /** 시연 기업만 사람이 공식 자료에서 확인해 넣는 값 (data/real/manual.json). 출처 링크와 확인 날짜 필수 */
@@ -115,7 +117,11 @@ export interface AssembleInput {
  */
 export function assembleCompany(x: AssembleInput): Company {
   const { target, profile } = x;
-  const hasFin = x.financials.some((f) => f.status !== "unavailable");
+  // 재무가 API가 아니라 감사보고서 원문에서 왔어도(manual) 재무 공시가 있는 외감 법인이다
+  const finIds: IndicatorValue["id"][] = ["financial_health", "growth", "profitability"];
+  const hasFin =
+    x.financials.some((f) => f.status !== "unavailable") ||
+    x.manual.some((m) => m.corpCode === target.corpCode && finIds.includes(m.indicator.id));
   const disclosure = disclosureOf(profile.corp_cls, hasFin);
   const manual = (id: IndicatorValue["id"]) => x.manual.find((m) => m.corpCode === target.corpCode && m.indicator.id === id)?.indicator;
   const fin = (id: IndicatorValue["id"], metric: string, unit: string) =>
@@ -153,6 +159,7 @@ export function assembleCompany(x: AssembleInput): Company {
     natureBasis: target.natureBasis,
     certifications: [],
     indicators,
+    ...(target.aliases?.length ? { aliases: target.aliases } : {}),
     externalLinks: [],
     isMock: false,
   };

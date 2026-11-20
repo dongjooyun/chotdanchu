@@ -104,16 +104,21 @@ async function main() {
         break;
       }
     }
-    const emp = year ? await dart<DartEmployeeRow>("empSttus", `corp_code=${t.corpCode}&bsns_year=${year}&reprt_code=11011`) : null;
-    const adt = year ? await dart<{ adt_opinion: string; rcept_no: string; bsns_year: string }>("accnutAdtorNmNdAdtOpinion", `corp_code=${t.corpCode}&bsns_year=${year}&reprt_code=11011`) : null;
+    // 사업보고서를 내도 재무 숫자(XBRL)가 API에 없는 비상장사가 있다 (예: 당근마켓). 직원 현황과 감사의견은 따로 찾는다
+    const reportYear = year || String(new Date().getFullYear() - 1);
+    const emp = await dart<DartEmployeeRow>("empSttus", `corp_code=${t.corpCode}&bsns_year=${reportYear}&reprt_code=11011`);
+    const adt = await dart<{ adt_opinion: string; rcept_no: string; bsns_year: string }>("accnutAdtorNmNdAdtOpinion", `corp_code=${t.corpCode}&bsns_year=${reportYear}&reprt_code=11011`);
     // 당기 감사의견만 본다 (전기, 전전기 행도 같이 온다)
-    const opinions = (adt?.list ?? []).filter((a) => /당기/.test(a.bsns_year)).map((a) => a.adt_opinion).filter((o) => o && o !== "-");
+    const opinions = (adt.list ?? []).filter((a) => /당기/.test(a.bsns_year)).map((a) => a.adt_opinion).filter((o) => o && o !== "-");
 
     const name = profile.corp_name.replace(/\(주\)|주식회사/g, "");
     const prefix = profile.bizr_no?.slice(0, 6) ?? "";
     const now = matchRow(npsNow, prefix, name);
     const before = matchRow(npsPrev, prefix, name);
-    const industry = now ? industryAverage(npsNow, now.industryCode, now) : null;
+    // 국민연금 업종이 "BIZ_NO미존재사업장"처럼 업종이 아닌 값이면, 사람이 정한 업종명(targets.json)과 같은 국민연금 업종으로 평균을 낸다
+    const realIndustry = now && !/미존재|해당없음/.test(now.industryName);
+    const peerCode = realIndustry ? now!.industryCode : npsNow.find((r) => r.industryName === t.industry)?.industryCode;
+    const industry = now && peerCode ? industryAverage(npsNow, peerCode, now) : null;
     const status = nts.get(profile.bizr_no) ?? null;
 
     // 스타트업 런웨이에 쓸 현금. 주요계정에는 없어서 전체 재무제표(별도)에서 찾는다
@@ -127,14 +132,14 @@ async function main() {
       target: t,
       profile,
       financials: !year ? [] : t.nature === "startup" ? startupFinancials(fin, cash, year, CHECKED_AT) : financialIndicators(fin, year, CHECKED_AT),
-      tenure: emp?.list?.length ? tenureIndicator(emp.list, year, CHECKED_AT) : null,
+      tenure: emp.list?.length ? tenureIndicator(emp.list, reportYear, CHECKED_AT) : null,
       hiring: hiringIndicator(now, before, CHECKED_AT),
       compensation: compensationIndicator(now, industry, CHECKED_AT),
       risk: riskIndicator(status, opinions, {
         nts: status ? ntsSource : null,
-        audit: adt?.list?.[0] ? { name: `OpenDART ${year} 감사의견`, url: `https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${adt.list[0].rcept_no}`, checkedAt: CHECKED_AT } : null,
+        audit: adt.list?.[0] ? { name: `OpenDART ${reportYear} 감사의견`, url: `https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${adt.list[0].rcept_no}`, checkedAt: CHECKED_AT } : null,
       }),
-      npsIndustry: now?.industryName ?? null,
+      npsIndustry: realIndustry ? now!.industryName : null,
       manual,
       checkedAt: CHECKED_AT,
     });

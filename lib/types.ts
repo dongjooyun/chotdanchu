@@ -111,6 +111,8 @@ export interface Company {
   /** 공공 인증 (보조 신호): 이노비즈, 메인비즈, 워크넷 강소기업 */
   certifications: string[];
   indicators: IndicatorValue[];
+  /** 사람들이 부르는 다른 이름 (예: 법인명 "당근마켓"을 "당근"으로도 찾기). 없으면 생략 */
+  aliases?: string[];
   /** "원문 보기" 링크만. 데이터는 가져오지 않는다 */
   externalLinks: { name: string; url: string }[];
   isMock: boolean;
