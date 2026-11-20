@@ -931,8 +931,13 @@ button {
   font-size: 14px;
 }
 .panel .empty {
+  padding: 20px 12px;
+  border: 2px dashed var(--dashed);
+  border-radius: 14px;
+  background: var(--surface);
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
+  text-align: center;
 }
 .panel details summary {
   cursor: pointer;
@@ -984,36 +989,52 @@ button {
 .mini {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 4px;
   min-width: 0;
-  padding: 8px 6px;
-  border: 1.5px solid var(--accent);
-  border-radius: 10px;
+  padding: 10px 8px;
+  border: 1px solid var(--card-bc);
+  border-radius: 14px;
   background: var(--surface);
+  box-shadow: var(--shadow-sm);
   font-size: 11px;
 }
 .mini .no {
   color: var(--muted);
   font-size: 10px;
+  font-weight: 700;
 }
 .mini .nm {
+  max-width: 100%;
   overflow: hidden;
+  font-size: 12px;
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* 판정 라벨은 카드 안에서 가장 크게 */
 .mini .fl {
-  align-self: flex-start;
-  padding: 0 7px;
-  border: 1px solid var(--accent-line);
+  padding: 3px 8px;
   border-radius: 999px;
   background: var(--accent-soft);
   color: var(--accent);
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 .mini .dt {
   color: var(--muted);
   font-size: 10px;
+}
+.panel-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.panel-h h2 {
+  margin-bottom: 0;
 }
 .foot-note {
   margin-top: 8px;
@@ -1100,7 +1121,8 @@ button {
 .screen.m .body {
   padding: 0 0 12px;
 }
-.screen.m .body > .panel {
+.screen.m .body > .panel,
+.screen.m .body > div > .panel {
   margin: 0 16px;
 }
 .screen.m .state-h {

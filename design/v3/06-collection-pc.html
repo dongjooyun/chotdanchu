@@ -4,10 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>첫단추 시안 v3, 06 내 카드 모음 (PC)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="v3.css">
 </head>
 <body>
-  <div class="cap"><strong>시안 06 내 카드 모음</strong> · PC 1280px 화면, 본문 최대 1024px · PC는 오른쪽 패널 2열 (320px) · 값은 모두 시안용 예시입니다</div>
+  <div class="cap"><strong>시안 06 내 카드 모음</strong> · v2.1 카드 모양 기준 · 카드 한 장에 No., 회사명, 판정 라벨(가장 큼), 날짜 · PC 1280px 화면, 본문 최대 1024px · PC는 오른쪽 패널 2열 (320px) · 값은 모두 시안용 예시입니다</div>
   <div class="screen pc">
     <header class="app-header" data-el="헤더">
       <div class="brand">
@@ -43,7 +46,7 @@
       <div>
         <span class="state-h">상태 2: 카드가 없을 때</span>
         <div class="w320"><section class="panel" data-el="내 카드 모음">
-        <h2>내 카드 0장</h2>
+        <div class="panel-h"><h2>내 카드 0장</h2><span class="progress">0 / 10</span></div>
         <p class="empty" data-el="내 카드 모음 빈 상태">기업을 분석하면 카드가 여기에 모여요</p>
       </section>
         </div>
@@ -51,15 +54,15 @@
       </div>
       <aside class="aside">
       <section class="panel" data-el="내 카드 모음">
-        <h2>내 카드 7장</h2>
+        <div class="panel-h"><h2>내 카드 7장</h2><span class="progress">7 / 10</span></div>
         <ol class="cgrid c2">
-          <li class="mini"><span class="no">No. 001</span><span class="nm">별하늘랩스</span><span class="fl" data-el="판정 라벨">도전</span><span class="dt">2026-11-19</span></li>
-          <li class="mini"><span class="no">No. 002</span><span class="nm">몽돌커머스</span><span class="fl" data-el="판정 라벨">정보 보강</span><span class="dt">2026-11-19</span></li>
-          <li class="mini"><span class="no">No. 003</span><span class="nm">청솔기계</span><span class="fl" data-el="판정 라벨">안정</span><span class="dt">2026-11-19</span></li>
-          <li class="mini"><span class="no">No. 004</span><span class="nm">한결전자</span><span class="fl" data-el="판정 라벨">최적</span><span class="dt">2026-11-20</span></li>
-          <li class="mini"><span class="no">No. 005</span><span class="nm">푸른들제약</span><span class="fl" data-el="판정 라벨">안정</span><span class="dt">2026-11-20</span></li>
-          <li class="mini"><span class="no">No. 006</span><span class="nm">너울철강</span><span class="fl" data-el="판정 라벨">고려</span><span class="dt">2026-11-20</span></li>
-          <li class="mini"><span class="no">No. 007</span><span class="nm">햇살에너지</span><span class="fl" data-el="판정 라벨">도전</span><span class="dt">2026-11-20</span></li>
+          <li class="mini"><span class="no">No. 001</span><span class="nm">하늘커머스</span><span class="fl" data-el="판정 라벨">도전</span><span class="dt">2026.11.19</span></li>
+          <li class="mini"><span class="no">No. 002</span><span class="nm">몽돌커머스</span><span class="fl" data-el="판정 라벨">정보 보강</span><span class="dt">2026.11.19</span></li>
+          <li class="mini"><span class="no">No. 003</span><span class="nm">청솔기계</span><span class="fl" data-el="판정 라벨">안정</span><span class="dt">2026.11.19</span></li>
+          <li class="mini"><span class="no">No. 004</span><span class="nm">한결전자</span><span class="fl" data-el="판정 라벨">최적</span><span class="dt">2026.11.20</span></li>
+          <li class="mini"><span class="no">No. 005</span><span class="nm">푸른들제약</span><span class="fl" data-el="판정 라벨">안정</span><span class="dt">2026.11.20</span></li>
+          <li class="mini"><span class="no">No. 006</span><span class="nm">너울철강</span><span class="fl" data-el="판정 라벨">고려</span><span class="dt">2026.11.20</span></li>
+          <li class="mini"><span class="no">No. 007</span><span class="nm">햇살에너지</span><span class="fl" data-el="판정 라벨">도전</span><span class="dt">2026.11.20</span></li>
         </ol>
         <p class="foot-note">같은 브라우저에 최대 10장까지 모여요.</p>
       </section>
