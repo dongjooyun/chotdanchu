@@ -2,7 +2,8 @@
 // 도구마다 reason(왜 이 도구를 부르는지)을 필수로 받아서 판단 로그의 근거로 쓴다.
 // LLM에게 돌려주는 결과에는 대표자 이름을 넣지 않는다 (CLAUDE.md 절대 규칙 1).
 import type Anthropic from "@anthropic-ai/sdk";
-import { findMockCandidates, getMockCompany } from "@/lib/data";
+import { getMode } from "@/lib/config";
+import { findCandidates, getCompany } from "@/lib/data";
 import { DISCLOSURE_LABELS, NATURE_LABELS } from "@/lib/format";
 import type { Company } from "@/lib/types";
 
@@ -88,7 +89,7 @@ export function runTool(name: string, input: Record<string, unknown>): ToolOutco
     case "search_company": {
       const query = str(input, "query");
       if (!query) return error("query가 비어 있습니다");
-      const found = findMockCandidates(query.slice(0, 100));
+      const found = findCandidates(query.slice(0, 100), getMode());
       const candidates = found.map((c) => ({
         id: c.id,
         name: c.name,
@@ -104,13 +105,13 @@ export function runTool(name: string, input: Record<string, unknown>): ToolOutco
     }
     case "show_choices": {
       const ids = Array.isArray(input.company_ids) ? input.company_ids.filter((x): x is string => typeof x === "string") : [];
-      const companies = [...new Set(ids)].map(getMockCompany).filter((c): c is Company => Boolean(c));
+      const companies = [...new Set(ids)].map((id) => getCompany(id, getMode())).filter((c): c is Company => Boolean(c));
       if (companies.length < 2) return error("후보 칩은 존재하는 회사 id가 2개 이상일 때만 띄울 수 있습니다");
       return { kind: "choices", companies };
     }
     case "get_company_profile": {
       const id = str(input, "company_id");
-      const c = id ? getMockCompany(id) : undefined;
+      const c = id ? getCompany(id, getMode()) : undefined;
       if (!c) return error(`없는 회사 id입니다: ${id ?? "(비어 있음)"}`);
       const available = c.indicators.filter((i) => i.status !== "unavailable").length;
       return {
@@ -129,7 +130,7 @@ export function runTool(name: string, input: Record<string, unknown>): ToolOutco
     }
     case "compute_indicators": {
       const id = str(input, "company_id");
-      const c = id ? getMockCompany(id) : undefined;
+      const c = id ? getCompany(id, getMode()) : undefined;
       if (!c) return error(`없는 회사 id입니다: ${id ?? "(비어 있음)"}`);
       return { kind: "company", company: c };
     }

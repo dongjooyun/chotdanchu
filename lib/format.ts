@@ -46,9 +46,14 @@ function num(n: number | null): string {
  */
 export function formatIndicatorValue(x: IndicatorValue): string {
   if (x.status === "unavailable") return "확인 불가";
-  if (x.metric === "risk_flags") return x.label ?? "해당 없음";
+  if (x.metric === "risk_flags") {
+    const why = x.extra?.closed ? " (폐업)" : x.extra?.suspended ? " (휴업)" : "";
+    return `${x.label ?? "해당 없음"}${why}`;
+  }
   if (x.metric === "cumulative_funding") return `${x.label ?? ""} ${num(x.value)}${x.unit}`.trim();
   if (x.range) return `${num(x.range[0])}~${num(x.range[1])}${x.unit} (추정)`;
+  // 국민연금 기준소득월액 상한에 걸려 실제보다 낮게 나온 추정치 (lib/real/nps.ts)
+  if (x.extra?.near_cap) return `${num(x.value)}${x.unit} 이상 (추정)`;
   if (x.metric === "operating_income" && x.extra?.prev !== undefined) {
     return `${num(x.value)}${x.unit} (전년 ${num(x.extra.prev)}${x.unit})`;
   }

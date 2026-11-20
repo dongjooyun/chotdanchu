@@ -78,12 +78,51 @@ describe("POST /api/chat (목업 모드)", () => {
   });
 });
 
-describe("POST /api/chat (실데이터 모드)", () => {
-  test("API-13 아직 연결 전이라 안내 문구와 info 로그만 돌려준다", async () => {
+describe("POST /api/chat (실데이터 모드, 사전 계산한 시연 기업)", () => {
+  function live() {
     vi.stubEnv("USE_MOCK", "false");
+    vi.stubEnv("USE_AGENT", "false");
     vi.resetModules();
+  }
+
+  test("API-13 목업 기업은 실데이터 모드에서 찾지 않고, 준비된 시연 기업 이름을 알려 준다", async () => {
+    live();
     const { json } = await post({ message: "별하늘랩스" });
-    expect(json.reply).toContain("연결되지 않았습니다");
-    expect(json.log[0]).toMatchObject({ type: "info", mode: "live" });
+    expect(json.widget).toBeUndefined();
+    expect(json.reply).toContain("아직 준비되지 않은 회사");
+    expect(json.reply).toContain("카카오");
+    expect(json.log.every((l) => l.mode === "live")).toBe(true);
+  });
+
+  test("API-14 카카오는 동명 법인 2곳이 후보로 나오고, 대표자 대신 소재지와 설립연도로 고르게 한다", async () => {
+    live();
+    const { json } = await post({ message: "카카오" });
+    expect(json.widget?.type).toBe("candidates");
+    if (json.widget?.type !== "candidates") return;
+    expect(json.widget.candidates).toHaveLength(2);
+    expect(json.widget.candidates.every((c) => c.ceoName === "")).toBe(true);
+    expect(json.reply).not.toContain("대표자");
+  });
+
+  test("API-15 상장 카카오를 고르면 실데이터 카드 (등급 10개, 출처는 OpenDART와 국민연금)", async () => {
+    live();
+    const { json } = await post({ pickCompanyId: "00258801" });
+    expect(json.widget?.type).toBe("company");
+    if (json.widget?.type !== "company") return;
+    expect(json.widget.company.isMock).toBe(false);
+    expect(json.widget.graded).toHaveLength(10);
+    const sources = json.widget.graded.map((g) => g.source?.name ?? "").join(" ");
+    expect(sources).toContain("OpenDART");
+    expect(sources).toContain("국민연금");
+    expect(json.log.some((l) => l.title.includes("공공데이터"))).toBe(true);
+  });
+
+  test("API-16 폐업한 동명 법인은 리스크가 해당(폐업)이고 나머지는 이유와 함께 확인 불가", async () => {
+    live();
+    const { json } = await post({ pickCompanyId: "00918444" });
+    if (json.widget?.type !== "company") throw new Error("카드가 없음");
+    const risk = json.widget.graded.find((g) => g.id === "risk");
+    expect(risk).toMatchObject({ grade: "C", display: "해당 (폐업)" });
+    expect(json.log.filter((l) => l.type === "unavailable").length).toBeGreaterThan(0);
   });
 });

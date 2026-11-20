@@ -5,7 +5,7 @@ import type { CandidateSummary } from "@/lib/chat";
 
 /**
  * 동명 기업 후보 칩 (PRD 03). 이름이 같은 회사가 여럿이면 대표자, 소재지, 업종, 설립연도로 고르게 한다.
- * 대표자는 화면 표시 전용이고 LLM에 보내지 않는다.
+ * 대표자는 화면 표시 전용이고 LLM에 보내지 않는다. 실데이터는 대표자 이름을 저장하지 않아서(CLAUDE.md 6장) 비어 있으면 뺀다.
  */
 export function CandidateChips({
   candidates,
@@ -29,7 +29,7 @@ export function CandidateChips({
           >
             <strong>{c.name}</strong>
             <span className="block text-xs text-muted">
-              대표 {c.ceoName} · {c.address} · {c.industry} · 설립 {c.foundedYear ?? "-"}
+              {[c.ceoName && `대표 ${c.ceoName}`, c.address, c.industry, `설립 ${c.foundedYear ?? "-"}`].filter(Boolean).join(" · ")}
             </span>
           </button>
         ))}
