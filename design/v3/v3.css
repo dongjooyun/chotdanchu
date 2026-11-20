@@ -403,24 +403,82 @@ button {
   gap: 8px;
 }
 .cand {
-  display: block;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   width: 100%;
-  padding: 10px 12px;
-  border: 1.5px solid var(--accent);
-  border-radius: 12px;
+  padding: 14px 14px 12px;
+  border: 1px solid var(--card-bc);
+  border-radius: 20px;
   background: var(--surface);
+  box-shadow: var(--shadow-sm);
   color: var(--text);
+  font: inherit;
   text-align: left;
+  cursor: pointer;
 }
-.cand .sub {
-  display: block;
-  margin-top: 2px;
-  color: var(--muted);
+.cand-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.cand-h strong {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+}
+.cand-no {
+  flex: none;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--pill-bg);
   font-size: 12px;
+  font-weight: 700;
 }
-.cand.done {
-  opacity: 0.7;
-  border-style: dashed;
+.cand-f {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+  margin: 0;
+}
+.cand-f > div {
+  min-width: 0;
+}
+.cand-f .w2 {
+  grid-column: 1 / -1;
+}
+.cand-f dt {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.cand-f dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+.cand.sel {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.cand .ck {
+  position: absolute;
+  top: -12px;
+  right: -6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  pointer-events: none;
+}
+.cand.dim {
+  opacity: 0.55;
 }
 
 /* ---------- 등급 배지: 진보라 한 색, 채움 정도로만 구분 ---------- */
