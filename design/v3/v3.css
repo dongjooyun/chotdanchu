@@ -2182,12 +2182,6 @@ button {
   width: 340px;
   max-width: 100%;
 }
-.rs-help {
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.5;
-  text-align: center;
-}
 
 /* 03 기업 카드: 하는 일 세 줄 요약 (예비 기능, 사업보고서가 있는 기업만) */
 .cc-sum {
@@ -2229,4 +2223,41 @@ button {
 /* 말풍선 안 한국어가 단어 중간에서 끊기지 않게 */
 .bubble {
   word-break: keep-all;
+}
+
+/* 시안 메모: 제품 문구가 아니라 시안을 설명하는 글. 상태 태그(.state-h)와 같은 점선 계열 */
+.memo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 10px 10px;
+  border: 1px dashed var(--dashed);
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: left;
+}
+.memo-k {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px dashed var(--muted);
+  border-radius: 999px;
+  font-size: 11px;
+}
+.rwrap > .memo,
+.row > .memo {
+  align-self: center;
+  width: 340px;
+  max-width: 100%;
+}
+.memo .fits li {
+  border: 1px dashed var(--dashed);
+  background: transparent;
+  color: var(--muted);
+}
+.memo .fits li b {
+  color: var(--muted);
 }
