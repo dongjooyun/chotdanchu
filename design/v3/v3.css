@@ -2130,3 +2130,32 @@ button {
   line-height: 1.5;
   text-align: center;
 }
+
+/* 03 기업 카드: 하는 일 세 줄 요약 (예비 기능, 사업보고서가 있는 기업만) */
+.cc-sum {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--dist-bg);
+  text-align: left;
+}
+.cc-sum-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+.cc-sum ol {
+  padding-left: 18px;
+  list-style: decimal;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.cc-sum p {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
