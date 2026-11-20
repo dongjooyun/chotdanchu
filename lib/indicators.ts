@@ -157,11 +157,13 @@ export function monthsBetween(period: string, asOf: Date): number | null {
 /**
  * 투자 단계 (스타트업만). ① 라운드와 누적 투자금: Series A면 30억 원 이상, Series B 이상이면 100억 원 이상
  * ② 최근 투자 유치가 18개월 이내. 둘 다 충족 A, 하나 B, 둘 다 미충족 C.
+ * 라운드 이름이 없으면 ①은 누적 100억 원 이상일 때 충족. 최근 투자 시점을 모르면 ②는 미충족.
  * 예: { label: "Series B", value: 208.6, period: "2025-12" }, 기준일 2026-11 -> ① 충족, ② 11개월 충족 -> "A"
  */
 function rateFunding(x: IndicatorValue, v: number, asOf: Date): Rated {
-  const round = (x.label ?? "").toLowerCase();
-  const need = /series\s*[b-z]|pre-ipo/.test(round) ? 100 : /series\s*a/.test(round) ? 30 : null;
+  const round = (x.label ?? "").trim().toLowerCase();
+  // 라운드 이름을 공식 자료에서 못 찾았어도(공시의 유상증자, 회사 소개 페이지의 누적 투자액 등) 누적 100억 원 이상이면 ①을 충족으로 본다 (11/21)
+  const need = /series\s*[b-z]|pre-ipo/.test(round) ? 100 : /series\s*a/.test(round) ? 30 : round === "" ? 100 : null;
   const first = need !== null && v >= need;
   const months = x.period ? monthsBetween(x.period, asOf) : null;
   const second = months !== null && months <= 18;

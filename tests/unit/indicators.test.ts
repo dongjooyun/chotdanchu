@@ -174,6 +174,10 @@ table("FS-S", "startup", "funding_stage", /Series A 누적 30억 원 이상/, ({
   ["DT", { round: "Seed", amount: 4.3, period: "2026-06" }, "B", "Seed는 금액 조건이 없어 최근성만"],
   ["DT", { round: "Seed", amount: 4.3, period: "2023-05" }, "C"],
   ["DT", { round: "Series B", amount: 150, period: null }, "B", "투자 시점을 모르면 최근성 미충족"],
+  // 라운드 이름이 공식 자료에 없을 때 (11/21): 누적 100억 원 이상이면 ① 충족
+  ["BVA", { round: "", amount: 100, period: "2026-05" }, "A", "라운드 이름 없음, 100억 경계 + 최근"],
+  ["BVA", { round: "", amount: 99.99, period: "2026-05" }, "B", "라운드 이름 없음, 금액만 모자람"],
+  ["DT", { round: "", amount: 2270, period: "2025-01" }, "B", "라운드 이름 없음, 금액만 충족 (22개월 전)"],
 ]);
 table("FS-G", "general", "funding_stage", /등급 없음/, () => [val("funding_stage", "cumulative_funding", 500, { label: "Series C", period: "2026-01", unit: "억원" })], () => "일반 기업은 투자 데이터가 있어도", [
   ["EP", null, null],
