@@ -33,7 +33,8 @@ test("E2E-01 첫 방문: 직무 3개 버튼, 입력창은 직무를 고르기 �
     await expect(page.getByRole("button", { name: role, exact: true })).toBeVisible();
   }
   await expect(page.getByLabel("메시지 입력")).toBeDisabled();
-  await expect(page.getByText("아직 안 고름")).toBeVisible();
+  // 고정 정보줄: 직무와 회사 둘 다 미정
+  await expect(page.getByText("미정", { exact: true })).toHaveCount(2);
 });
 
 test("E2E-02 직무를 고르면 바로 회사를 묻고, 새로고침해도 직무가 남는다", async ({ page }) => {
@@ -115,6 +116,45 @@ test("E2E-09 가로 스크롤이 생기지 않는다 (기업 카드와 리포트
   await expect(page.getByText("판단 리포트 카드예요")).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   expect(overflow).toBe(false);
+});
+
+test("E2E-11 직무와 회사를 바꾼 뒤 리포트 카드는 지금 직무와 회사를 보여 준다 (예시 카드가 아니다)", async ({ page }) => {
+  await chooseRole(page, "서비스기획");
+  await searchCompany(page, "별하늘랩스");
+  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await expect(page.getByText("서비스기획 직무 · ").first()).toBeVisible();
+  // 직무를 마케팅으로 바꾸고 다른 회사를 본다
+  await page.getByRole("button", { name: "바꾸기", exact: true }).click();
+  await page.getByRole("button", { name: "마케팅", exact: true }).last().click();
+  await expect(page.getByText("마케팅 직무로 볼게요. 어느 회사가 궁금하세요?").last()).toBeVisible();
+  await searchCompany(page, "청솔기계");
+  await page.getByRole("button", { name: /대표/ }).first().click();
+  await expect(page.getByText("판단 리포트 카드예요").last()).toBeVisible();
+  const cards = page.locator(".card-flip");
+  await expect(cards).toHaveCount(2);
+  const second = await cards.nth(1).innerText();
+  expect(second).toContain("주식회사 청솔기계");
+  expect(second).toContain("마케팅 직무");
+  expect(second).not.toContain("하늘커머스");
+  expect(second).not.toContain("기획자");
+  // 고정 정보줄도 같은 직무와 회사를 보여 준다
+  const bar = page.locator("div.sticky", { hasText: "[고정 정보줄]" });
+  await expect(bar).toContainText("마케팅");
+  await expect(bar).toContainText("주식회사 청솔기계");
+});
+
+test("E2E-12 길어진 대화에서도 직무와 회사 줄은 화면 맨 위에 붙어 있다", async ({ page }) => {
+  await chooseRole(page, "마케팅");
+  await searchCompany(page, "별하늘랩스");
+  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await expect(page.getByText("판단 리포트 카드예요")).toBeVisible();
+  const bar = page.locator("div.sticky", { hasText: "[고정 정보줄]" });
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect(bar).toBeInViewport();
+  const top = await bar.evaluate((el) => Math.round(el.getBoundingClientRect().top));
+  expect(top).toBeLessThanOrEqual(1);
+  await expect(bar).toContainText("마케팅");
+  await expect(bar).toContainText("별하늘랩스(주)");
 });
 
 test("E2E-10 화면 문구 규칙: em dash와 이모지를 쓰지 않는다", async ({ page }) => {

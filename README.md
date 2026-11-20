@@ -125,6 +125,7 @@ npm run dev
 ```
 
 - 브라우저에서 http://localhost:3000 을 엽니다. 기본은 목업 모드(`USE_MOCK=true`)라 API 키 없이 처음부터 끝까지 돌아갑니다.
+- 에이전트(LLM이 도구를 골라 판단)를 켜려면 `.env.local`에 `ANTHROPIC_API_KEY`를 넣고 `USE_AGENT=true`로 바꿉니다. 크레딧을 쓰니 시연 확인 때만 켭니다.
 - 화면의 모든 요소를 한곳에서 보려면 http://localhost:3000/catalog (개발용 위젯 카탈로그)를 엽니다.
 - PR 전에는 `npm run build`, `npm run lint`, `npm test`가 통과하는지 확인합니다. `npm test`(Vitest)는 지표 등급 계산과 역량 매칭 등을, `npm run test:e2e`(Playwright)는 화면 흐름을 검사합니다. 설계 방식과 케이스 추적표는 [`docs/testing.md`](docs/testing.md)에 있습니다.
 - Claude 데스크톱 앱에서는 `.claude/launch.json`의 `chotdanchu-dev`로 Browser 창 미리보기를 띄울 수 있습니다.

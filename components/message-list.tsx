@@ -7,9 +7,10 @@ import { MatchupPair } from "@/components/matchup-card";
 import { QuickReplies, type QuickReply } from "@/components/quick-replies";
 import { ReportCard } from "@/components/report-card";
 import type { ChatWidget, LogLine } from "@/lib/chat";
+import type { ReportCardData } from "@/lib/report-card";
 import { SAMPLE_MATCHUP_PAIR } from "@/lib/samples";
 
-export type MessageWidget = ChatWidget | { type: "matchup" } | { type: "report" };
+export type MessageWidget = ChatWidget | { type: "matchup" } | { type: "report"; data: ReportCardData };
 
 export interface ChatMessage {
   id: number;
@@ -38,7 +39,7 @@ function Widget({
     case "matchup":
       return <MatchupPair cards={SAMPLE_MATCHUP_PAIR} disabled />;
     case "report":
-      return <ReportCard />;
+      return <ReportCard data={widget.data} />;
   }
 }
 

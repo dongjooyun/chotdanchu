@@ -31,28 +31,38 @@ function Front({ d }: { d: ReportCardData }) {
       </div>
       <div className="rounded border-2 border-fg p-2">
         <p className="text-xs text-muted">[판정 라벨: 카드의 주인공]</p>
-        <p className="text-2xl font-bold">{d.fitLabel}</p>
+        <p className="text-2xl font-bold">{d.fitLabel ?? "판정 준비 중"}</p>
         <p className="text-sm">{d.fitReason}</p>
       </div>
       <div className="rounded border border-line p-2 text-xs">
         <p className="text-muted">내 성향</p>
         <p className="font-semibold">{d.preferenceType ?? "기본 기준 (맞대결 건너뜀)"}</p>
         <p className="mt-1 text-muted">내가 중시한 지표</p>
-        <ul className="mt-0.5 flex flex-wrap gap-2">
-          {d.topIndicators.map((t) => (
-            <li key={t.id} className="flex items-center gap-1">
-              <span>{INDICATOR_LABELS[t.id]}</span>
-              <GradeBadge grade={t.grade} size="sm" />
-            </li>
-          ))}
-        </ul>
+        {d.topIndicators.length > 0 ? (
+          <ul className="mt-0.5 flex flex-wrap gap-2">
+            {d.topIndicators.map((t) => (
+              <li key={t.id} className="flex items-center gap-1">
+                <span>{INDICATOR_LABELS[t.id]}</span>
+                <GradeBadge grade={t.grade} size="sm" />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-0.5">모든 지표를 같은 비중으로 봤어요</p>
+        )}
       </div>
       <div className="rounded border border-line p-2 text-xs">
         <p className="text-muted">3년 뒤 요구 역량 (3년차 공고 대비)</p>
-        <p className="font-semibold">
-          이어짐 {d.gap.connected} · 일부 {d.gap.partial} · 공백 {d.gap.missing}
-        </p>
-        <p className="text-[10px] text-muted">출처: {d.careerSource}</p>
+        {d.gap ? (
+          <>
+            <p className="font-semibold">
+              이어짐 {d.gap.connected} · 일부 {d.gap.partial} · 공백 {d.gap.missing}
+            </p>
+            <p className="text-[10px] text-muted">출처: {d.careerSource}</p>
+          </>
+        ) : (
+          <p className="text-muted">3년차 공고 비교는 공고 수집(CDC-27) 뒤에 붙어요</p>
+        )}
       </div>
       <div className="flex items-end justify-between gap-2">
         <p className="text-[10px] text-muted">공개 데이터 기반 참고 정보이며 기업 평가가 아니에요.</p>
