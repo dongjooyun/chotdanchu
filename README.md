@@ -34,6 +34,9 @@
 5 판단 리포트  지표 + 선호 + 역량 갭 → 발판 리포트와 면접 역질문
 ```
 
+- 3년차 공고: 회사 공식 채용 페이지의 경력 공고 중 요구 경력이 "N년 이상"이고 N이 3~5인 공고 (5년 이상 포함). 시연 기업이 큰 회사라 3년 이상 공고가 드물어 5년까지 넓혔다
+- 실데이터: 시연 기업만 OpenDART 공시, 국민연금 가입 사업장, 국세청 사업자 상태로 미리 계산해 두고, 화면 입력창 아래에 출처와 볼 수 있는 회사를 적는다
+
 직접 눌러보는 데모: [`docs/prototype/chat-tutorial.html`](docs/prototype/chat-tutorial.html) (더미데이터) · 흐름도: [`docs/prototype/agent-flow.html`](docs/prototype/agent-flow.html)
 
 ## 무엇이 AI이고 무엇이 코드인가
