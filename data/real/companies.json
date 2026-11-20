@@ -1,0 +1,272 @@
+[
+  {
+    "id": "00258801",
+    "corpCode": "00258801",
+    "bizRegNo": "120-81-47521",
+    "bizRegNoSource": {
+      "name": "OpenDART 기업개황",
+      "url": "https://opendart.fss.or.kr",
+      "checkedAt": "2026-11-20"
+    },
+    "name": "주식회사 카카오",
+    "ceoName": "",
+    "address": "제주 제주시",
+    "industry": "데이터베이스 및 온라인 정보 제공업",
+    "industryCode": "63120",
+    "foundedOn": "1995-02-16",
+    "disclosure": "listed",
+    "nature": "general",
+    "natureBasis": "유가증권시장 상장 법인 (상장사는 일반 기업 기준표)",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "debt_ratio",
+        "status": "ok",
+        "value": 55,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
+          "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "ok",
+        "value": 3.3,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
+          "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_margin",
+        "status": "ok",
+        "value": 16.4,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
+          "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": -2.5,
+        "unit": "%",
+        "period": "2026-09",
+        "extra": {
+          "headcount": 3788,
+          "headcount_prev": 3885,
+          "monthly_attrition": 1.5
+        },
+        "source": {
+          "name": "국민연금 가입 사업장 내역 (2026-09분)",
+          "url": "https://www.data.go.kr/data/15083277/fileData.do",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 7393,
+        "unit": "만원",
+        "period": "2026-09",
+        "extra": {
+          "industry_avg": 4794,
+          "industry_samples": 693,
+          "near_cap": 1
+        },
+        "source": {
+          "name": "국민연금 가입 사업장 내역 (2026-09분)",
+          "url": "https://www.data.go.kr/data/15083277/fileData.do",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "ok",
+        "value": 6.3,
+        "unit": "년",
+        "period": "2025",
+        "extra": {
+          "headcount": 3922
+        },
+        "source": {
+          "name": "OpenDART 2025 사업보고서 (직원 현황)",
+          "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "tech_investment",
+        "metric": "rnd_ratio",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "no_source"
+      },
+      {
+        "id": "funding_stage",
+        "metric": "cumulative_funding",
+        "status": "unavailable",
+        "value": null,
+        "unit": "억원",
+        "period": null,
+        "source": null,
+        "reason": "no_source"
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "OpenDART 2025 감사의견",
+          "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
+          "checkedAt": "2026-11-20"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": false
+  },
+  {
+    "id": "00918444",
+    "corpCode": "00918444",
+    "bizRegNo": "119-81-93985",
+    "bizRegNoSource": {
+      "name": "OpenDART 기업개황",
+      "url": "https://opendart.fss.or.kr",
+      "checkedAt": "2026-11-20"
+    },
+    "name": "주식회사 카카오",
+    "ceoName": "",
+    "address": "서울 강남구",
+    "industry": "포털 및 기타 인터넷 정보매개 서비스업",
+    "industryCode": "63120",
+    "foundedOn": "2006-12-01",
+    "disclosure": "unlisted",
+    "nature": "general",
+    "natureBasis": "같은 이름의 비상장 법인. 재무 공시 없음",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "debt_ratio",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_margin",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "no_source"
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "unavailable",
+        "value": null,
+        "unit": "만원",
+        "period": null,
+        "source": null,
+        "reason": "no_source"
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "unavailable",
+        "value": null,
+        "unit": "년",
+        "period": null,
+        "source": null,
+        "reason": "not_disclosed"
+      },
+      {
+        "id": "tech_investment",
+        "metric": "rnd_ratio",
+        "status": "unavailable",
+        "value": null,
+        "unit": "%",
+        "period": null,
+        "source": null,
+        "reason": "no_source"
+      },
+      {
+        "id": "funding_stage",
+        "metric": "cumulative_funding",
+        "status": "unavailable",
+        "value": null,
+        "unit": "억원",
+        "period": null,
+        "source": null,
+        "reason": "no_source"
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당",
+        "extra": {
+          "closed": 1
+        },
+        "source": {
+          "name": "국세청 사업자등록 상태조회",
+          "url": "https://www.data.go.kr/data/15081808/openapi.do",
+          "checkedAt": "2026-11-20"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": false
+  }
+]

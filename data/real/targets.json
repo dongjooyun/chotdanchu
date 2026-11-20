@@ -1,0 +1,13 @@
+[
+  {
+    "corpCode": "00258801",
+    "nature": "general",
+    "natureBasis": "유가증권시장 상장 법인 (상장사는 일반 기업 기준표)"
+  },
+  {
+    "corpCode": "00918444",
+    "nature": "general",
+    "natureBasis": "같은 이름의 비상장 법인. 재무 공시 없음",
+    "industry": "포털 및 기타 인터넷 정보매개 서비스업"
+  }
+]
