@@ -398,11 +398,8 @@
         "value": 8,
         "unit": "건",
         "period": "2026-11",
-        "extra": {
-          "at_least": 1
-        },
         "source": {
-          "name": "KIPRIS 국내 특허·실용신안 검색, 등록 상태, 출원인 주식회사 무신사 (수동 확인, 화면에서 센 8건 이상)",
+          "name": "KIPRIS 국내 특허·실용신안 검색 \"무신사\", 등록 상태, 출원인 주식회사 무신사 8건 (수동 확인)",
           "url": "https://www.kipris.or.kr",
           "checkedAt": "2026-11-21"
         }
@@ -558,12 +555,15 @@
       {
         "id": "tech_investment",
         "metric": "registered_patents",
-        "status": "unavailable",
-        "value": null,
+        "status": "manual",
+        "value": 2,
         "unit": "건",
-        "period": null,
-        "source": null,
-        "reason": "no_source"
+        "period": "2026-11",
+        "source": {
+          "name": "KIPRIS 국내 특허·실용신안 검색 \"컬리\", 등록 상태, 출원인 주식회사 컬리 2건 (출원번호 10-2020-0002677, 10-2020-0027378, 수동 확인)",
+          "url": "https://www.kipris.or.kr",
+          "checkedAt": "2026-11-21"
+        }
       },
       {
         "id": "funding_stage",
@@ -573,7 +573,7 @@
         "unit": "억원",
         "period": "2026-05",
         "source": {
-          "name": "컬리 주요사항보고서(유상증자결정) 2건: 2023-05 1,200억 원, 2026-05 330억 원, 제3자배정 합계 (라운드 이름과 그 이전 투자는 공시에 없음, 수동 확인)",
+          "name": "컬리 주요사항보고서(유상증자결정) 2건: 2023-05 1,200억 원, 2026-05 330억 원(네이버 제3자배정, 컬리 뉴스룸 2026-05-06 보도자료로도 확인), 합계 (라운드 이름과 그 이전 투자는 공식 자료에 없음, 수동 확인)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260506000052",
           "checkedAt": "2026-11-21"
         }
@@ -719,11 +719,11 @@
         "id": "tech_investment",
         "metric": "registered_patents",
         "status": "manual",
-        "value": 0,
+        "value": 5,
         "unit": "건",
         "period": "2026-11",
         "source": {
-          "name": "KIPRIS 국내 특허·실용신안 검색, 등록 상태, 출원인 당근마켓 검색 결과 없음 (수동 확인)",
+          "name": "KIPRIS 국내 특허·실용신안 검색 \"당근마켓\", 등록 상태, 출원인 주식회사 당근마켓 5건 (수동 확인)",
           "url": "https://www.kipris.or.kr",
           "checkedAt": "2026-11-21"
         }
