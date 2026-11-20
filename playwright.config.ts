@@ -28,6 +28,7 @@ export default defineConfig({
     url: "http://localhost:3100",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
-    env: { NEXT_DIST_DIR: ".next-e2e", USE_MOCK: "true" },
+    // .env.local에 USE_AGENT=true가 있어도 E2E는 LLM을 부르지 않는다 (크레딧을 쓰지 않고 결과가 매번 같도록)
+    env: { NEXT_DIST_DIR: ".next-e2e", USE_MOCK: "true", USE_AGENT: "false" },
   },
 });

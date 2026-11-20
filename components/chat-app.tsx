@@ -5,12 +5,16 @@ import { AgentLogPanel } from "@/components/agent-log-panel";
 import { CardCollection } from "@/components/card-collection";
 import { ChatInput } from "@/components/chat-input";
 import { LofiBox } from "@/components/lofi-box";
-import { MessageList, type ChatMessage } from "@/components/message-list";
+import { MessageList, type ChatMessage, type MessageWidget } from "@/components/message-list";
 import type { QuickReply } from "@/components/quick-replies";
 import { useSession } from "@/components/use-session";
 import type { AppMode, ChatRequest, ChatResponse, LogLine } from "@/lib/chat";
+import { buildReportDraft, type ReportDraftInput } from "@/lib/report-draft";
 import { addAnalysis, skippedPreference } from "@/lib/session";
-import type { Role } from "@/lib/types";
+import type { Preference, Role } from "@/lib/types";
+
+/** 방금 본 기업의 카드 내용 (리포트 카드의 재료) */
+type Analysis = Pick<ReportDraftInput, "company" | "graded" | "log">;
 
 const ROLE_REPLIES: QuickReply[] = [
   { label: "서비스기획", value: "role:서비스기획" },
@@ -74,6 +78,8 @@ export function ChatApp({ mode }: { mode: AppMode }) {
   const [log, setLog] = useState<LogLine[]>([]);
   /** 지금 보고 있는 회사 이름. 고정 정보줄에 보인다 */
   const [company, setCompany] = useState<string | null>(null);
+  /** 가장 최근에 분석한 기업의 카드 내용. 리포트 카드를 만들 때 쓴다 */
+  const [current, setCurrent] = useState<Analysis | null>(null);
   const [pending, setPending] = useState(false);
   const nextId = useRef(1);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -95,14 +101,26 @@ export function ChatApp({ mode }: { mode: AppMode }) {
     setLog((prev) => [...prev, ...lines.map((l, i) => ({ ...l, step: prev.length + i + 1 }))]);
   }
 
+  /** 지금 직무와 방금 본 기업으로 리포트 말풍선의 위젯을 만든다 */
+  function reportWidget(a: Analysis, role: Role, preference: Preference | null): MessageWidget {
+    const no = session.analyzed.filter((r) => r.companyId !== a.company.id).length + 1;
+    const data = buildReportDraft({ ...a, role, preference, no, checkedAt: new Date().toISOString().slice(0, 10) });
+    return { type: "report", data };
+  }
+
   /** 기업 카드 다음 단계: 3년차 공고 비교 자리, 그다음 맞대결 권유 또는 바로 리포트 */
-  function afterCompanyCard(role: Role | null) {
+  function afterCompanyCard(role: Role | null, a: Analysis) {
     const career: Omit<ChatMessage, "id"> = {
       from: "agent",
       text: `[3년차 공고와 역량 갭 자리] ${role ?? "선택한"} 직무의 3년차 공고와 비교합니다. 공고 태스크(CDC-7, CDC-15)에서 채웁니다.`,
     };
-    if (session.preference) {
-      push(career, { from: "agent", text: "판단 리포트 카드예요.", widget: { type: "report" }, replies: NEXT_REPLIES });
+    if (session.preference && role) {
+      push(career, {
+        from: "agent",
+        text: "판단 리포트 카드예요.",
+        widget: reportWidget(a, role, session.preference),
+        replies: NEXT_REPLIES,
+      });
       return;
     }
     push(career, {
@@ -126,6 +144,8 @@ export function ChatApp({ mode }: { mode: AppMode }) {
       appendLog(data.log);
       if (data.widget?.type === "company") {
         const company = data.widget.company;
+        const analysis: Analysis = { company, graded: data.widget.graded, log: data.log };
+        setCurrent(analysis);
         setCompany(company.name);
         setSession(
           addAnalysis(session, {
@@ -136,7 +156,7 @@ export function ChatApp({ mode }: { mode: AppMode }) {
             log: data.log,
           }),
         );
-        afterCompanyCard(session.role);
+        afterCompanyCard(session.role, analysis);
       }
     } catch {
       push({ from: "agent", text: "응답을 받지 못했어요. 잠시 후 다시 시도해 주세요." });
@@ -181,13 +201,15 @@ export function ChatApp({ mode }: { mode: AppMode }) {
       return;
     }
     if (value === "pref:skip") {
-      setSession({ ...session, preference: skippedPreference() });
+      const preference = skippedPreference();
+      setSession({ ...session, preference });
+      if (!current || !session.role) return;
       push(
         { from: "user", text: "건너뛰고 기본 기준으로" },
         {
           from: "agent",
           text: "모든 지표를 같은 비중으로 보고 판정했어요. 판단 리포트 카드예요.",
-          widget: { type: "report" },
+          widget: reportWidget(current, session.role, preference),
           replies: NEXT_REPLIES,
         },
       );
@@ -215,7 +237,7 @@ export function ChatApp({ mode }: { mode: AppMode }) {
     <div className="flex flex-col gap-3 md:grid md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
       <LofiBox label="채팅 영역" className="flex min-w-0 flex-col gap-3">
         {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}
-        <div className="sticky top-0 z-10 -mx-1 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line bg-box px-1 py-2 text-sm">
+        <div className="sticky top-0 z-10 -mx-1 flex flex-wrap items-center gap-x-3 gap-y-1 border-b-2 border-fg bg-box px-1 py-2 text-sm shadow-md">
           <span className="text-[10px] text-muted">[고정 정보줄]</span>
           <span className="flex items-center gap-1">
             <span className="text-muted">직무</span>
