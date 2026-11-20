@@ -1835,3 +1835,276 @@ button {
   font-size: 13px;
   font-weight: 500;
 }
+
+/* =====================================================================
+   05 리포트 카드 (v2.1 Card-Save 기준 + CDC-12)
+   - 카드 폭 340px, 홀로그램 테두리 6px (보라, 핑크, 하늘색만), 안쪽 흰 카드 반지름 20px, 안쪽 여백 14px
+   - 판정 라벨이 카드에서 가장 큰 글자 (52px). 회사명은 20px
+   - 등급은 진보라 한 색의 채움 정도(.g3), 주 버튼은 이미지로 저장하기 하나
+   ===================================================================== */
+.rs {
+  position: relative;
+  width: 340px;
+  max-width: 100%;
+  padding: 6px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, var(--holo-1) 0%, var(--holo-3) 30%, var(--holo-2) 62%, var(--holo-1) 100%);
+  box-shadow: 0 14px 30px color-mix(in srgb, var(--shadow) 28%, transparent);
+}
+/* 뒤집을 때 한 번 지나가는 빛줄기 (시안에서는 멈춘 모습). 판정 라벨 글자를 가리지 않게 테두리 뒤에 둔다 */
+.rs::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: 26px;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, color-mix(in srgb, var(--surface) 45%, transparent) 50%, transparent 62%);
+}
+.rs-in {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  word-break: keep-all;
+  padding: 14px;
+  border-radius: 20px;
+  background: var(--surface);
+}
+.rs-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.rs-types {
+  display: flex;
+  gap: 6px;
+}
+.tag2.sm {
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+.tag2.sm small {
+  font-size: 10px;
+}
+.rs-no {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.rs-co {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.rs-ini {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 900;
+}
+.rs-name {
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+}
+.rs-sub {
+  color: var(--muted);
+  font-size: 12px;
+}
+.rs-fit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 12px 12px;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  text-align: center;
+}
+.rs-lbl {
+  color: var(--accent);
+  font-size: 52px;
+  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+.rs-why {
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+.rs-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--dist-bg);
+}
+.rs-k {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.rs-pref {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+}
+.rs-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.rs-3 > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px;
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 11px;
+  font-weight: 700;
+}
+.rs-gap {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  text-align: center;
+}
+.rs-gap > span {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 11px;
+  font-weight: 700;
+}
+.rs-gap b {
+  font-size: 16px;
+  font-weight: 900;
+}
+.rs-src {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.rs-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 2px;
+}
+.rs-foot > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.rs-disc {
+  word-break: keep-all;
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+.rs-fake {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.rs-qr {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+}
+.rs-qrbox {
+  display: block;
+  padding: 3px;
+  border: 1px solid var(--tag-bc);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+}
+.rs-qrbox svg {
+  display: block;
+}
+.qr-bg {
+  fill: var(--surface);
+}
+.rs-h {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+}
+.rs-sec {
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 900;
+}
+.rs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.rs-grid > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 10px;
+  background: var(--dist-bg);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.rs-q {
+  padding-left: 18px;
+  list-style: decimal;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.rs-dec li {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.rs-dec li + li {
+  margin-top: 6px;
+}
+.rs-act {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 340px;
+  max-width: 100%;
+}
+.rs-help {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+}
