@@ -30,7 +30,7 @@ function exampleReplies(names: string[]): QuickReply[] {
 /** 입력창 아래 한 줄: 기업 정보를 어디서 가져오는지 */
 function sourceNote(mode: AppMode, names: string[]): string {
   if (mode === "mock") return "목업 모드: 가상 기업 데이터로 보여 드려요. 실제 회사가 아닙니다.";
-  return `OpenDART 공시, 국민연금 가입 사업장, 국세청 사업자 상태로 확인해요. 지금 볼 수 있는 회사: ${names.join(", ")}. 공개 데이터 기반 참고 정보이며 기업 평가가 아닙니다.`;
+  return `OpenDART 공시, 국민연금 가입 사업장, 국세청 사업자 상태로 미리 확인해 둔 회사만 볼 수 있어요: ${names.join(", ")}`;
 }
 
 const PREF_REPLIES: QuickReply[] = [
