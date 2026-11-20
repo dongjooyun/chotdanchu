@@ -116,7 +116,7 @@ export interface Company {
   isMock: boolean;
 }
 
-/** KT 기업분석 수업 "기업 선택 가치관" 3유형 */
+/** 기업 선택 가치관 3유형 (맞대결 결과) */
 export type PreferenceType = "stable_system" | "autonomy_pioneer" | "balance_practical";
 
 export const PREFERENCE_TYPE_LABELS: Record<PreferenceType, string> = {

@@ -104,7 +104,7 @@ function rateTenure(v: number): Rated {
   return { grade: band(v, 10, 5), basis: "평균 근속 10년 이상 A, 5~10년 B, 5년 미만 C" };
 }
 
-/** 기술 투자 업종 구간 (KT 기준). 적정 R&D 비율 [하한, 상한] */
+/** 기술 투자 업종 구간. 적정 R&D 비율 [하한, 상한] (docs/indicators.md) */
 const RND_BANDS = {
   tech: { name: "기술 집약", range: [10, 20] },
   advanced: { name: "첨단 제조", range: [5, 10] },
