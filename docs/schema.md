@@ -112,7 +112,7 @@
 ```
 
 - `role`: `서비스기획`, `마케팅`, `운영` (역량 사전과 같은 이름)
-- `preference.type`: `stable_system` 안정·시스템 지향, `autonomy_pioneer` 자율·개척 지향, `balance_practical` 밸런스·실속 지향 (KT 기업 선택 가치관 3유형)
+- `preference.type`: `stable_system` 안정·시스템 지향, `autonomy_pioneer` 자율·개척 지향, `balance_practical` 밸런스·실속 지향 (기업 선택 가치관 3유형)
 - `preference.skipped`가 true면 모든 지표를 같은 비중으로 본다
 - `weights`는 10개 지표 전부, 합 1 (위 예시는 일부만 적음)
 - `analyzed`: 최근 분석 기록. 판단 로그(`log`)를 같이 저장해서 다시 열어볼 수 있다. 판단 로그 한 줄의 모양은 에이전트 루프(CDC-14)에서 확정한다

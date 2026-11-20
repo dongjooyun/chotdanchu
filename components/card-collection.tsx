@@ -17,7 +17,8 @@ export function CardCollection({ records }: { records: AnalysisRecord[] }) {
             <li key={r.companyId} className="rounded border border-line bg-box p-2">
               <p className="truncate font-semibold">{r.name}</p>
               <p className="text-muted">{r.label ?? "[판정 라벨: 리포트 후]"}</p>
-              <p className="text-[10px] text-muted">{r.analyzedAt.slice(0, 10)}</p>
+              {/* 저장은 UTC(ISO)라 그대로 자르면 한국 시간으로 하루 전이 될 수 있다. 브라우저 시간대로 바꿔 보인다 */}
+              <p className="text-[10px] text-muted">{new Date(r.analyzedAt).toLocaleDateString("sv-SE")}</p>
             </li>
           ))}
         </ol>

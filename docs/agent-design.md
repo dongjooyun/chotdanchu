@@ -28,9 +28,9 @@
 | `get_financials` | 매출, 영업이익, 부채비율, R&D | 코드 | 공시 대상만 |
 | `get_employment` | 가입자 추이, 급여 추정 | 코드 | 국민연금, 약 1.5개월 시차, 추정 오차 표시 |
 | `get_public_org_info` | 공공기관 경영 정보 | 코드 | 확인 필요 |
-| `compute_indicators` | 10가지 지표 계산, 확인 불가 처리 | 코드 | LLM이 숫자를 만들지 않음 |
+| `compute_indicators` | 10가지 지표 계산, 확인 불가 처리 | 코드 | LLM이 숫자를 만들지 않음. `lib/indicators.ts` |
 | `search_job_postings` | 같은 기업·직무 3년차 공고, 없으면 유사 기업 | 코드 + LLM 판단 | **최대 리스크: 합법적 출처 확보** |
-| `extract_competencies` | 공고에서 요구 역량 추출·정규화 | LLM (작은 모델) | 직무별 역량 사전과 매칭 |
+| `extract_competencies` | 공고에서 요구 역량 추출·정규화 | LLM (작은 모델) + 코드 | 표현 뽑기는 LLM, 사전 이름으로 맞추기와 미매칭 모으기는 코드(`lib/competencies.ts`) |
 | `start_matchup` / `get_preference` | 맞대결 출제, 선호 가중치 계산 | 코드 | Bradley-Terry, 고정 대진 8강 토너먼트(7판) |
 | `render_report` | 지표 + 선호 + 역량 갭 → 리포트 | LLM 문장 + 코드 레이아웃 | 면접 역질문 포함 |
 
