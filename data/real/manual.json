@@ -8,10 +8,83 @@
       "value": 22.3,
       "unit": "%",
       "period": "2025",
-      "extra": { "consolidated": 16.0 },
+      "extra": {
+        "consolidated": 16
+      },
       "source": {
         "name": "카카오 2025 사업보고서 II-6 연구개발비용 (별도, 수동 확인)",
         "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01137727",
+    "indicator": {
+      "id": "funding_stage",
+      "metric": "cumulative_funding",
+      "status": "manual",
+      "value": 4300,
+      "unit": "억원",
+      "period": "2023-07",
+      "label": "Series C",
+      "source": {
+        "name": "무신사 공식 뉴스룸 2023-07-19 Series C 발표. 4,300억 원은 2023년 세 차례 투자 합계라 설립 이후 누적은 이보다 큼 (수동 확인)",
+        "url": "https://about.musinsa.com/newsroom/2023-0719",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01547845",
+    "indicator": {
+      "id": "financial_health",
+      "metric": "runway_months",
+      "status": "manual",
+      "value": null,
+      "unit": "개월",
+      "period": "2025",
+      "extra": {
+        "profitable": 1
+      },
+      "source": {
+        "name": "당근마켓 2025 사업보고서 첨부 감사보고서 손익계산서 (별도, 영업이익 670.8억 원, 원문 확인)",
+        "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000262",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01547845",
+    "indicator": {
+      "id": "growth",
+      "metric": "revenue_growth",
+      "status": "manual",
+      "value": 42.2,
+      "unit": "%",
+      "period": "2025",
+      "source": {
+        "name": "당근마켓 2025 사업보고서 첨부 감사보고서 손익계산서 (별도, 영업수익 2,690.3억 원, 전년 1,891.9억 원, 원문 확인)",
+        "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000262",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01547845",
+    "indicator": {
+      "id": "profitability",
+      "metric": "operating_income",
+      "status": "manual",
+      "value": 670.8,
+      "unit": "억원",
+      "period": "2025",
+      "extra": {
+        "prev": 376.7
+      },
+      "source": {
+        "name": "당근마켓 2025 사업보고서 첨부 감사보고서 손익계산서 (별도, 원문 확인)",
+        "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000262",
         "checkedAt": "2026-11-21"
       }
     }
