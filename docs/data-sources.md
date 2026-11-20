@@ -6,7 +6,7 @@
 |---|---|---|---|---|---|
 | API | OpenDART (금융감독원 전자공시) | https://opendart.fss.or.kr | 기업개황(사업자등록번호, 설립일 포함), 재무, 직원 현황, 감사의견 | 무료, 인증키 필요, 일일 호출 제한 확인 | 11/19 실측: 상장과 사업보고서 제출 비상장은 재무·직원 현황 자동, 감사보고서만 내는 비상장은 재무 API 없음, R&D 계정 없음 |
 | 공공데이터 | 국민연금공단 가입 사업장 내역 | https://www.data.go.kr | 고용 흐름, 퇴사율, 급여 추정, 업종 평균 | 공공누리 조건 확인 | 확인 필요 |
-| 공공데이터 | 지식재산처 KIPRIS Plus | https://plus.kipris.or.kr | 등록 특허 수 (스타트업 기술 투자) | 공공데이터포털 연계 API는 무료 월 1,000회, 이용허락범위 제한 없음 | 출원인 검색 API 확인 필요 |
+| 수동 확인 | 특허청 KIPRIS 웹사이트 (공공 사이트) | https://www.kipris.or.kr | 등록 특허 수 (스타트업 기술 투자) | 시연 기업만 사람이 출원인으로 검색해 "등록" 건수를 세고, 검색 조건과 확인 날짜를 붙임. 자동 수집하지 않음. KIPRIS Plus API는 쓰지 않음 | 11/20 웹사이트 검색 동작 확인 |
 | 공공데이터 | 국세청 사업자등록정보 진위확인 및 상태조회 | https://www.data.go.kr/data/15081808/openapi.do | 휴폐업 확인 (리스크) | 활용신청 필요, 사업자등록번호로 조회 | 11/19 승인, 호출 확인 |
 | 공공데이터 | 중소벤처기업부 이노비즈·메인비즈 인증기업 현황 | https://www.data.go.kr/dcat/metadata/3033893 | 중소기업 보조 신호 | 파일 데이터, 연 1회 갱신 | 항목 확인 필요 |
 | 공공데이터 | 한국고용정보원 워크넷 강소기업 검색 | https://www.data.go.kr/en/data/3071251/openapi.do | 중소기업 보조 신호 | 무료, 공공누리 4유형(출처표시, 비상업, 변경금지) | 확인 필요 |
@@ -21,6 +21,8 @@
 | 라이브러리 | Tailwind CSS 4.3.3 | https://tailwindcss.com | 스타일 | MIT | 사용 중 |
 | 라이브러리 | TypeScript 5 | https://www.typescriptlang.org | 타입 검사 | Apache-2.0 | 사용 중 |
 | 라이브러리 | ESLint 9, eslint-config-next | https://eslint.org | 코드 검사 | MIT | 사용 중 |
+| 라이브러리 | Vitest | https://vitest.dev | 단위 테스트 (지표 등급, 역량 매칭 등) | MIT | 사용 중 (개발 전용) |
+| 라이브러리 | Playwright (@playwright/test) | https://playwright.dev | 화면 흐름 E2E 테스트 | Apache-2.0 | 사용 중 (개발 전용) |
 
 ## 쓰지 않는 것
 

@@ -1,5 +1,5 @@
 // 지표 등급 계산 (compute_indicators). 기준표는 docs/indicators.md (11/19 확정)를 그대로 옮겼다.
-// 숫자는 데이터에서 읽기만 하고, 여기서는 기준표에 대어 A/B/C 또는 확인 불가만 정한다.
+// 숫자는 데이터에서 읽기만 하고, 여기서는 기준표에 입각하여 A/B/C 또는 확인 불가만 정한다.
 // 경계값은 "N 이상"인 쪽에 넣는다 (예: 부채비율 정확히 100%면 B, 매출 증가율 정확히 15%면 A).
 import { formatIndicatorValue } from "./format";
 import { INDICATOR_LABELS } from "./types";
