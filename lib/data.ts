@@ -46,10 +46,10 @@ export function findCandidates(query: string, mode: AppMode): Company[] {
   );
 }
 
-/** 예시 버튼과 안내 문구에 쓸 기업 이름 (중복 없이, 다른 이름이 있으면 그쪽). 예: exampleNames("live") -> ["카카오", "무신사", "클래스101", "당근"] */
+/** 예시 버튼과 안내 문구에 쓸 기업 이름 (법인명에서 "주식회사"를 뺀 이름, 중복 없이). 예: exampleNames("live") -> ["카카오", "무신사", "컬리", "당근마켓"] */
 export function exampleNames(mode: AppMode): string[] {
   if (mode === "mock") return ["별하늘랩스", "몽돌커머스", "청솔기계"];
-  return [...new Set(realCompanies.map((c) => c.aliases?.[0] ?? normalizeCompanyName(c.name)))];
+  return [...new Set(realCompanies.map((c) => normalizeCompanyName(c.name)))];
 }
 
 /** 직무별 역량 목록. 예: getCompetencies("마케팅").length === 16 */

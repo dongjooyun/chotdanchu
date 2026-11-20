@@ -50,6 +50,8 @@ export function formatIndicatorValue(x: IndicatorValue): string {
     const why = x.extra?.closed ? " (폐업)" : x.extra?.suspended ? " (휴업)" : "";
     return `${x.label ?? "해당 없음"}${why}`;
   }
+  // 사람이 화면에서 센 건수가 전체가 아닐 수 있을 때 (예: 검색 결과 일부만 확인). 등급은 기준선(3건)을 넘으면 같다
+  if (x.metric === "registered_patents" && x.extra?.at_least) return `${num(x.value)}${x.unit} 이상`;
   if (x.metric === "runway_months" && x.extra?.profitable) return "영업흑자 (현금 소진 없음)";
   if (x.metric === "cumulative_funding") return `${x.label ?? ""} ${num(x.value)}${x.unit}`.trim();
   if (x.range) return `${num(x.range[0])}~${num(x.range[1])}${x.unit} (추정)`;
