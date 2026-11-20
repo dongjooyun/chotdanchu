@@ -89,11 +89,15 @@ function Back({ d }: { d: ReportCardData }) {
       </ul>
       <div>
         <p className="text-muted">면접에서 물어볼 것</p>
-        <ol className="mt-0.5 list-decimal pl-4">
-          {d.interviewQuestions.map((q) => (
-            <li key={q}>{q}</li>
-          ))}
-        </ol>
+        {d.notice ? (
+          <p className="mt-0.5">{d.notice}</p>
+        ) : (
+          <ol className="mt-0.5 list-decimal pl-4">
+            {d.interviewQuestions.map((q) => (
+              <li key={q}>{q}</li>
+            ))}
+          </ol>
+        )}
       </div>
       <div>
         <p className="text-muted">에이전트가 판단한 곳</p>

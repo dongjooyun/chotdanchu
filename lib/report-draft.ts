@@ -24,9 +24,20 @@ export interface ReportDraftInput {
   checkedAt: string;
 }
 
-/** 예: 확인 불가 지표 1개 -> 면접 질문 1개. 이름에 직무가 들어가므로 직무를 바꾸면 질문도 바뀐다 */
+/** 폐업·휴업 회사에 질문 대신 보일 안내 (고정 문구) */
+export const CLOSED_NOTICE: Record<"closed" | "suspended", string> = {
+  closed: "국세청 기준 폐업한 회사라 지원할 수 없어요. 면접 질문은 만들지 않았어요. 같은 이름의 다른 회사를 찾으셨다면 후보에서 다시 골라 주세요.",
+  suspended: "국세청 기준 휴업 중인 회사예요. 면접 질문은 만들지 않았어요. 채용이 열려 있는지 회사 공식 채용 페이지에서 먼저 확인해 주세요.",
+};
+
+/**
+ * 예: 확인 불가 지표 1개 -> 면접 질문 1개. 이름에 직무가 들어가므로 직무를 바꾸면 질문도 바뀐다.
+ * 폐업·휴업 회사는 질문 없이 고정 안내만 둔다 (11/21 결정)
+ */
 export function buildReportDraft(input: ReportDraftInput): ReportCardData {
   const { company, graded, role, preference, log } = input;
+  const riskExtra = company.indicators.find((i) => i.id === "risk")?.extra;
+  const stopped = riskExtra?.closed ? "closed" : riskExtra?.suspended ? "suspended" : null;
   const gradeOf = (id: GradedIndicator["id"]) => graded.find((g) => g.id === id)?.grade ?? null;
   const unavailable = graded.filter((g) => g.grade === null && g.reason !== undefined);
   const questions = unavailable.map(
@@ -44,8 +55,12 @@ export function buildReportDraft(input: ReportDraftInput): ReportCardData {
     gap: null,
     careerSource: null,
     grades: graded.map((g) => ({ id: g.id, grade: g.grade })),
-    interviewQuestions:
-      questions.length > 0 ? questions : [`입사 3년 차 ${role} 담당자는 어떤 일을 맡고 있나요?`],
+    interviewQuestions: stopped
+      ? []
+      : questions.length > 0
+        ? questions
+        : [`입사 3년 차 ${role} 담당자는 어떤 일을 맡고 있나요?`],
+    ...(stopped ? { notice: CLOSED_NOTICE[stopped] } : {}),
     decisions: log.filter((l) => l.type === "decision").map((l) => l.title),
     checkedAt: input.checkedAt,
   };
