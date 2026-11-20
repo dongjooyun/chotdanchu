@@ -107,7 +107,7 @@ table("PF-S", "startup", "profitability", /영업흑자 A/, ([v, prev]: [number,
 
 // ---------- 고용 흐름 (결정 테이블) ----------
 type Hire = { v: number; a?: number };
-table("HR-G", "general", "hiring_flow", /연 퇴사율 20% 이하 A/, ({ v, a }: Hire) => [
+table("HR-G", "general", "hiring_flow", /연 퇴사율 20% 이하면 A/, ({ v, a }: Hire) => [
   val("hiring_flow", "headcount_change_12m", v, { status: "estimated", extra: a === undefined ? {} : { annual_attrition: a } }),
 ], ({ v, a }) => `12개월 증감 ${v}%, 연 퇴사율 ${a ?? "없음"}`, [
   ["DT", { v: 8, a: 14 }, "A", "순증, 퇴사율 낮음"], ["BVA", { v: 8, a: 20 }, "A", "퇴사율 20% 이하 경계"], ["BVA", { v: 8, a: 20.01 }, "B"],
@@ -115,7 +115,7 @@ table("HR-G", "general", "hiring_flow", /연 퇴사율 20% 이하 A/, ({ v, a }:
   ["BVA", { v: -9.99, a: 10 }, "B"], ["BVA", { v: -10, a: 10 }, "C", "10% 감소 경계"], ["BVA", { v: -10.01, a: 10 }, "C"],
   ["DT", { v: 8 }, "B", "퇴사율을 모르면 A를 못 받음"], ["DT", { v: -10 }, "C", "퇴사율을 몰라도 급감이면 C"],
 ]);
-table("HR-S", "startup", "hiring_flow", /월 퇴사율 3% 이하 A/, ({ v, a }: Hire) => [
+table("HR-S", "startup", "hiring_flow", /월 퇴사율 3% 이하면 A/, ({ v, a }: Hire) => [
   val("hiring_flow", "headcount_change_12m", v, { status: "estimated", extra: a === undefined ? {} : { monthly_attrition: a } }),
 ], ({ v, a }) => `12개월 증감 ${v}%, 월 퇴사율 ${a ?? "없음"}`, [
   ["DT", { v: 5, a: 3 }, "A", "월 퇴사율 3% 이하 경계"], ["BVA", { v: 5, a: 3.01 }, "B"], ["BVA", { v: 5, a: 5 }, "B", "5% 초과가 아님"],

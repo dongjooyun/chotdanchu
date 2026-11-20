@@ -78,13 +78,13 @@ function rateProfitability(x: IndicatorValue, v: number): Rated {
 function rateHiring(nature: CompanyNature, x: IndicatorValue, v: number): Rated {
   if (nature === "startup") {
     const m = x.extra?.monthly_attrition;
-    const basis = `${STARTUP}: 인원 순증이고 월 퇴사율 3% 이하 A, 인원 감소 또는 월 퇴사율 5% 초과 C, 그 외 B`;
+    const basis = `${STARTUP}: 1년 전보다 직원이 늘었고 월 퇴사율 3% 이하면 A, 직원이 줄었거나 월 퇴사율 5% 초과면 C, 그 외 B`;
     if (v < 0 || (m !== undefined && m > 5)) return { grade: "C", basis };
     if (v > 0 && m !== undefined && m <= 3) return { grade: "A", basis };
     return { grade: "B", basis };
   }
   const a = x.extra?.annual_attrition;
-  const basis = `${GENERAL}: 인원 순증이고 연 퇴사율 20% 이하 A, 12개월 10% 이상 감소 C, 그 외 B`;
+  const basis = `${GENERAL}: 1년 전보다 직원이 늘었고 연 퇴사율 20% 이하면 A, 1년 새 직원이 10% 이상 줄면 C, 그 외 B`;
   if (v <= -10) return { grade: "C", basis };
   if (v > 0 && a !== undefined && a <= 20) return { grade: "A", basis };
   return { grade: "B", basis };
