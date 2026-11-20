@@ -23,8 +23,10 @@ export interface ReportCardData {
   careerSource: string | null;
   /** 뒷면: 지표 10개 등급 */
   grades: { id: IndicatorId; grade: Grade | null }[];
-  /** 뒷면: 면접에서 물어볼 질문. 확인 불가 항목마다 하나 이상 */
+  /** 뒷면: 면접에서 물어볼 질문. 확인 불가 항목마다 하나 이상. 폐업·휴업 회사는 빈 배열 */
   interviewQuestions: string[];
+  /** 질문 대신 보일 안내 (폐업·휴업 회사). 없으면 생략 */
+  notice?: string;
   /** 뒷면: 에이전트가 판단한 곳 (판단 로그에서 decision만) */
   decisions: string[];
   /** 기준일 YYYY-MM-DD */

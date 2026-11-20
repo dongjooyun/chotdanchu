@@ -27,8 +27,14 @@ function band(v: number, aFrom: number, bFrom: number): Grade {
   return "C";
 }
 
-/** 재무 체력. 일반: 부채비율 100% 미만 A, 100~300% B, 300% 이상 C. 스타트업: 런웨이 18개월 이상 A, 12~18 B, 12 미만 C */
+/**
+ * 재무 체력. 일반: 부채비율 100% 미만 A, 100~300% B, 300% 이상 C. 스타트업: 런웨이 18개월 이상 A, 12~18 B, 12 미만 C.
+ * 스타트업이 영업흑자면 현금을 소진하지 않아 런웨이 제한이 없으므로 A (11/21 결정). 데이터에는 extra.profitable = 1
+ */
 function rateFinancial(x: IndicatorValue, v: number): Rated {
+  if (x.metric === "runway_months" && x.extra?.profitable) {
+    return { grade: "A", basis: `${STARTUP}: 영업흑자라 현금을 소진하지 않음 (런웨이 제한 없음) A` };
+  }
   if (x.metric === "runway_months") {
     return { grade: band(v, 18, 12), basis: `${STARTUP}: 런웨이 18개월 이상 A, 12~18개월 B, 12개월 미만 C` };
   }
@@ -72,13 +78,13 @@ function rateProfitability(x: IndicatorValue, v: number): Rated {
 function rateHiring(nature: CompanyNature, x: IndicatorValue, v: number): Rated {
   if (nature === "startup") {
     const m = x.extra?.monthly_attrition;
-    const basis = `${STARTUP}: 인원 순증이고 월 퇴사율 3% 이하 A, 인원 감소 또는 월 퇴사율 5% 초과 C, 그 외 B`;
+    const basis = `${STARTUP}: 1년 전보다 직원이 늘었고 월 퇴사율 3% 이하면 A, 직원이 줄었거나 월 퇴사율 5% 초과면 C, 그 외 B`;
     if (v < 0 || (m !== undefined && m > 5)) return { grade: "C", basis };
     if (v > 0 && m !== undefined && m <= 3) return { grade: "A", basis };
     return { grade: "B", basis };
   }
   const a = x.extra?.annual_attrition;
-  const basis = `${GENERAL}: 인원 순증이고 연 퇴사율 20% 이하 A, 12개월 10% 이상 감소 C, 그 외 B`;
+  const basis = `${GENERAL}: 1년 전보다 직원이 늘었고 연 퇴사율 20% 이하면 A, 1년 새 직원이 10% 이상 줄면 C, 그 외 B`;
   if (v <= -10) return { grade: "C", basis };
   if (v > 0 && a !== undefined && a <= 20) return { grade: "A", basis };
   return { grade: "B", basis };
@@ -151,11 +157,13 @@ export function monthsBetween(period: string, asOf: Date): number | null {
 /**
  * 투자 단계 (스타트업만). ① 라운드와 누적 투자금: Series A면 30억 원 이상, Series B 이상이면 100억 원 이상
  * ② 최근 투자 유치가 18개월 이내. 둘 다 충족 A, 하나 B, 둘 다 미충족 C.
+ * 라운드 이름이 없으면 ①은 누적 100억 원 이상일 때 충족. 최근 투자 시점을 모르면 ②는 미충족.
  * 예: { label: "Series B", value: 208.6, period: "2025-12" }, 기준일 2026-11 -> ① 충족, ② 11개월 충족 -> "A"
  */
 function rateFunding(x: IndicatorValue, v: number, asOf: Date): Rated {
-  const round = (x.label ?? "").toLowerCase();
-  const need = /series\s*[b-z]|pre-ipo/.test(round) ? 100 : /series\s*a/.test(round) ? 30 : null;
+  const round = (x.label ?? "").trim().toLowerCase();
+  // 라운드 이름을 공식 자료에서 못 찾았어도(공시의 유상증자, 회사 소개 페이지의 누적 투자액 등) 누적 100억 원 이상이면 ①을 충족으로 본다 (11/21)
+  const need = /series\s*[b-z]|pre-ipo/.test(round) ? 100 : /series\s*a/.test(round) ? 30 : round === "" ? 100 : null;
   const first = need !== null && v >= need;
   const months = x.period ? monthsBetween(x.period, asOf) : null;
   const second = months !== null && months <= 18;
@@ -186,6 +194,8 @@ function rateOne(company: Company, x: IndicatorValue, asOf: Date): Rated {
     return { grade: null, basis: "공식 근거가 없어 등급을 매기지 않음", reason: x.reason ?? "no_source" };
   }
   if (x.id === "risk") return rateRisk(x);
+  // 흑자 스타트업은 런웨이 값 자체가 없다 (소진이 없어 나눌 수 없음)
+  if (x.metric === "runway_months" && x.extra?.profitable) return rateFinancial(x, Infinity);
   // 보상은 범위만 있고 대표값이 없을 수 있다
   const v = x.value ?? (x.range ? (x.range[0] + x.range[1]) / 2 : null);
   if (v === null) return { grade: null, basis: "값이 비어 있음", reason: "fetch_failed" };

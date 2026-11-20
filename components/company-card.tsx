@@ -48,6 +48,31 @@ function summaryLine(graded: GradedIndicator[], company: Company): string {
   return `지표 ${total}개 중 ${total - d.none}개를 공식 출처로 확인했어요${d.none > 0 ? ` · 확인 불가 ${d.none}개` : ""}`;
 }
 
+/**
+ * 펼치지 않아도 보이는 두 줄: C 등급 지표(수치와 함께)와 확인 불가 지표 이름.
+ * 예: "C 등급: 리스크 해당 (폐업)", "확인 불가: 재무 체력, 성장성 (이유는 아래를 펼치면 보여요)"
+ */
+function Highlights({ cells }: { cells: GradedIndicator[] }) {
+  const weak = cells.filter((g) => g.grade === "C");
+  const missing = cells.filter((g) => g.grade === null && g.reason !== undefined);
+  if (weak.length === 0 && missing.length === 0) return null;
+  return (
+    <div className="mt-1 flex flex-col gap-0.5 text-xs">
+      {weak.length > 0 && (
+        <p>
+          <span className="font-semibold">C 등급: </span>
+          {weak.map((g) => `${INDICATOR_LABELS[g.id]} ${g.display}`).join(" · ")}
+        </p>
+      )}
+      {missing.length > 0 && (
+        <p className="text-muted">
+          확인 불가: {missing.map((g) => INDICATOR_LABELS[g.id]).join(", ")} (이유는 아래를 펼치면 보여요)
+        </p>
+      )}
+    </div>
+  );
+}
+
 /** 기업 카드: 결론(유형, 확인 개수, 등급 분포, 정보 투명도)을 먼저 보여주고 지표 칸들은 펼쳐서 본다 */
 export function CompanyCard({ company, graded }: { company: Company; graded: GradedIndicator[] }) {
   const d = gradeDistribution(graded, company.nature);
@@ -81,6 +106,7 @@ export function CompanyCard({ company, graded }: { company: Company; graded: Gra
             </span>
           )}
         </div>
+        <Highlights cells={cells} />
       </div>
       <details className="mt-2">
         <summary className="cursor-pointer text-sm">지표 자세히 보기</summary>

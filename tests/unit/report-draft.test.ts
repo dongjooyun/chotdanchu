@@ -69,6 +69,27 @@ describe("리포트 카드 초안", () => {
     expect(d.topIndicators).toEqual([]);
   });
 
+  test("RPT-08 폐업한 회사는 면접 질문을 만들지 않고 고정 안내만 둔다", () => {
+    const base = findMockCandidates("별하늘랩스")[0];
+    const closed = {
+      ...base,
+      indicators: base.indicators.map((i) => (i.id === "risk" ? { ...i, label: "해당", extra: { closed: 1 } } : i)),
+    };
+    const d = buildReportDraft({
+      company: closed,
+      graded: computeIndicators(closed),
+      role: "마케팅",
+      preference: skippedPreference(),
+      log: [],
+      no: 1,
+      checkedAt: "2026-11-21",
+    });
+    expect(d.interviewQuestions).toEqual([]);
+    expect(d.notice).toContain("폐업");
+    // 영업 중인 회사는 그대로 질문이 있다
+    expect(draft("별하늘랩스", "마케팅").notice).toBeUndefined();
+  });
+
   test("RPT-07 같은 이름의 다른 회사는 다른 카드가 된다", () => {
     const a = draft("몽돌커머스", "마케팅", 0);
     const b = draft("몽돌커머스", "마케팅", 1);

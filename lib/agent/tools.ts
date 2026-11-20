@@ -2,7 +2,8 @@
 // 도구마다 reason(왜 이 도구를 부르는지)을 필수로 받아서 판단 로그의 근거로 쓴다.
 // LLM에게 돌려주는 결과에는 대표자 이름을 넣지 않는다 (CLAUDE.md 절대 규칙 1).
 import type Anthropic from "@anthropic-ai/sdk";
-import { findMockCandidates, getMockCompany } from "@/lib/data";
+import { getMode } from "@/lib/config";
+import { findCandidates, getCompany, toCandidateSummary } from "@/lib/data";
 import { DISCLOSURE_LABELS, NATURE_LABELS } from "@/lib/format";
 import type { Company } from "@/lib/types";
 
@@ -12,7 +13,7 @@ export const TOOLS: Anthropic.Tool[] = [
   {
     name: "search_company",
     description:
-      "회사 이름으로 동명 후보를 찾는다. 법인 표기와 띄어쓰기는 무시한다. 후보마다 id, 이름, 업종, 소재지(시·구), 설립연도를 돌려준다.",
+      "회사 이름으로 동명 후보를 찾는다. 법인 표기와 띄어쓰기는 무시한다. 후보마다 id, 이름, 업종, 소재지(시·구), 설립연도, 상태 꼬리표(상장, 폐업 등)를 돌려준다.",
     input_schema: {
       type: "object",
       properties: { query: { type: "string", description: "사용자가 말한 회사 이름" }, reason },
@@ -88,13 +89,15 @@ export function runTool(name: string, input: Record<string, unknown>): ToolOutco
     case "search_company": {
       const query = str(input, "query");
       if (!query) return error("query가 비어 있습니다");
-      const found = findMockCandidates(query.slice(0, 100));
+      const found = findCandidates(query.slice(0, 100), getMode());
+      // 대표자 이름은 빼고 보낸다. 상장, 폐업 같은 상태 꼬리표는 회사를 가르는 단서라 같이 보낸다
       const candidates = found.map((c) => ({
         id: c.id,
         name: c.name,
         industry: c.industry,
         address: c.address,
         foundedYear: c.foundedOn ? c.foundedOn.slice(0, 4) : null,
+        tags: toCandidateSummary(c).tags,
       }));
       return {
         kind: "result",
@@ -104,13 +107,13 @@ export function runTool(name: string, input: Record<string, unknown>): ToolOutco
     }
     case "show_choices": {
       const ids = Array.isArray(input.company_ids) ? input.company_ids.filter((x): x is string => typeof x === "string") : [];
-      const companies = [...new Set(ids)].map(getMockCompany).filter((c): c is Company => Boolean(c));
+      const companies = [...new Set(ids)].map((id) => getCompany(id, getMode())).filter((c): c is Company => Boolean(c));
       if (companies.length < 2) return error("후보 칩은 존재하는 회사 id가 2개 이상일 때만 띄울 수 있습니다");
       return { kind: "choices", companies };
     }
     case "get_company_profile": {
       const id = str(input, "company_id");
-      const c = id ? getMockCompany(id) : undefined;
+      const c = id ? getCompany(id, getMode()) : undefined;
       if (!c) return error(`없는 회사 id입니다: ${id ?? "(비어 있음)"}`);
       const available = c.indicators.filter((i) => i.status !== "unavailable").length;
       return {
@@ -129,7 +132,7 @@ export function runTool(name: string, input: Record<string, unknown>): ToolOutco
     }
     case "compute_indicators": {
       const id = str(input, "company_id");
-      const c = id ? getMockCompany(id) : undefined;
+      const c = id ? getCompany(id, getMode()) : undefined;
       if (!c) return error(`없는 회사 id입니다: ${id ?? "(비어 있음)"}`);
       return { kind: "company", company: c };
     }

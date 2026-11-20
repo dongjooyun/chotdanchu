@@ -22,12 +22,16 @@ const ROLE_REPLIES: QuickReply[] = [
   { label: "운영", value: "role:운영" },
 ];
 
-/** 목업 모드 예시 기업. 실데이터 모드에서는 시연 기업 4곳으로 바꾼다 (CDC-15) */
-const EXAMPLE_REPLIES: QuickReply[] = [
-  { label: "별하늘랩스", value: "company:별하늘랩스" },
-  { label: "몽돌커머스", value: "company:몽돌커머스" },
-  { label: "청솔기계", value: "company:청솔기계" },
-];
+/** 예시 기업 버튼. 목업 모드는 가상 기업, 실데이터 모드는 미리 계산해 둔 시연 기업 (서버가 이름을 넘겨 준다) */
+function exampleReplies(names: string[]): QuickReply[] {
+  return names.map((n) => ({ label: n, value: `company:${n}` }));
+}
+
+/** 입력창 아래 한 줄: 기업 정보를 어디서 가져오는지 */
+function sourceNote(mode: AppMode, names: string[]): string {
+  if (mode === "mock") return "목업 모드: 가상 기업 데이터로 보여 드려요. 실제 회사가 아닙니다.";
+  return `OpenDART 공시, 국민연금 가입 사업장, 국세청 사업자 상태로 미리 확인해 둔 회사만 볼 수 있어요: ${names.join(", ")}`;
+}
 
 const PREF_REPLIES: QuickReply[] = [
   { label: "내 기준 맞추기", value: "pref:matchup" },
@@ -64,13 +68,14 @@ function askCompany(role: Role): string {
  * 첫 인사 말풍선. 직무를 아직 안 골랐으면 직무 버튼을, 골랐으면 회사 질문과 예시 기업 버튼을 붙인다.
  * 두 번째 방문부터는 저장된 직무로 바로 회사를 묻는다 (PRD 01).
  */
-function introMessage(role: Role | null): ChatMessage {
+function introMessage(role: Role | null, examples: QuickReply[]): ChatMessage {
   if (!role) return { id: 0, from: "agent", text: `${GREETING} 먼저 어떤 직무로 준비하세요?`, replies: ROLE_REPLIES };
-  return { id: 0, from: "agent", text: `${GREETING} ${askCompany(role)}`, replies: EXAMPLE_REPLIES };
+  return { id: 0, from: "agent", text: `${GREETING} ${askCompany(role)}`, replies: examples };
 }
 
 /** 채팅 화면 전체: 말풍선과 진행 기록, 위젯, 빠른 응답, 직무 표시와 입력창, 판단 로그 패널, 내 카드 모음 */
-export function ChatApp({ mode }: { mode: AppMode }) {
+export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] }) {
+  const EXAMPLE_REPLIES = exampleReplies(examples);
   const [session, setSession] = useSession();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   // 대화가 시작된 순간의 직무. 이후 직무를 바꿔도 첫 인사 문구는 그대로 둔다
@@ -84,7 +89,7 @@ export function ChatApp({ mode }: { mode: AppMode }) {
   const nextId = useRef(1);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const intro = introMessage(introRole === undefined ? session.role : introRole);
+  const intro = introMessage(introRole === undefined ? session.role : introRole, EXAMPLE_REPLIES);
   const shown = [intro, ...messages];
 
   useEffect(() => {
@@ -258,14 +263,12 @@ export function ChatApp({ mode }: { mode: AppMode }) {
             disabled={pending || !session.role}
             placeholder={session.role ? "회사 이름을 입력해 주세요" : "먼저 위에서 직무를 골라 주세요"}
           />
+          <p className="mt-1 text-xs text-muted">{sourceNote(mode, examples)}</p>
         </div>
       </LofiBox>
       <div className="flex flex-col gap-3 md:sticky md:top-3">
         <AgentLogPanel lines={log} />
         <CardCollection records={session.analyzed} />
-        {mode === "live" && (
-          <p className="text-xs text-muted">실데이터 모드는 에이전트 루프 연결 후 동작합니다.</p>
-        )}
       </div>
     </div>
   );

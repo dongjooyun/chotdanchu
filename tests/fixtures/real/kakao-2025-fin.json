@@ -1,0 +1,130 @@
+[
+ {
+  "fs_div": "OFS",
+  "sj_div": "BS",
+  "account_nm": "유동자산",
+  "thstrm_amount": "2,606,897,257,928",
+  "frmtrm_amount": "2,471,463,775,050",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "BS",
+  "account_nm": "비유동자산",
+  "thstrm_amount": "8,983,472,140,892",
+  "frmtrm_amount": "9,136,023,132,529",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "BS",
+  "account_nm": "자산총계",
+  "thstrm_amount": "11,590,369,398,820",
+  "frmtrm_amount": "11,607,486,907,579",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "BS",
+  "account_nm": "유동부채",
+  "thstrm_amount": "2,626,568,972,628",
+  "frmtrm_amount": "2,771,146,601,090",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "BS",
+  "account_nm": "비유동부채",
+  "thstrm_amount": "1,486,216,163,285",
+  "frmtrm_amount": "1,622,015,375,753",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "BS",
+  "account_nm": "부채총계",
+  "thstrm_amount": "4,112,785,135,913",
+  "frmtrm_amount": "4,393,161,976,843",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "BS",
+  "account_nm": "자본금",
+  "thstrm_amount": "44,299,522,000",
+  "frmtrm_amount": "44,416,211,700",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "BS",
+  "account_nm": "이익잉여금",
+  "thstrm_amount": "1,608,637,288,456",
+  "frmtrm_amount": "1,401,810,048,845",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "BS",
+  "account_nm": "자본총계",
+  "thstrm_amount": "7,477,584,262,907",
+  "frmtrm_amount": "7,214,324,930,736",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "IS",
+  "account_nm": "매출액",
+  "thstrm_amount": "2,680,861,279,732",
+  "frmtrm_amount": "2,595,101,463,079",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "IS",
+  "account_nm": "영업이익",
+  "thstrm_amount": "440,242,465,351",
+  "frmtrm_amount": "491,969,958,048",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "IS",
+  "account_nm": "법인세차감전 순이익",
+  "thstrm_amount": "319,023,013,938",
+  "frmtrm_amount": "170,139,039,044",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "IS",
+  "account_nm": "당기순이익(손실)",
+  "thstrm_amount": "234,191,808,831",
+  "frmtrm_amount": "38,156,547,286",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "IS",
+  "account_nm": "당기순이익(손실)",
+  "thstrm_amount": "234,191,808,831",
+  "frmtrm_amount": "38,156,547,286",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "IS",
+  "account_nm": "총포괄손익",
+  "thstrm_amount": "229,427,295,377",
+  "frmtrm_amount": "22,440,631,050",
+  "rcept_no": "20260318001423"
+ },
+ {
+  "fs_div": "OFS",
+  "sj_div": "IS",
+  "account_nm": "영업비용",
+  "thstrm_amount": "2,240,618,814,381",
+  "frmtrm_amount": "2,103,131,505,031",
+  "rcept_no": "20260318001423"
+ }
+]

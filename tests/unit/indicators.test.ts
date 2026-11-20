@@ -69,6 +69,18 @@ table("FH-S", "startup", "financial_health", /런웨이 18개월 이상 A/, (v: 
   ["EP", 6, "C"], ["BVA", 11.99, "C"], ["BVA", 12, "B"], ["BVA", 12.01, "B"],
   ["EP", 15, "B"], ["BVA", 17.99, "B"], ["BVA", 18, "A"], ["BVA", 18.01, "A"], ["EP", 24, "A"],
 ]);
+// 흑자 스타트업: 런웨이 값이 없어도(소진 없음) A (11/21 결정)
+cases.push({
+  id: "IND-FH-S-10",
+  criterion: "FH-S",
+  technique: "EP",
+  title: "영업흑자라 런웨이 값 없음 (extra.profitable) -> A",
+  nature: "startup",
+  indicators: [{ ...val("financial_health", "runway_months", 0, { unit: "개월" }), value: null, extra: { profitable: 1 } }],
+  target: "financial_health",
+  grade: "A",
+  basis: /영업흑자라 현금을 소진하지 않음/,
+});
 
 // ---------- 성장성 ----------
 table("GR-G", "general", "growth", /15%/, (v: number) => [val("growth", "revenue_growth", v)], (v) => `매출 증가율 ${v}%`, [
@@ -95,7 +107,7 @@ table("PF-S", "startup", "profitability", /영업흑자 A/, ([v, prev]: [number,
 
 // ---------- 고용 흐름 (결정 테이블) ----------
 type Hire = { v: number; a?: number };
-table("HR-G", "general", "hiring_flow", /연 퇴사율 20% 이하 A/, ({ v, a }: Hire) => [
+table("HR-G", "general", "hiring_flow", /연 퇴사율 20% 이하면 A/, ({ v, a }: Hire) => [
   val("hiring_flow", "headcount_change_12m", v, { status: "estimated", extra: a === undefined ? {} : { annual_attrition: a } }),
 ], ({ v, a }) => `12개월 증감 ${v}%, 연 퇴사율 ${a ?? "없음"}`, [
   ["DT", { v: 8, a: 14 }, "A", "순증, 퇴사율 낮음"], ["BVA", { v: 8, a: 20 }, "A", "퇴사율 20% 이하 경계"], ["BVA", { v: 8, a: 20.01 }, "B"],
@@ -103,7 +115,7 @@ table("HR-G", "general", "hiring_flow", /연 퇴사율 20% 이하 A/, ({ v, a }:
   ["BVA", { v: -9.99, a: 10 }, "B"], ["BVA", { v: -10, a: 10 }, "C", "10% 감소 경계"], ["BVA", { v: -10.01, a: 10 }, "C"],
   ["DT", { v: 8 }, "B", "퇴사율을 모르면 A를 못 받음"], ["DT", { v: -10 }, "C", "퇴사율을 몰라도 급감이면 C"],
 ]);
-table("HR-S", "startup", "hiring_flow", /월 퇴사율 3% 이하 A/, ({ v, a }: Hire) => [
+table("HR-S", "startup", "hiring_flow", /월 퇴사율 3% 이하면 A/, ({ v, a }: Hire) => [
   val("hiring_flow", "headcount_change_12m", v, { status: "estimated", extra: a === undefined ? {} : { monthly_attrition: a } }),
 ], ({ v, a }) => `12개월 증감 ${v}%, 월 퇴사율 ${a ?? "없음"}`, [
   ["DT", { v: 5, a: 3 }, "A", "월 퇴사율 3% 이하 경계"], ["BVA", { v: 5, a: 3.01 }, "B"], ["BVA", { v: 5, a: 5 }, "B", "5% 초과가 아님"],
@@ -162,6 +174,10 @@ table("FS-S", "startup", "funding_stage", /Series A 누적 30억 원 이상/, ({
   ["DT", { round: "Seed", amount: 4.3, period: "2026-06" }, "B", "Seed는 금액 조건이 없어 최근성만"],
   ["DT", { round: "Seed", amount: 4.3, period: "2023-05" }, "C"],
   ["DT", { round: "Series B", amount: 150, period: null }, "B", "투자 시점을 모르면 최근성 미충족"],
+  // 라운드 이름이 공식 자료에 없을 때 (11/21): 누적 100억 원 이상이면 ① 충족
+  ["BVA", { round: "", amount: 100, period: "2026-05" }, "A", "라운드 이름 없음, 100억 경계 + 최근"],
+  ["BVA", { round: "", amount: 99.99, period: "2026-05" }, "B", "라운드 이름 없음, 금액만 모자람"],
+  ["DT", { round: "", amount: 2270, period: "2025-01" }, "B", "라운드 이름 없음, 금액만 충족 (22개월 전)"],
 ]);
 table("FS-G", "general", "funding_stage", /등급 없음/, () => [val("funding_stage", "cumulative_funding", 500, { label: "Series C", period: "2026-01", unit: "억원" })], () => "일반 기업은 투자 데이터가 있어도", [
   ["EP", null, null],
