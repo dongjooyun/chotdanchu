@@ -13,7 +13,7 @@
 | 단위 (실데이터 변환) | Vitest + 고정 파일 | OpenDART, 국민연금 응답을 원시값으로 바꾸는 계산이 공시 원본과 맞는지 | `tests/unit/real-data.test.ts`, `tests/fixtures/real/` | `npm test` |
 | 시스템(E2E) | Playwright | 실제 브라우저로 처음부터 끝까지 (데스크톱 1280px, 모바일 375px) | `tests/e2e/chat-flow.spec.ts` | `npm run test:e2e` |
 
-- 사용 현황 (2026-11-20): 단위·통합·회귀 290개(에이전트 14개, 리포트 초안 7개, 실데이터 변환 16개 포함), E2E 12개 x 화면 2종 = 24개
+- 사용 현황 (2026-11-20): 단위·통합·회귀 293개(에이전트 14개, 리포트 초안 7개, 실데이터 변환 18개 포함), E2E 12개 x 화면 2종 = 24개
 - E2E는 `.env.local`에 `USE_AGENT=true`가 있어도 에이전트를 끈 채로 돈다 (크레딧을 쓰지 않고 결과가 같도록)
 - 각 테스트 이름 맨 앞이 케이스 ID다 (예: `IND-FH-G-03`). `npm run test:verbose`로 ID와 입력, 기대 등급이 한 줄씩 보인다
 

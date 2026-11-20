@@ -5,7 +5,7 @@ import kakaoFin from "../fixtures/real/kakao-2025-fin.json";
 import kakaoEmp from "../fixtures/real/kakao-2025-emp.json";
 import realCompanies from "@/data/real/companies.json";
 import { assembleCompany, riskIndicator, shortAddress } from "@/lib/real/assemble";
-import { employeeSummary, financialIndicators, parseTenure, tenureIndicator } from "@/lib/real/dart";
+import { employeeSummary, financialIndicators, parseTenure, startupFinancials, tenureIndicator, type DartAccountRow } from "@/lib/real/dart";
 import { compensationIndicator, hiringIndicator, industryAverage, matchRow, monthlyIncome, parseNpsLine, splitCsv, type NpsRow } from "@/lib/real/nps";
 import { computeIndicators } from "@/lib/indicators";
 import type { Company } from "@/lib/types";
@@ -41,6 +41,23 @@ describe("OpenDART 변환", () => {
   test("REAL-03 직원 현황: 남녀 합 3,922명, 근속은 인원 가중 6.3년", () => {
     expect(employeeSummary(kakaoEmp).headcount).toBe(3922);
     expect(tenureIndicator(kakaoEmp, "2025", D)).toMatchObject({ value: 6.3, unit: "년", status: "ok" });
+  });
+
+  test("REAL-17 스타트업 재무: 영업흑자면 런웨이 대신 profitable, 적자면 현금 / 월 영업손실", () => {
+    const rows = (op: string, prev: string): DartAccountRow[] => [
+      { fs_div: "OFS", sj_div: "IS", account_nm: "매출액", thstrm_amount: "1,352,929,940,950", frmtrm_amount: "1,100,509,264,046", rcept_no: "1" },
+      { fs_div: "OFS", sj_div: "IS", account_nm: "영업이익", thstrm_amount: op, frmtrm_amount: prev, rcept_no: "1" },
+    ];
+    const [runway, growth, profit] = startupFinancials(rows("145,812,429,110", "112,386,710,315"), 121_507_903_339, "2025", D);
+    expect(runway).toMatchObject({ metric: "runway_months", value: null, extra: { profitable: 1 } });
+    expect(growth.value).toBe(22.9);
+    expect(profit).toMatchObject({ metric: "operating_income", value: 1458.1, extra: { prev: 1123.9 } });
+    // 영업손실 120억, 현금 90억 -> 9개월
+    const [loss] = startupFinancials(rows("-12,000,000,000", "-15,000,000,000"), 9_000_000_000, "2025", D);
+    expect(loss.value).toBe(9);
+    expect(loss.extra?.profitable).toBeUndefined();
+    // 적자인데 현금을 모르면 확인 불가
+    expect(startupFinancials(rows("-12,000,000,000", "-1"), null, "2025", D)[0].status).toBe("unavailable");
   });
 
   test("REAL-04 근속 문구 읽기 (EG)", () => {
@@ -145,6 +162,15 @@ describe("사전 계산 결과 (data/real/companies.json)", () => {
       expect(JSON.stringify(c)).not.toMatch(/"grade"/);
       expect(computeIndicators(c, new Date(D))).toEqual(computeIndicators(c, new Date(D)));
     }
+  });
+
+  test("REAL-18 무신사는 스타트업 기준표로 계산된다 (흑자라 재무 체력 A, 영업흑자라 수익성 A)", () => {
+    const m = companies.find((c) => c.id === "01137727")!;
+    expect(m.nature).toBe("startup");
+    const g = computeIndicators(m, new Date(D));
+    expect(g.find((x) => x.id === "financial_health")).toMatchObject({ grade: "A", display: "영업흑자 (현금 소진 없음)" });
+    expect(g.find((x) => x.id === "profitability")?.grade).toBe("A");
+    expect(g.find((x) => x.id === "growth")?.basis).toMatch(/스타트업 기준표/);
   });
 
   test("REAL-16 실데이터에는 대표자 이름과 목업 표시가 없다", () => {

@@ -268,5 +268,159 @@
     ],
     "externalLinks": [],
     "isMock": false
+  },
+  {
+    "id": "01137727",
+    "corpCode": "01137727",
+    "bizRegNo": "211-88-79575",
+    "bizRegNoSource": {
+      "name": "OpenDART 기업개황",
+      "url": "https://opendart.fss.or.kr",
+      "checkedAt": "2026-11-20"
+    },
+    "name": "주식회사 무신사",
+    "ceoName": "",
+    "address": "서울 성동구",
+    "industry": "응용 소프트웨어 개발 및 공급업",
+    "industryCode": "4791",
+    "foundedOn": "2012-06-25",
+    "disclosure": "audited",
+    "nature": "startup",
+    "natureBasis": "비상장 온라인 패션 플랫폼. 투자 유치로 성장한 기업이라 업력 7년이 넘어도 스타트업 기준표 (11/19 팀 판정)",
+    "certifications": [],
+    "indicators": [
+      {
+        "id": "financial_health",
+        "metric": "runway_months",
+        "status": "ok",
+        "value": null,
+        "unit": "개월",
+        "period": "2025",
+        "extra": {
+          "profitable": 1
+        },
+        "source": {
+          "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
+          "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003116",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "growth",
+        "metric": "revenue_growth",
+        "status": "ok",
+        "value": 22.9,
+        "unit": "%",
+        "period": "2025",
+        "source": {
+          "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
+          "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003116",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "profitability",
+        "metric": "operating_income",
+        "status": "ok",
+        "value": 1458.1,
+        "unit": "억원",
+        "period": "2025",
+        "extra": {
+          "prev": 1123.9
+        },
+        "source": {
+          "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
+          "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003116",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "hiring_flow",
+        "metric": "headcount_change_12m",
+        "status": "estimated",
+        "value": 17.9,
+        "unit": "%",
+        "period": "2026-09",
+        "extra": {
+          "headcount": 2164,
+          "headcount_prev": 1836,
+          "monthly_attrition": 3.4
+        },
+        "source": {
+          "name": "국민연금 가입 사업장 내역 (2026-09분)",
+          "url": "https://www.data.go.kr/data/15083277/fileData.do",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "compensation",
+        "metric": "avg_salary",
+        "status": "estimated",
+        "value": 6209,
+        "unit": "만원",
+        "period": "2026-09",
+        "extra": {
+          "industry_avg": 5477,
+          "industry_samples": 5660
+        },
+        "source": {
+          "name": "국민연금 가입 사업장 내역 (2026-09분)",
+          "url": "https://www.data.go.kr/data/15083277/fileData.do",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "tenure",
+        "metric": "avg_tenure",
+        "status": "ok",
+        "value": 2.7,
+        "unit": "년",
+        "period": "2025",
+        "extra": {
+          "headcount": 1870
+        },
+        "source": {
+          "name": "OpenDART 2025 사업보고서 (직원 현황)",
+          "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003116",
+          "checkedAt": "2026-11-20"
+        }
+      },
+      {
+        "id": "tech_investment",
+        "metric": "registered_patents",
+        "status": "unavailable",
+        "value": null,
+        "unit": "건",
+        "period": null,
+        "source": null,
+        "reason": "no_source"
+      },
+      {
+        "id": "funding_stage",
+        "metric": "cumulative_funding",
+        "status": "unavailable",
+        "value": null,
+        "unit": "억원",
+        "period": null,
+        "source": null,
+        "reason": "no_source"
+      },
+      {
+        "id": "risk",
+        "metric": "risk_flags",
+        "status": "ok",
+        "value": null,
+        "unit": "",
+        "period": "2026-11",
+        "label": "해당 없음",
+        "source": {
+          "name": "OpenDART 2025 감사의견",
+          "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003116",
+          "checkedAt": "2026-11-20"
+        }
+      }
+    ],
+    "externalLinks": [],
+    "isMock": false
   }
 ]
