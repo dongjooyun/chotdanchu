@@ -1514,7 +1514,12 @@ button {
   font-weight: 900;
 }
 .cc-basis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-size: 13px;
+  font-weight: 700;
   line-height: 1.55;
   text-align: center;
 }
