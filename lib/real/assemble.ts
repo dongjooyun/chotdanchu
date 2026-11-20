@@ -26,6 +26,7 @@ export interface DartProfile {
   induty_code: string;
   est_dt: string; // YYYYMMDD
   bizr_no: string;
+  ceo_nm: string; // 공시된 대표자. 화면 표시 전용, LLM에 보내지 않는다
 }
 
 /** 국세청 사업자 상태 코드. 01 계속, 02 휴업, 03 폐업 */
@@ -110,7 +111,7 @@ export interface AssembleInput {
 
 /**
  * 기업 카드 하나. 지표 순서와 빈칸 처리를 목업과 똑같이 맞춘다.
- * 대표자 이름은 넣지 않는다 (CLAUDE.md 6장: 실제 사람 이름을 데이터에 넣지 않음). 동명 후보는 소재지와 설립연도로 가린다.
+ * 대표자는 OpenDART 기업개황에 공시된 이름을 그대로 쓴다. 동명 후보를 가르는 단서이고, 화면 표시 전용이라 LLM에 보내지 않는다 (11/21 결정).
  */
 export function assembleCompany(x: AssembleInput): Company {
   const { target, profile } = x;
@@ -142,7 +143,7 @@ export function assembleCompany(x: AssembleInput): Company {
       ? { name: "OpenDART 기업개황", url: "https://opendart.fss.or.kr", checkedAt: x.checkedAt }
       : null,
     name: profile.corp_name.replace(/^\(주\)\s*/, "주식회사 "),
-    ceoName: "",
+    ceoName: (profile.ceo_nm ?? "").trim(),
     address: shortAddress(profile.adres),
     industry: x.npsIndustry ?? target.industry ?? "업종 정보 없음",
     industryCode: profile.induty_code || null,

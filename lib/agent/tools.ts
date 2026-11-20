@@ -3,7 +3,7 @@
 // LLM에게 돌려주는 결과에는 대표자 이름을 넣지 않는다 (CLAUDE.md 절대 규칙 1).
 import type Anthropic from "@anthropic-ai/sdk";
 import { getMode } from "@/lib/config";
-import { findCandidates, getCompany } from "@/lib/data";
+import { findCandidates, getCompany, toCandidateSummary } from "@/lib/data";
 import { DISCLOSURE_LABELS, NATURE_LABELS } from "@/lib/format";
 import type { Company } from "@/lib/types";
 
@@ -13,7 +13,7 @@ export const TOOLS: Anthropic.Tool[] = [
   {
     name: "search_company",
     description:
-      "회사 이름으로 동명 후보를 찾는다. 법인 표기와 띄어쓰기는 무시한다. 후보마다 id, 이름, 업종, 소재지(시·구), 설립연도를 돌려준다.",
+      "회사 이름으로 동명 후보를 찾는다. 법인 표기와 띄어쓰기는 무시한다. 후보마다 id, 이름, 업종, 소재지(시·구), 설립연도, 상태 꼬리표(상장, 폐업 등)를 돌려준다.",
     input_schema: {
       type: "object",
       properties: { query: { type: "string", description: "사용자가 말한 회사 이름" }, reason },
@@ -90,12 +90,14 @@ export function runTool(name: string, input: Record<string, unknown>): ToolOutco
       const query = str(input, "query");
       if (!query) return error("query가 비어 있습니다");
       const found = findCandidates(query.slice(0, 100), getMode());
+      // 대표자 이름은 빼고 보낸다. 상장, 폐업 같은 상태 꼬리표는 회사를 가르는 단서라 같이 보낸다
       const candidates = found.map((c) => ({
         id: c.id,
         name: c.name,
         industry: c.industry,
         address: c.address,
         foundedYear: c.foundedOn ? c.foundedOn.slice(0, 4) : null,
+        tags: toCandidateSummary(c).tags,
       }));
       return {
         kind: "result",

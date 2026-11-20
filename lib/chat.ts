@@ -28,6 +28,8 @@ export interface CandidateSummary {
   address: string;
   industry: string;
   foundedYear: string | null;
+  /** 고르는 데 도움이 되는 상태 표시. 예: ["상장"], ["폐업"] */
+  tags: string[];
 }
 
 /** 에이전트 말풍선 안에 그리는 위젯 */

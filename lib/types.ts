@@ -95,7 +95,7 @@ export interface Company {
   bizRegNo: string | null;
   bizRegNoSource: Source | null;
   name: string;
-  /** 화면 표시 전용. LLM 프롬프트에 넣지 않는다 (CLAUDE.md 절대 규칙 1). 실데이터는 빈 문자열 (CLAUDE.md 6장) */
+  /** 화면 표시 전용. LLM 프롬프트에 넣지 않는다 (CLAUDE.md 절대 규칙 1). 실데이터는 OpenDART에 공시된 대표자 */
   ceoName: string;
   /** 시·구까지만 */
   address: string;

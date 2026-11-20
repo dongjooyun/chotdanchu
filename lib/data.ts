@@ -76,6 +76,19 @@ export function findMockCandidates(query: string): Company[] {
   return findCandidates(query, "mock");
 }
 
+/**
+ * 후보 칩에 보일 상태 표시. 상장 여부와 휴폐업은 이름이 같은 회사를 가르는 가장 빠른 단서다.
+ * 예: 상장 카카오 -> ["상장"], 2014년 폐업한 동명 법인 -> ["폐업"]
+ */
+function candidateTags(c: Company): string[] {
+  const tags: string[] = [];
+  if (c.disclosure === "listed") tags.push("상장");
+  const risk = c.indicators.find((i) => i.id === "risk");
+  if (risk?.extra?.closed) tags.push("폐업");
+  if (risk?.extra?.suspended) tags.push("휴업");
+  return tags;
+}
+
 /** 후보 칩에 보일 요약. 예: { name: "주식회사 몽돌커머스", foundedYear: "2009", ... } */
 export function toCandidateSummary(c: Company): CandidateSummary {
   return {
@@ -85,5 +98,6 @@ export function toCandidateSummary(c: Company): CandidateSummary {
     address: c.address,
     industry: c.industry,
     foundedYear: c.foundedOn ? c.foundedOn.slice(0, 4) : null,
+    tags: candidateTags(c),
   };
 }

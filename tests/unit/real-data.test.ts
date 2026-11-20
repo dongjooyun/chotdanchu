@@ -126,10 +126,10 @@ describe("리스크와 조립", () => {
     expect(shortAddress("서울특별시 강남구 역삼동")).toBe("서울 강남구");
   });
 
-  test("REAL-13 조립한 카드에는 대표자 이름이 없고, 지표 9개가 목업과 같은 순서다", () => {
+  test("REAL-13 조립한 카드는 공시 대표자를 그대로 쓰고, 지표 9개가 목업과 같은 순서다", () => {
     const c = assembleCompany({
       target: { corpCode: "00258801", nature: "general", natureBasis: "상장" },
-      profile: { corp_name: "(주)카카오", corp_cls: "Y", adres: "제주특별자치도 제주시 첨단로 242", induty_code: "63120", est_dt: "19950216", bizr_no: "1208147521" },
+      profile: { corp_name: "(주)카카오", corp_cls: "Y", adres: "제주특별자치도 제주시 첨단로 242", induty_code: "63120", est_dt: "19950216", bizr_no: "1208147521", ceo_nm: " 공시대표 " },
       financials: financialIndicators(kakaoFin, "2025", D),
       tenure: tenureIndicator(kakaoEmp, "2025", D),
       hiring: hiringIndicator(nps({}), nps({ period: "2025-09", members: 3885 }), D),
@@ -139,7 +139,7 @@ describe("리스크와 조립", () => {
       manual: [],
       checkedAt: D,
     });
-    expect(c.ceoName).toBe("");
+    expect(c.ceoName).toBe("공시대표");
     expect(c.disclosure).toBe("listed");
     expect(c.name).toBe("주식회사 카카오");
     expect(c.indicators.map((i) => i.id)).toEqual([
@@ -173,9 +173,9 @@ describe("사전 계산 결과 (data/real/companies.json)", () => {
     expect(g.find((x) => x.id === "growth")?.basis).toMatch(/스타트업 기준표/);
   });
 
-  test("REAL-16 실데이터에는 대표자 이름과 목업 표시가 없다", () => {
+  test("REAL-16 실데이터는 목업 표시가 없고 대표자가 채워져 있으며, 확인 불가에는 이유가 있다", () => {
     for (const c of companies) {
-      expect(c.ceoName).toBe("");
+      expect(c.ceoName).not.toBe("");
       expect(c.isMock).toBe(false);
       for (const i of c.indicators) if (i.status === "unavailable") expect(i.reason).toBeTruthy();
     }

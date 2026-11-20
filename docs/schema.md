@@ -32,7 +32,7 @@
 | `bizRegNo` | string \| null | 사업자등록번호. DART 기업개황에서 받거나, 시연 기업은 회사 홈페이지에서 사람이 확인 | `000-00-00000` |
 | `bizRegNoSource` | Source \| null | 사업자등록번호를 어디서 확인했는지 | |
 | `name` | string | 법인명 | `하늘커머스(주)` |
-| `ceoName` | string | 대표자. 화면 표시 전용. 실데이터는 실제 사람 이름을 저장하지 않아 빈 문자열 (CLAUDE.md 6장) | `가상대표` |
+| `ceoName` | string | 대표자. 화면 표시 전용, LLM에 보내지 않음. 실데이터는 OpenDART 기업개황에 공시된 이름 (11/21 결정) | `가상대표` |
 | `address` | string | 시·구까지만 | `서울 성동구` |
 | `industry` | string | 업종명 | `전자상거래 소매 중개업` |
 | `industryCode` | string \| null | 표준산업분류(KSIC) 코드. 기술 투자의 업종 구간을 정할 때 쓴다 | `47911` |

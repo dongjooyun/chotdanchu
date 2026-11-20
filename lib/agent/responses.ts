@@ -49,10 +49,8 @@ export function companyResponse(company: Company, lead: LogLine[]): ChatResponse
 
 /** 동명 후보 칩 응답 */
 export function candidatesResponse(found: Company[], lead: LogLine[]): ChatResponse {
-  // 실데이터는 대표자 이름을 저장하지 않는다 (CLAUDE.md 6장). 그때는 소재지와 설립연도로 고르게 한다
-  const by = found.every((c) => c.ceoName) ? "대표자, 소재지, 업종, 설립연도" : "소재지, 업종, 설립연도";
   return {
-    reply: `같은 이름의 회사가 ${found.length}곳 있습니다. ${by}를 보고 골라 주세요.`,
+    reply: `같은 이름의 회사가 ${found.length}곳 있습니다. 대표자, 소재지, 업종, 설립연도를 보고 골라 주세요.`,
     widget: { type: "candidates", candidates: found.map(toCandidateSummary) },
     log: renumber(lead),
   };

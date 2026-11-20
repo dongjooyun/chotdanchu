@@ -94,14 +94,24 @@ describe("POST /api/chat (실데이터 모드, 사전 계산한 시연 기업)",
     expect(json.log.every((l) => l.mode === "live")).toBe(true);
   });
 
-  test("API-14 카카오는 동명 법인 2곳이 후보로 나오고, 대표자 대신 소재지와 설립연도로 고르게 한다", async () => {
+  test("API-14 카카오는 동명 법인 2곳이 후보로 나오고, 공시 대표자와 상장·폐업 꼬리표로 구별된다", async () => {
     live();
     const { json } = await post({ message: "카카오" });
     expect(json.widget?.type).toBe("candidates");
     if (json.widget?.type !== "candidates") return;
     expect(json.widget.candidates).toHaveLength(2);
-    expect(json.widget.candidates.every((c) => c.ceoName === "")).toBe(true);
-    expect(json.reply).not.toContain("대표자");
+    expect(json.widget.candidates.every((c) => c.ceoName !== "")).toBe(true);
+    expect(json.widget.candidates.map((c) => c.tags).sort()).toEqual([["상장"], ["폐업"]]);
+  });
+
+  test("API-17 실데이터 대표자 이름은 LLM에 가는 도구 결과에 들어가지 않는다 (절대 규칙 1)", async () => {
+    live();
+    const { runTool } = await import("@/lib/agent/tools");
+    const { realCompanies } = await import("@/lib/data");
+    const out = runTool("search_company", { query: "카카오", reason: "테스트" });
+    if (out.kind !== "result") throw new Error("결과가 없음");
+    for (const c of realCompanies) expect(out.content).not.toContain(c.ceoName);
+    expect(out.content).toContain("폐업");
   });
 
   test("API-15 상장 카카오를 고르면 실데이터 카드 (등급 10개, 출처는 OpenDART와 국민연금)", async () => {
