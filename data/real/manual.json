@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "corpCode": "00258801",
+    "indicator": {
+      "id": "tech_investment",
+      "metric": "rnd_ratio",
+      "status": "manual",
+      "value": 22.3,
+      "unit": "%",
+      "period": "2025",
+      "extra": { "consolidated": 16.0 },
+      "source": {
+        "name": "카카오 2025 사업보고서 II-6 연구개발비용 (별도, 수동 확인)",
+        "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  }
+]
