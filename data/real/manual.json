@@ -1,0 +1,172 @@
+[
+  {
+    "corpCode": "00258801",
+    "indicator": {
+      "id": "tech_investment",
+      "metric": "rnd_ratio",
+      "status": "manual",
+      "value": 22.3,
+      "unit": "%",
+      "period": "2025",
+      "extra": {
+        "consolidated": 16
+      },
+      "source": {
+        "name": "카카오 2025 사업보고서 II-6 연구개발비용 (별도, 수동 확인)",
+        "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01137727",
+    "indicator": {
+      "id": "funding_stage",
+      "metric": "cumulative_funding",
+      "status": "manual",
+      "value": 4300,
+      "unit": "억원",
+      "period": "2023-07",
+      "label": "Series C",
+      "source": {
+        "name": "무신사 공식 뉴스룸 2023-07-19 Series C 발표. 4,300억 원은 2023년 세 차례 투자 합계라 설립 이후 누적은 이보다 큼 (수동 확인)",
+        "url": "https://about.musinsa.com/newsroom/2023-0719",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01547845",
+    "indicator": {
+      "id": "financial_health",
+      "metric": "runway_months",
+      "status": "manual",
+      "value": null,
+      "unit": "개월",
+      "period": "2025",
+      "extra": {
+        "profitable": 1
+      },
+      "source": {
+        "name": "당근마켓 2025 사업보고서 첨부 감사보고서 손익계산서 (별도, 영업이익 670.8억 원, 원문 확인)",
+        "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000262",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01547845",
+    "indicator": {
+      "id": "growth",
+      "metric": "revenue_growth",
+      "status": "manual",
+      "value": 42.2,
+      "unit": "%",
+      "period": "2025",
+      "source": {
+        "name": "당근마켓 2025 사업보고서 첨부 감사보고서 손익계산서 (별도, 영업수익 2,690.3억 원, 전년 1,891.9억 원, 원문 확인)",
+        "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000262",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01547845",
+    "indicator": {
+      "id": "profitability",
+      "metric": "operating_income",
+      "status": "manual",
+      "value": 670.8,
+      "unit": "억원",
+      "period": "2025",
+      "extra": {
+        "prev": 376.7
+      },
+      "source": {
+        "name": "당근마켓 2025 사업보고서 첨부 감사보고서 손익계산서 (별도, 원문 확인)",
+        "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000262",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01137727",
+    "indicator": {
+      "id": "tech_investment",
+      "metric": "registered_patents",
+      "status": "manual",
+      "value": 8,
+      "unit": "건",
+      "period": "2026-11",
+      "source": {
+        "name": "KIPRIS 국내 특허·실용신안 검색 \"무신사\", 등록 상태, 출원인 주식회사 무신사 8건 (수동 확인)",
+        "url": "https://www.kipris.or.kr",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01547845",
+    "indicator": {
+      "id": "tech_investment",
+      "metric": "registered_patents",
+      "status": "manual",
+      "value": 5,
+      "unit": "건",
+      "period": "2026-11",
+      "source": {
+        "name": "KIPRIS 국내 특허·실용신안 검색 \"당근마켓\", 등록 상태, 출원인 주식회사 당근마켓 5건 (수동 확인)",
+        "url": "https://www.kipris.or.kr",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01547845",
+    "indicator": {
+      "id": "funding_stage",
+      "metric": "cumulative_funding",
+      "status": "manual",
+      "value": 2270,
+      "unit": "억원",
+      "period": "2025-01",
+      "source": {
+        "name": "당근 회사소개 페이지 누적 투자 유치 2,270억 원 (2025년 1월 기준, 라운드 이름과 최근 투자 시점은 공식 페이지에 없음, 수동 확인)",
+        "url": "https://about.daangn.com/",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01153956",
+    "indicator": {
+      "id": "funding_stage",
+      "metric": "cumulative_funding",
+      "status": "manual",
+      "value": 1530,
+      "unit": "억원",
+      "period": "2026-05",
+      "source": {
+        "name": "컬리 주요사항보고서(유상증자결정) 2건: 2023-05 1,200억 원, 2026-05 330억 원(네이버 제3자배정, 컬리 뉴스룸 2026-05-06 보도자료로도 확인), 합계 (라운드 이름과 그 이전 투자는 공식 자료에 없음, 수동 확인)",
+        "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260506000052",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  },
+  {
+    "corpCode": "01153956",
+    "indicator": {
+      "id": "tech_investment",
+      "metric": "registered_patents",
+      "status": "manual",
+      "value": 2,
+      "unit": "건",
+      "period": "2026-11",
+      "source": {
+        "name": "KIPRIS 국내 특허·실용신안 검색 \"컬리\", 등록 상태, 출원인 주식회사 컬리 2건 (출원번호 10-2020-0002677, 10-2020-0027378, 수동 확인)",
+        "url": "https://www.kipris.or.kr",
+        "checkedAt": "2026-11-21"
+      }
+    }
+  }
+]

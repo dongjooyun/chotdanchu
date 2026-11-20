@@ -14,7 +14,11 @@ import { ReportCard } from "@/components/report-card";
 import type { LogLine } from "@/lib/chat";
 import { getMode } from "@/lib/config";
 import { findMockCandidates, getMockCompany, toCandidateSummary } from "@/lib/data";
+import { computeIndicators } from "@/lib/indicators";
 import { SAMPLE_MATCHUP_PAIR } from "@/lib/samples";
+
+/** 카탈로그는 미리 그려 두는 페이지라 현재 시각 대신 고정 기준일로 등급을 계산한다 (투자 18개월 계산에 쓰임) */
+const CATALOG_AS_OF = new Date(2026, 10, 20);
 
 const SAMPLE_LOG: LogLine[] = [
   { step: 1, type: "tool_call", title: "search_company: \"몽돌커머스\" 후보 2곳", mode: "mock" },
@@ -71,8 +75,8 @@ export default function CatalogPage() {
       <CandidateChips candidates={twins} />
 
       <h2 className="text-base font-bold">04 기업 실사 (지표 카드)</h2>
-      {startup && <CompanyCard company={startup} />}
-      {general && <CompanyCard company={general} />}
+      {startup && <CompanyCard company={startup} graded={computeIndicators(startup, CATALOG_AS_OF)} />}
+      {general && <CompanyCard company={general} graded={computeIndicators(general, CATALOG_AS_OF)} />}
 
       <h2 className="text-base font-bold">06 판단 리포트 카드 (앞면 결론, 뒷면 근거)</h2>
       <ReportCard />

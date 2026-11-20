@@ -5,6 +5,8 @@ import type { AppMode } from "@/lib/chat";
 export const config = {
   /** USE_MOCK=false로 명시하지 않으면 목업 모드다. 기본값을 목업으로 둬서 API 크레딧을 아낀다 */
   useMock: process.env.USE_MOCK !== "false",
+  /** USE_AGENT=true일 때만 LLM 에이전트 루프를 돌린다. 기본값과 테스트는 정해진 규칙 경로라 크레딧을 쓰지 않는다 */
+  useAgent: process.env.USE_AGENT === "true",
   /** 모델 이름은 여기 한 곳에서만 관리한다 (CLAUDE.md 5장) */
   models: {
     /** 가벼운 단계: 동명 기업 판별, 역량 추출 */

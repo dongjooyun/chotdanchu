@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // 테스트 실행이 만드는 폴더 (E2E용 별도 빌드 폴더, 결과물, 보고서)
+    ".next-e2e/**",
+    // 실데이터 모드 화면 확인용 별도 빌드 폴더 (docs/agent-design.md)
+    ".next-live/**",
+    "test-results/**",
+    "playwright-report/**",
   ]),
 ]);
 

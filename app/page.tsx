@@ -2,6 +2,7 @@ import { AppHeader } from "@/components/app-header";
 import { ChatApp } from "@/components/chat-app";
 import { Disclaimer } from "@/components/disclaimer";
 import { getMode } from "@/lib/config";
+import { exampleNames } from "@/lib/data";
 
 /** 메인 화면 한 장: 헤더, 채팅 영역과 판단 로그 패널, 면책 문구 */
 export default function Home() {
@@ -9,7 +10,7 @@ export default function Home() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-4 py-4">
       <AppHeader mode={mode} />
-      <ChatApp mode={mode} />
+      <ChatApp mode={mode} examples={exampleNames(mode)} />
       <Disclaimer />
     </main>
   );

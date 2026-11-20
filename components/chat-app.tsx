@@ -5,12 +5,16 @@ import { AgentLogPanel } from "@/components/agent-log-panel";
 import { CardCollection } from "@/components/card-collection";
 import { ChatInput } from "@/components/chat-input";
 import { LofiBox } from "@/components/lofi-box";
-import { MessageList, type ChatMessage } from "@/components/message-list";
+import { MessageList, type ChatMessage, type MessageWidget } from "@/components/message-list";
 import type { QuickReply } from "@/components/quick-replies";
 import { useSession } from "@/components/use-session";
 import type { AppMode, ChatRequest, ChatResponse, LogLine } from "@/lib/chat";
+import { buildReportDraft, type ReportDraftInput } from "@/lib/report-draft";
 import { addAnalysis, skippedPreference } from "@/lib/session";
-import type { Role } from "@/lib/types";
+import type { Preference, Role } from "@/lib/types";
+
+/** 방금 본 기업의 카드 내용 (리포트 카드의 재료) */
+type Analysis = Pick<ReportDraftInput, "company" | "graded" | "log">;
 
 const ROLE_REPLIES: QuickReply[] = [
   { label: "서비스기획", value: "role:서비스기획" },
@@ -18,12 +22,16 @@ const ROLE_REPLIES: QuickReply[] = [
   { label: "운영", value: "role:운영" },
 ];
 
-/** 목업 모드 예시 기업. 실데이터 모드에서는 시연 기업 4곳으로 바꾼다 (CDC-15) */
-const EXAMPLE_REPLIES: QuickReply[] = [
-  { label: "별하늘랩스", value: "company:별하늘랩스" },
-  { label: "몽돌커머스", value: "company:몽돌커머스" },
-  { label: "청솔기계", value: "company:청솔기계" },
-];
+/** 예시 기업 버튼. 목업 모드는 가상 기업, 실데이터 모드는 미리 계산해 둔 시연 기업 (서버가 이름을 넘겨 준다) */
+function exampleReplies(names: string[]): QuickReply[] {
+  return names.map((n) => ({ label: n, value: `company:${n}` }));
+}
+
+/** 입력창 아래 한 줄: 기업 정보를 어디서 가져오는지 */
+function sourceNote(mode: AppMode, names: string[]): string {
+  if (mode === "mock") return "목업 모드: 가상 기업 데이터로 보여 드려요. 실제 회사가 아닙니다.";
+  return `OpenDART 공시, 국민연금 가입 사업장, 국세청 사업자 상태로 미리 확인해 둔 회사만 볼 수 있어요: ${names.join(", ")}`;
+}
 
 const PREF_REPLIES: QuickReply[] = [
   { label: "내 기준 맞추기", value: "pref:matchup" },
@@ -60,13 +68,14 @@ function askCompany(role: Role): string {
  * 첫 인사 말풍선. 직무를 아직 안 골랐으면 직무 버튼을, 골랐으면 회사 질문과 예시 기업 버튼을 붙인다.
  * 두 번째 방문부터는 저장된 직무로 바로 회사를 묻는다 (PRD 01).
  */
-function introMessage(role: Role | null): ChatMessage {
+function introMessage(role: Role | null, examples: QuickReply[]): ChatMessage {
   if (!role) return { id: 0, from: "agent", text: `${GREETING} 먼저 어떤 직무로 준비하세요?`, replies: ROLE_REPLIES };
-  return { id: 0, from: "agent", text: `${GREETING} ${askCompany(role)}`, replies: EXAMPLE_REPLIES };
+  return { id: 0, from: "agent", text: `${GREETING} ${askCompany(role)}`, replies: examples };
 }
 
 /** 채팅 화면 전체: 말풍선과 진행 기록, 위젯, 빠른 응답, 직무 표시와 입력창, 판단 로그 패널, 내 카드 모음 */
-export function ChatApp({ mode }: { mode: AppMode }) {
+export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] }) {
+  const EXAMPLE_REPLIES = exampleReplies(examples);
   const [session, setSession] = useSession();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   // 대화가 시작된 순간의 직무. 이후 직무를 바꿔도 첫 인사 문구는 그대로 둔다
@@ -74,11 +83,13 @@ export function ChatApp({ mode }: { mode: AppMode }) {
   const [log, setLog] = useState<LogLine[]>([]);
   /** 지금 보고 있는 회사 이름. 고정 정보줄에 보인다 */
   const [company, setCompany] = useState<string | null>(null);
+  /** 가장 최근에 분석한 기업의 카드 내용. 리포트 카드를 만들 때 쓴다 */
+  const [current, setCurrent] = useState<Analysis | null>(null);
   const [pending, setPending] = useState(false);
   const nextId = useRef(1);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const intro = introMessage(introRole === undefined ? session.role : introRole);
+  const intro = introMessage(introRole === undefined ? session.role : introRole, EXAMPLE_REPLIES);
   const shown = [intro, ...messages];
 
   useEffect(() => {
@@ -95,14 +106,26 @@ export function ChatApp({ mode }: { mode: AppMode }) {
     setLog((prev) => [...prev, ...lines.map((l, i) => ({ ...l, step: prev.length + i + 1 }))]);
   }
 
+  /** 지금 직무와 방금 본 기업으로 리포트 말풍선의 위젯을 만든다 */
+  function reportWidget(a: Analysis, role: Role, preference: Preference | null): MessageWidget {
+    const no = session.analyzed.filter((r) => r.companyId !== a.company.id).length + 1;
+    const data = buildReportDraft({ ...a, role, preference, no, checkedAt: new Date().toISOString().slice(0, 10) });
+    return { type: "report", data };
+  }
+
   /** 기업 카드 다음 단계: 3년차 공고 비교 자리, 그다음 맞대결 권유 또는 바로 리포트 */
-  function afterCompanyCard(role: Role | null) {
+  function afterCompanyCard(role: Role | null, a: Analysis) {
     const career: Omit<ChatMessage, "id"> = {
       from: "agent",
       text: `[3년차 공고와 역량 갭 자리] ${role ?? "선택한"} 직무의 3년차 공고와 비교합니다. 공고 태스크(CDC-7, CDC-15)에서 채웁니다.`,
     };
-    if (session.preference) {
-      push(career, { from: "agent", text: "판단 리포트 카드예요.", widget: { type: "report" }, replies: NEXT_REPLIES });
+    if (session.preference && role) {
+      push(career, {
+        from: "agent",
+        text: "판단 리포트 카드예요.",
+        widget: reportWidget(a, role, session.preference),
+        replies: NEXT_REPLIES,
+      });
       return;
     }
     push(career, {
@@ -126,6 +149,8 @@ export function ChatApp({ mode }: { mode: AppMode }) {
       appendLog(data.log);
       if (data.widget?.type === "company") {
         const company = data.widget.company;
+        const analysis: Analysis = { company, graded: data.widget.graded, log: data.log };
+        setCurrent(analysis);
         setCompany(company.name);
         setSession(
           addAnalysis(session, {
@@ -136,7 +161,7 @@ export function ChatApp({ mode }: { mode: AppMode }) {
             log: data.log,
           }),
         );
-        afterCompanyCard(session.role);
+        afterCompanyCard(session.role, analysis);
       }
     } catch {
       push({ from: "agent", text: "응답을 받지 못했어요. 잠시 후 다시 시도해 주세요." });
@@ -181,13 +206,15 @@ export function ChatApp({ mode }: { mode: AppMode }) {
       return;
     }
     if (value === "pref:skip") {
-      setSession({ ...session, preference: skippedPreference() });
+      const preference = skippedPreference();
+      setSession({ ...session, preference });
+      if (!current || !session.role) return;
       push(
         { from: "user", text: "건너뛰고 기본 기준으로" },
         {
           from: "agent",
           text: "모든 지표를 같은 비중으로 보고 판정했어요. 판단 리포트 카드예요.",
-          widget: { type: "report" },
+          widget: reportWidget(current, session.role, preference),
           replies: NEXT_REPLIES,
         },
       );
@@ -215,16 +242,16 @@ export function ChatApp({ mode }: { mode: AppMode }) {
     <div className="flex flex-col gap-3 md:grid md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
       <LofiBox label="채팅 영역" className="flex min-w-0 flex-col gap-3">
         {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}
-        <div className="sticky top-0 z-10 -mx-1 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line bg-box px-1 py-2 text-sm">
+        <div className="sticky top-0 z-10 -mx-1 flex flex-wrap items-center gap-x-3 gap-y-1 border-b-2 border-fg bg-box px-1 py-2 text-sm shadow-md">
           <span className="text-[10px] text-muted">[고정 정보줄]</span>
           <span className="flex items-center gap-1">
             <span className="text-muted">직무</span>
-            <strong>{session.role ?? "아직 안 고름"}</strong>
+            <strong>{session.role ?? "미정"}</strong>
             {session.role && <ChipButton onClick={onChangeRole} disabled={pending} label="바꾸기" />}
           </span>
           <span className="flex items-center gap-1">
             <span className="text-muted">회사</span>
-            <strong>{company ?? "아직 없음"}</strong>
+            <strong>{company ?? "미정"}</strong>
             {company && <ChipButton onClick={onChangeCompany} disabled={pending} label="다른 회사" />}
           </span>
         </div>
@@ -236,14 +263,12 @@ export function ChatApp({ mode }: { mode: AppMode }) {
             disabled={pending || !session.role}
             placeholder={session.role ? "회사 이름을 입력해 주세요" : "먼저 위에서 직무를 골라 주세요"}
           />
+          <p className="mt-1 text-xs text-muted">{sourceNote(mode, examples)}</p>
         </div>
       </LofiBox>
       <div className="flex flex-col gap-3 md:sticky md:top-3">
         <AgentLogPanel lines={log} />
         <CardCollection records={session.analyzed} />
-        {mode === "live" && (
-          <p className="text-xs text-muted">실데이터 모드는 에이전트 루프 연결 후 동작합니다.</p>
-        )}
       </div>
     </div>
   );

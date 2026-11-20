@@ -34,6 +34,10 @@
 5 판단 리포트  지표 + 선호 + 역량 갭 → 발판 리포트와 면접 역질문
 ```
 
+- 3년차 공고: 회사 공식 채용 페이지의 경력 공고 중 요구 경력이 "N년 이상"이고 N이 3~5인 공고 (5년 이상 포함). 시연 기업이 큰 회사라 3년 이상 공고가 드물어 5년까지 넓혔다
+- 실데이터: 시연 기업만 OpenDART 공시, 국민연금 가입 사업장, 국세청 사업자 상태로 미리 계산해 두고, 화면 입력창 아래에 출처와 볼 수 있는 회사를 적는다
+- 재무 기준은 **별도 재무제표**로 통일한다 (모든 기업, R&D 비율 포함). 연결은 자회사까지 합친 그룹 전체 숫자이고, 별도는 그 법인 하나의 숫자다. 취준생이 입사하는 곳은 법인 하나이고, 국민연금(사업장)과 직원 현황(법인)도 법인 단위라 기준이 맞는다. 별도 숫자가 없을 때만 연결을 쓰고 출처에 "연결"이라고 적는다. 예: 카카오 R&D 비율 별도 22.3%, 연결 16.0%
+
 직접 눌러보는 데모: [`docs/prototype/chat-tutorial.html`](docs/prototype/chat-tutorial.html) (더미데이터) · 흐름도: [`docs/prototype/agent-flow.html`](docs/prototype/agent-flow.html)
 
 ## 무엇이 AI이고 무엇이 코드인가
@@ -125,6 +129,7 @@ npm run dev
 ```
 
 - 브라우저에서 http://localhost:3000 을 엽니다. 기본은 목업 모드(`USE_MOCK=true`)라 API 키 없이 처음부터 끝까지 돌아갑니다.
+- 에이전트(LLM이 도구를 골라 판단)를 켜려면 `.env.local`에 `ANTHROPIC_API_KEY`를 넣고 `USE_AGENT=true`로 바꿉니다. 크레딧을 쓰니 시연 확인 때만 켭니다.
 - 화면의 모든 요소를 한곳에서 보려면 http://localhost:3000/catalog (개발용 위젯 카탈로그)를 엽니다.
-- PR 전에는 `npm run build`와 `npm run lint`가 통과하는지 확인합니다.
+- PR 전에는 `npm run build`, `npm run lint`, `npm test`가 통과하는지 확인합니다. `npm test`(Vitest)는 지표 등급 계산과 역량 매칭 등을, `npm run test:e2e`(Playwright)는 화면 흐름을 검사합니다. 설계 방식과 케이스 추적표는 [`docs/testing.md`](docs/testing.md)에 있습니다.
 - Claude 데스크톱 앱에서는 `.claude/launch.json`의 `chotdanchu-dev`로 Browser 창 미리보기를 띄울 수 있습니다.

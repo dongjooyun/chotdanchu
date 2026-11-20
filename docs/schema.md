@@ -32,7 +32,7 @@
 | `bizRegNo` | string \| null | 사업자등록번호. DART 기업개황에서 받거나, 시연 기업은 회사 홈페이지에서 사람이 확인 | `000-00-00000` |
 | `bizRegNoSource` | Source \| null | 사업자등록번호를 어디서 확인했는지 | |
 | `name` | string | 법인명 | `하늘커머스(주)` |
-| `ceoName` | string | 대표자. 화면 표시 전용 | `가상대표` |
+| `ceoName` | string | 대표자. 화면 표시 전용, LLM에 보내지 않음. 실데이터는 OpenDART 기업개황에 공시된 이름 (11/21 결정) | `가상대표` |
 | `address` | string | 시·구까지만 | `서울 성동구` |
 | `industry` | string | 업종명 | `전자상거래 소매 중개업` |
 | `industryCode` | string \| null | 표준산업분류(KSIC) 코드. 기술 투자의 업종 구간을 정할 때 쓴다 | `47911` |
@@ -42,6 +42,7 @@
 | `natureBasis` | string | 유형 판정 근거 한 줄 | `설립 4년, 2025년 시리즈 A 공식 발표` |
 | `certifications` | string[] | 공공 인증(보조 신호): 이노비즈, 메인비즈, 워크넷 강소기업 | `["이노비즈"]` |
 | `indicators` | IndicatorValue[] | 아래 9개 지표 (정보 투명도 제외) | |
+| `aliases` | string[] (선택) | 사람들이 부르는 다른 이름. 검색에 쓴다 | `["당근"]` |
 | `externalLinks` | {name, url}[] | "원문 보기" 링크 (theVC, 혁신의숲 등). 데이터는 가져오지 않는다 | |
 | `isMock` | boolean | 목업이면 true | `true` |
 
@@ -112,7 +113,7 @@
 ```
 
 - `role`: `서비스기획`, `마케팅`, `운영` (역량 사전과 같은 이름)
-- `preference.type`: `stable_system` 안정·시스템 지향, `autonomy_pioneer` 자율·개척 지향, `balance_practical` 밸런스·실속 지향 (KT 기업 선택 가치관 3유형)
+- `preference.type`: `stable_system` 안정·시스템 지향, `autonomy_pioneer` 자율·개척 지향, `balance_practical` 밸런스·실속 지향 (기업 선택 가치관 3유형)
 - `preference.skipped`가 true면 모든 지표를 같은 비중으로 본다
 - `weights`는 10개 지표 전부, 합 1 (위 예시는 일부만 적음)
 - `analyzed`: 최근 분석 기록. 판단 로그(`log`)를 같이 저장해서 다시 열어볼 수 있다. 판단 로그 한 줄의 모양은 에이전트 루프(CDC-14)에서 확정한다

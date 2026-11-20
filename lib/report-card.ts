@@ -9,22 +9,24 @@ export interface ReportCardData {
   /** 예: "외감 · 스타트업" */
   typeLabel: string;
   role: Role;
-  /** 적합도 라벨 (PRD 06). 코드가 정한다 */
-  fitLabel: string;
+  /** 적합도 라벨 (PRD 06). 코드가 정한다. 리포트 태스크(CDC-16) 전에는 null */
+  fitLabel: string | null;
   /** 라벨 이유 한 줄. AI가 쓰되 숫자는 넣지 않는다 */
   fitReason: string;
   /** 맞대결 결과 유형. 건너뛰었으면 null ("기본 기준") */
   preferenceType: string | null;
   /** 내가 중시한 지표 3개와 이 회사의 등급 */
   topIndicators: { id: IndicatorId; grade: Grade | null }[];
-  /** 3년차 공고 대비 역량 갭 개수 (PRD 05) */
-  gap: { connected: number; partial: number; missing: number };
-  /** 3년차 공고 출처. 유사 기업으로 대체했으면 그 사실 */
-  careerSource: string;
+  /** 3년차 공고 대비 역량 갭 개수 (PRD 05). 공고 수집 전에는 null */
+  gap: { connected: number; partial: number; missing: number } | null;
+  /** 3년차 공고 출처. 유사 기업으로 대체했으면 그 사실. 공고 수집 전에는 null */
+  careerSource: string | null;
   /** 뒷면: 지표 10개 등급 */
   grades: { id: IndicatorId; grade: Grade | null }[];
-  /** 뒷면: 면접에서 물어볼 질문. 확인 불가 항목마다 하나 이상 */
+  /** 뒷면: 면접에서 물어볼 질문. 확인 불가 항목마다 하나 이상. 폐업·휴업 회사는 빈 배열 */
   interviewQuestions: string[];
+  /** 질문 대신 보일 안내 (폐업·휴업 회사). 없으면 생략 */
+  notice?: string;
   /** 뒷면: 에이전트가 판단한 곳 (판단 로그에서 decision만) */
   decisions: string[];
   /** 기준일 YYYY-MM-DD */
