@@ -24,7 +24,7 @@
     </header>
     <div class="body">
       <div>
-        <span class="state-h">상태 1: 고르기 전 (4 / 7)</span>
+        <span class="state-h">상태 1: 고르기 전 (4 / 7), (i) 닫힘</span>
         <section class="chat" data-el="채팅 영역">
         <div class="infobar" data-el="고정 정보줄">
           <span class="grp"><span class="k">직무</span><strong>서비스기획</strong><button class="chip-btn" type="button">바꾸기</button></span>
@@ -36,7 +36,7 @@
             <div class="mp" id="w-mp-1">
               <div class="mp-top"><span class="t">내 기준 맞추기</span><span class="progress" data-el="진행 표시">4 / 7</span></div>
               <div class="mp-bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
-              <div class="mp-ask"><h2>둘 중 더 끌리는 곳을 골라주세요</h2><p>기업 이름은 가렸어요. 배지만 보고 직감대로 고르면 돼요.</p></div>
+              <div class="mp-ask tip-host"><div class="tip-line"><h2>둘 중 더 끌리는 곳을 골라주세요</h2><span class="tip"><input class="tip-chk" type="checkbox" id="tip-1-ask" aria-label="안내 보기" aria-describedby="tip-1-ask-p"><label class="tip-btn" for="tip-1-ask" aria-hidden="true">i</label><label class="tip-scrim" for="tip-1-ask" aria-hidden="true"></label><span class="tip-pop below" id="tip-1-ask-p" role="tooltip"><span>기업 이름은 가렸어요. 배지만 보고 직감대로 고르면 돼요.</span></span></span></div></div>
               <div class="mp-grid">
                 <button class="mc" type="button" data-el="맞대결 카드" aria-label="카드 A 선택">
                   <div class="mc-top"><span class="mc-letter">A</span><small>가상</small></div>
@@ -55,8 +55,7 @@
                   <div class="mc-row"><span>고용 흐름</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div>
                 </button>
               </div>
-              <p class="mp-hint">카드를 눌러 고르세요. 확인 불가 지표는 이 판 계산에서 빠져요.</p>
-              <p class="mp-note">모든 카드는 가상 데이터예요. 성향 파악용이고 실제 기업과 무관해요.</p>
+              <div class="mp-foot tip-host"><span>안내</span><span class="tip"><input class="tip-chk" type="checkbox" id="tip-1-foot" aria-label="안내 보기" aria-describedby="tip-1-foot-p"><label class="tip-btn" for="tip-1-foot" aria-hidden="true">i</label><label class="tip-scrim" for="tip-1-foot" aria-hidden="true"></label><span class="tip-pop above" id="tip-1-foot-p" role="tooltip"><span>카드를 눌러 고르세요. 확인 불가 지표는 이 판 계산에서 빠져요.</span><span>모든 카드는 가상 데이터예요. 성향 파악용이고 실제 기업과 무관해요.</span></span></span></div>
             </div>
             <button class="btn-link" type="button">건너뛰고 기본 기준으로</button>
           </div>
@@ -80,7 +79,7 @@
             <div class="mp" id="w-mp-2">
               <div class="mp-top"><span class="t">내 기준 맞추기</span><span class="progress" data-el="진행 표시">4 / 7</span></div>
               <div class="mp-bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
-              <div class="mp-ask"><h2>둘 중 더 끌리는 곳을 골라주세요</h2><p>기업 이름은 가렸어요. 배지만 보고 직감대로 고르면 돼요.</p></div>
+              <div class="mp-ask tip-host"><div class="tip-line"><h2>둘 중 더 끌리는 곳을 골라주세요</h2><span class="tip"><input class="tip-chk" type="checkbox" id="tip-2-ask" aria-label="안내 보기" aria-describedby="tip-2-ask-p"><label class="tip-btn" for="tip-2-ask" aria-hidden="true">i</label><label class="tip-scrim" for="tip-2-ask" aria-hidden="true"></label><span class="tip-pop below" id="tip-2-ask-p" role="tooltip"><span>기업 이름은 가렸어요. 배지만 보고 직감대로 고르면 돼요.</span></span></span></div></div>
               <div class="mp-grid">
                 <button class="mc sel" type="button" data-el="맞대결 카드" aria-label="카드 A 선택">
                   <div class="mc-top"><span class="mc-letter">A</span><small>가상</small></div>
@@ -100,8 +99,50 @@
                   <div class="mc-row"><span>고용 흐름</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div>
                 </button>
               </div>
-              <p class="mp-hint">0.5초 뒤 자동으로 다음 판(5 / 7)으로 넘어가요</p>
-              <p class="mp-note">모든 카드는 가상 데이터예요. 성향 파악용이고 실제 기업과 무관해요.</p>
+              <div class="mp-foot tip-host"><span>안내</span><span class="tip"><input class="tip-chk" type="checkbox" id="tip-2-foot" aria-label="안내 보기" aria-describedby="tip-2-foot-p"><label class="tip-btn" for="tip-2-foot" aria-hidden="true">i</label><label class="tip-scrim" for="tip-2-foot" aria-hidden="true"></label><span class="tip-pop above" id="tip-2-foot-p" role="tooltip"><span>0.5초 뒤 자동으로 다음 판(5 / 7)으로 넘어가요</span><span>모든 카드는 가상 데이터예요. 성향 파악용이고 실제 기업과 무관해요.</span></span></span></div>
+            </div>
+            <button class="btn-link" type="button">건너뛰고 기본 기준으로</button>
+          </div>
+        </div>
+        <form class="inputbar" data-el="입력창" onsubmit="return false">
+          <input type="text" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력">
+          <button class="btn" type="button" disabled>보내기</button>
+        </form>
+        </section>
+      </div>
+      <div>
+        <span class="state-h">상태 3: (i) 안내를 연 모습 (설명 줄과 하단 안내)</span>
+        <section class="chat" data-el="채팅 영역">
+        <div class="infobar" data-el="고정 정보줄">
+          <span class="grp"><span class="k">직무</span><strong>서비스기획</strong><button class="chip-btn" type="button">바꾸기</button></span>
+          <span class="grp"><span class="k">회사</span><strong>하늘커머스</strong><button class="chip-btn" type="button">다른 회사</button></span>
+        </div>
+        <div class="msgs">
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">내 기준에 맞춰 볼게요. 더 끌리는 카드를 눌러 주세요.</div>
+            <div class="mp" id="w-mp-3">
+              <div class="mp-top"><span class="t">내 기준 맞추기</span><span class="progress" data-el="진행 표시">4 / 7</span></div>
+              <div class="mp-bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+              <div class="mp-ask tip-host"><div class="tip-line"><h2>둘 중 더 끌리는 곳을 골라주세요</h2><span class="tip is-open"><input class="tip-chk" type="checkbox" id="tip-3-ask" aria-label="안내 보기" aria-describedby="tip-3-ask-p"><label class="tip-btn" for="tip-3-ask" aria-hidden="true">i</label><label class="tip-scrim" for="tip-3-ask" aria-hidden="true"></label><span class="tip-pop below" id="tip-3-ask-p" role="tooltip"><span>기업 이름은 가렸어요. 배지만 보고 직감대로 고르면 돼요.</span></span></span></div></div>
+              <div class="mp-grid">
+                <button class="mc" type="button" data-el="맞대결 카드" aria-label="카드 A 선택">
+                  <div class="mc-top"><span class="mc-letter">A</span><small>가상</small></div>
+                  <div class="mc-row"><span>성장성</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div>
+                  <div class="mc-row"><span>수익성</span><span class="g2 c" data-el="등급 배지" aria-label="등급 C">C</span></div>
+                  <div class="mc-row"><span>보상</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div>
+                  <div class="mc-row"><span>근속</span><span class="g2 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span></div>
+                  <div class="mc-row"><span>고용 흐름</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div>
+                </button>
+                <button class="mc" type="button" data-el="맞대결 카드" aria-label="카드 B 선택">
+                  <div class="mc-top"><span class="mc-letter">B</span><small>가상</small></div>
+                  <div class="mc-row"><span>성장성</span><span class="g2 c" data-el="등급 배지" aria-label="등급 C">C</span></div>
+                  <div class="mc-row"><span>수익성</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div>
+                  <div class="mc-row"><span>보상</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div>
+                  <div class="mc-row"><span>근속</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div>
+                  <div class="mc-row"><span>고용 흐름</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div>
+                </button>
+              </div>
+              <div class="mp-foot tip-host"><span>안내</span><span class="tip is-open"><input class="tip-chk" type="checkbox" id="tip-3-foot" aria-label="안내 보기" aria-describedby="tip-3-foot-p"><label class="tip-btn" for="tip-3-foot" aria-hidden="true">i</label><label class="tip-scrim" for="tip-3-foot" aria-hidden="true"></label><span class="tip-pop above" id="tip-3-foot-p" role="tooltip"><span>카드를 눌러 고르세요. 확인 불가 지표는 이 판 계산에서 빠져요.</span><span>모든 카드는 가상 데이터예요. 성향 파악용이고 실제 기업과 무관해요.</span></span></span></div>
             </div>
             <button class="btn-link" type="button">건너뛰고 기본 기준으로</button>
           </div>
