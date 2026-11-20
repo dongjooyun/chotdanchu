@@ -50,6 +50,7 @@ export function formatIndicatorValue(x: IndicatorValue): string {
     const why = x.extra?.closed ? " (폐업)" : x.extra?.suspended ? " (휴업)" : "";
     return `${x.label ?? "해당 없음"}${why}`;
   }
+  if (x.metric === "runway_months" && x.extra?.profitable) return "영업흑자 (현금 소진 없음)";
   if (x.metric === "cumulative_funding") return `${x.label ?? ""} ${num(x.value)}${x.unit}`.trim();
   if (x.range) return `${num(x.range[0])}~${num(x.range[1])}${x.unit} (추정)`;
   // 국민연금 기준소득월액 상한에 걸려 실제보다 낮게 나온 추정치 (lib/real/nps.ts)

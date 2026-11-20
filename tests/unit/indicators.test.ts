@@ -69,6 +69,18 @@ table("FH-S", "startup", "financial_health", /런웨이 18개월 이상 A/, (v: 
   ["EP", 6, "C"], ["BVA", 11.99, "C"], ["BVA", 12, "B"], ["BVA", 12.01, "B"],
   ["EP", 15, "B"], ["BVA", 17.99, "B"], ["BVA", 18, "A"], ["BVA", 18.01, "A"], ["EP", 24, "A"],
 ]);
+// 흑자 스타트업: 런웨이 값이 없어도(소진 없음) A (11/21 결정)
+cases.push({
+  id: "IND-FH-S-10",
+  criterion: "FH-S",
+  technique: "EP",
+  title: "영업흑자라 런웨이 값 없음 (extra.profitable) -> A",
+  nature: "startup",
+  indicators: [{ ...val("financial_health", "runway_months", 0, { unit: "개월" }), value: null, extra: { profitable: 1 } }],
+  target: "financial_health",
+  grade: "A",
+  basis: /영업흑자라 현금을 소진하지 않음/,
+});
 
 // ---------- 성장성 ----------
 table("GR-G", "general", "growth", /15%/, (v: number) => [val("growth", "revenue_growth", v)], (v) => `매출 증가율 ${v}%`, [

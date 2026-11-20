@@ -27,8 +27,14 @@ function band(v: number, aFrom: number, bFrom: number): Grade {
   return "C";
 }
 
-/** 재무 체력. 일반: 부채비율 100% 미만 A, 100~300% B, 300% 이상 C. 스타트업: 런웨이 18개월 이상 A, 12~18 B, 12 미만 C */
+/**
+ * 재무 체력. 일반: 부채비율 100% 미만 A, 100~300% B, 300% 이상 C. 스타트업: 런웨이 18개월 이상 A, 12~18 B, 12 미만 C.
+ * 스타트업이 영업흑자면 현금을 소진하지 않아 런웨이 제한이 없으므로 A (11/21 결정). 데이터에는 extra.profitable = 1
+ */
 function rateFinancial(x: IndicatorValue, v: number): Rated {
+  if (x.metric === "runway_months" && x.extra?.profitable) {
+    return { grade: "A", basis: `${STARTUP}: 영업흑자라 현금을 소진하지 않음 (런웨이 제한 없음) A` };
+  }
   if (x.metric === "runway_months") {
     return { grade: band(v, 18, 12), basis: `${STARTUP}: 런웨이 18개월 이상 A, 12~18개월 B, 12개월 미만 C` };
   }
@@ -186,6 +192,8 @@ function rateOne(company: Company, x: IndicatorValue, asOf: Date): Rated {
     return { grade: null, basis: "공식 근거가 없어 등급을 매기지 않음", reason: x.reason ?? "no_source" };
   }
   if (x.id === "risk") return rateRisk(x);
+  // 흑자 스타트업은 런웨이 값 자체가 없다 (소진이 없어 나눌 수 없음)
+  if (x.metric === "runway_months" && x.extra?.profitable) return rateFinancial(x, Infinity);
   // 보상은 범위만 있고 대표값이 없을 수 있다
   const v = x.value ?? (x.range ? (x.range[0] + x.range[1]) / 2 : null);
   if (v === null) return { grade: null, basis: "값이 비어 있음", reason: "fetch_failed" };
