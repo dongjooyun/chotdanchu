@@ -8,7 +8,7 @@
 import { readFileSync, readdirSync, writeFileSync, openSync, readSync, closeSync } from "node:fs";
 import { join } from "node:path";
 import { assembleCompany, riskIndicator, type DartProfile, type ManualValue, type NtsStatus, type RealTarget } from "../lib/real/assemble.ts";
-import { financialIndicators, tenureIndicator, type DartAccountRow, type DartEmployeeRow } from "../lib/real/dart.ts";
+import { financialIndicators, parseAmount, startupFinancials, tenureIndicator, type DartAccountRow, type DartEmployeeRow } from "../lib/real/dart.ts";
 import { compensationIndicator, hiringIndicator, industryAverage, matchRow, parseNpsLine, type NpsRow } from "../lib/real/nps.ts";
 import type { Company } from "../lib/types.ts";
 
@@ -116,10 +116,17 @@ async function main() {
     const industry = now ? industryAverage(npsNow, now.industryCode, now) : null;
     const status = nts.get(profile.bizr_no) ?? null;
 
+    // 스타트업 런웨이에 쓸 현금. 주요계정에는 없어서 전체 재무제표(별도)에서 찾는다
+    let cash: number | null = null;
+    if (year && t.nature === "startup") {
+      const all = await dart<{ sj_div: string; account_nm: string; thstrm_amount: string }>("fnlttSinglAcntAll", `corp_code=${t.corpCode}&bsns_year=${year}&reprt_code=11011&fs_div=OFS`);
+      cash = parseAmount(all.list?.find((r) => r.sj_div === "BS" && r.account_nm.trim() === "현금및현금성자산")?.thstrm_amount);
+    }
+
     const company = assembleCompany({
       target: t,
       profile,
-      financials: year ? financialIndicators(fin, year, CHECKED_AT) : [],
+      financials: !year ? [] : t.nature === "startup" ? startupFinancials(fin, cash, year, CHECKED_AT) : financialIndicators(fin, year, CHECKED_AT),
       tenure: emp?.list?.length ? tenureIndicator(emp.list, year, CHECKED_AT) : null,
       hiring: hiringIndicator(now, before, CHECKED_AT),
       compensation: compensationIndicator(now, industry, CHECKED_AT),

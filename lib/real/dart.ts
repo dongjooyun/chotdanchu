@@ -99,6 +99,48 @@ export function financialIndicators(rows: DartAccountRow[], year: string, checke
 }
 
 /**
+ * 재무 3지표 (스타트업 기준표): 런웨이, 매출 증가율, 영업이익(억원, 전년 같이).
+ * 런웨이 = 현금및현금성자산 / (영업손실 / 12). 영업흑자면 소진이 없어 값 대신 extra.profitable = 1 (등급 A, 11/21 결정)
+ * 예: 무신사 2025 영업이익 1,458억 원 (전년 1,124억 원) -> 흑자, 런웨이 제한 없음
+ *     영업손실 120억 원, 현금 90억 원 -> 런웨이 9개월
+ * cash: 전체 재무제표(fnlttSinglAcntAll)의 현금및현금성자산 (원). 없으면 null
+ */
+export function startupFinancials(rows: DartAccountRow[], cash: number | null, year: string, checkedAt: string): IndicatorValue[] {
+  const general = financialIndicators(rows, year, checkedAt);
+  const growth = general.find((g) => g.id === "growth")!;
+  const op = account(rows, "IS", ["영업이익", "영업이익(손실)"]);
+  const src = (fs: string, rcept: string): Source => ({
+    name: `OpenDART ${year} 사업보고서 (${fsLabel(fs)} 재무제표)`,
+    url: dartViewerUrl(rcept),
+    checkedAt,
+  });
+  const eok = (won: number) => round1(won / 100_000_000);
+
+  let runway: IndicatorValue = unavailable("financial_health", "runway_months", "개월");
+  if (op?.cur != null && op.cur >= 0) {
+    runway = { id: "financial_health", metric: "runway_months", status: "ok", value: null, unit: "개월", period: year, extra: { profitable: 1 }, source: src(op.fs, op.rcept) };
+  } else if (op?.cur != null && cash !== null) {
+    runway = { id: "financial_health", metric: "runway_months", status: "ok", value: round1(cash / (-op.cur / 12)), unit: "개월", period: year, source: src(op.fs, op.rcept) };
+  }
+
+  const profit: IndicatorValue =
+    op?.cur != null
+      ? {
+          id: "profitability",
+          metric: "operating_income",
+          status: "ok",
+          value: eok(op.cur),
+          unit: "억원",
+          period: year,
+          ...(op.prev != null ? { extra: { prev: eok(op.prev) } } : {}),
+          source: src(op.fs, op.rcept),
+        }
+      : unavailable("profitability", "operating_income", "억원");
+
+  return [runway, growth, profit];
+}
+
+/**
  * 직원 현황에서 인원, 평균 근속(인원 가중), 1인 평균 급여(급여 총액 / 인원, 만원).
  * 예: 남 2,186명 6년 4개월, 여 1,736명 6년 3개월 -> 3,922명, 6.3년
  */
