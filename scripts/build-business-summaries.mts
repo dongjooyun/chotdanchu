@@ -20,7 +20,8 @@ import { fetchBusinessOverview, planTargets, toStoredSummary } from "../lib/real
 
 const ROOT = join(import.meta.dirname, "..");
 const OUT = join(ROOT, "data/real/business-summaries.json");
-const CHECKED_AT = new Date().toISOString().slice(0, 10);
+// 확인 날짜는 한국 시간 기준이다 (toISOString은 UTC라 한국 새벽에는 하루 전 날짜가 찍힌다)
+const CHECKED_AT = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
 
 /**
  * 시연 기업 4곳 (11/22 정함). 고유번호는 data/real/companies.json의 id와 같다.

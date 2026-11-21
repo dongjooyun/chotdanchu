@@ -97,6 +97,20 @@ describe("RBO-01~08 원문에서 사업의 개요 뽑기", () => {
     expect(extractBusinessOverview(`<TITLE>가. 사업의 개요</TITLE><P>${BODY}</P>`)).toContain("온라인 장터");
   });
 
+  it("RBO-05b 제목에 업종 괄호가 붙어도('1. (제조서비스업)사업의 개요') 찾고, 다음 업종('(금융업)')이 아니라 첫 번째를 쓴다 (카카오 실측)", () => {
+    const xml =
+      `<SECTION-2><TITLE>1. (제조서비스업)사업의 개요</TITLE><P>${BODY}</P></SECTION-2>` +
+      `<SECTION-2><TITLE>1. (금융업)사업의 개요</TITLE><P>금융업 개요입니다. 은행과 증권 사업을 설명하는 충분히 긴 문장입니다.</P></SECTION-2>`;
+    const text = extractBusinessOverview(xml)!;
+    expect(text).toContain("온라인 장터");
+    expect(text).not.toContain("금융업 개요");
+  });
+
+  it("RBO-05c 괄호가 너무 길거나 닫히지 않은 제목은 개요 제목으로 보지 않는다 (EG)", () => {
+    expect(extractBusinessOverview(`<TITLE>1. (아주아주아주아주긴업종이름이붙은제목입니다)사업의 개요</TITLE><P>${BODY}</P>`)).toBeNull();
+    expect(extractBusinessOverview(`<TITLE>1. (제조서비스업사업의 개요</TITLE><P>${BODY}</P>`)).toBeNull();
+  });
+
   it("RBO-06 본문 길이 경계: 30자 미만이면 개요가 아니라고 보고 30자면 쓴다 (BVA)", () => {
     const make = (n: number) => `<TITLE>1. 사업의 개요</TITLE><P>${"가".repeat(n)}</P>`;
     // 경계값은 상수가 아니라 숫자 그대로 둔다 (상수를 바꿔도 테스트가 같이 바뀌어 통과하는 일을 막는다)
