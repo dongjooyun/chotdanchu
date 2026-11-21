@@ -128,6 +128,10 @@ body {
 .infobar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); align-items: center; padding: var(--s-3) var(--s-5); background: var(--canvas); border-bottom: 1px solid var(--line); font-size: 14px; }
 .infobar b { font-weight: 700; }
 .think-toggle { margin-left: auto; }
+/* 에이전트 사고 과정 버튼: 노랑 단색 + 반짝임 아이콘. 다른 버튼보다 눈에 띄게 하되 사이드바를 여는 일만 한다 */
+.btn-ai { display: inline-flex; align-items: center; gap: var(--s-2); height: 36px; min-width: 0; padding: 0 var(--s-4); background: var(--yellow); border-color: var(--yellow); color: var(--on-yellow); font-size: 13px; font-weight: 700; }
+.btn-ai:hover { background: var(--yellow); border-color: var(--on-yellow); box-shadow: 0 0 0 1px var(--on-yellow) !important; }
+.btn-ai[aria-expanded="true"] { background: var(--surface); border-color: var(--yellow); box-shadow: inset 0 0 0 1px var(--yellow); }
 .cols { display: grid; grid-template-columns: minmax(0, 1fr); }
 .app[data-think="open"] .cols { grid-template-columns: minmax(0, 1fr) 320px; }
 .chat-col { display: flex; flex-direction: column; min-width: 0; }
@@ -222,9 +226,9 @@ body {
 .rc-top { background: var(--purple); color: #fff; padding: var(--s-3) var(--s-4); display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
 .rc-body { flex: 1; padding: var(--s-5) var(--s-4); display: flex; flex-direction: column; gap: var(--s-4); }
 .rc-back .rc-body { gap: var(--s-3); }
-.rc-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
+.rc-name { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
 .rc-fit { border-top: 1px solid var(--gray-4); border-bottom: 1px solid var(--gray-4); padding: var(--s-4) 0; }
-.rc-fit b { font-size: 24px; display: block; }
+.rc-fit b { font-size: 32px; line-height: 1.25; font-weight: 800; display: block; }
 .rc-facts { margin: 0; display: flex; flex-direction: column; gap: var(--s-2); font-size: 13px; }
 .rc-facts > div { display: flex; justify-content: space-between; gap: var(--s-3); }
 .rc-facts dt { color: var(--ink-2); flex: none; }

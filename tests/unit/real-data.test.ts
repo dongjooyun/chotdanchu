@@ -4,7 +4,7 @@ import { describe, expect, test } from "vitest";
 import kakaoFin from "../fixtures/real/kakao-2025-fin.json";
 import kakaoEmp from "../fixtures/real/kakao-2025-emp.json";
 import realCompanies from "@/data/real/companies.json";
-import { assembleCompany, riskIndicator, shortAddress } from "@/lib/real/assemble";
+import { assembleCompany, riskIndicator, shortAddress, shortCorpName } from "@/lib/real/assemble";
 import { employeeSummary, financialIndicators, parseTenure, startupFinancials, tenureIndicator, type DartAccountRow } from "@/lib/real/dart";
 import { compensationIndicator, hiringIndicator, industryAverage, matchRow, monthlyIncome, parseNpsLine, splitCsv, type NpsRow } from "@/lib/real/nps";
 import { computeIndicators } from "@/lib/indicators";
@@ -179,5 +179,18 @@ describe("사전 계산 결과 (data/real/companies.json)", () => {
       expect(c.isMock).toBe(false);
       for (const i of c.indicators) if (i.status === "unavailable") expect(i.reason).toBeTruthy();
     }
+  });
+});
+
+describe("법인명 표기", () => {
+  test("REAL-NAME-01 주식회사는 (주)로 줄이고, 앞뒤 위치는 공시 그대로 둔다", () => {
+    expect(shortCorpName("주식회사 무신사")).toBe("(주)무신사");
+    expect(shortCorpName("주식회사무신사")).toBe("(주)무신사");
+    expect(shortCorpName("청솔기계 주식회사")).toBe("청솔기계(주)");
+    expect(shortCorpName("(주)카카오")).toBe("(주)카카오");
+    expect(shortCorpName(" 케이지스틸 ")).toBe("케이지스틸");
+  });
+  test("REAL-NAME-02 사전 계산 데이터에 주식회사 표기가 남지 않는다", () => {
+    for (const c of realCompanies as { name: string }[]) expect(c.name).not.toContain("주식회사");
   });
 });

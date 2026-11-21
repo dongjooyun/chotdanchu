@@ -95,6 +95,16 @@ async function fetchSentence(pref: Preference): Promise<{ sentence: string; by: 
   }
 }
 
+/** 단색 반짝임 아이콘 (AI 표시). 색은 글자색을 따른다 */
+function SparkleIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+      <path d="M12 2c.6 4.9 2.6 7.4 8 8-5.4.6-7.4 3.1-8 8-.6-4.9-2.6-7.4-8-8 5.4-.6 7.4-3.1 8-8Z" />
+      <path d="M19 15c.3 2.3 1.2 3.4 3.5 3.7-2.3.3-3.2 1.4-3.5 3.7-.3-2.3-1.2-3.4-3.5-3.7 2.3-.3 3.2-1.4 3.5-3.7Z" />
+    </svg>
+  );
+}
+
 /** 채팅 화면 전체: 헤더, 고정 정보줄, 말풍선과 위젯, 입력창, 에이전트 사고 과정 패널, 면책 문구, 기업 카드 모음 */
 export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] }) {
   const EXAMPLE_REPLIES = exampleReplies(examples);
@@ -368,11 +378,13 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
           </span>
           <button
             type="button"
-            className="btn btn-link small think-toggle"
+            className="btn btn-ai think-toggle"
             aria-expanded={think}
             aria-controls="think-panel"
+            data-el="사고 과정 버튼"
             onClick={() => setThink(!think)}
           >
+            <SparkleIcon />
             {think ? "에이전트 사고 과정 닫기" : `에이전트 사고 과정 보기 (${log.length}단계)`}
           </button>
         </div>

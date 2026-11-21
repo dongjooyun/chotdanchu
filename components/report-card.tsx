@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CompanyMark } from "@/components/company-mark";
 import { GradeBadge } from "@/components/grade-badge";
 import type { ReportCardData } from "@/lib/report-card";
@@ -12,13 +12,11 @@ const ROLES: Role[] = ["서비스기획", "마케팅", "운영"];
 /** 앞면: 한눈에 보는 결론. 판정 결과가 가장 크다 */
 function Front({
   d,
-  tabs,
   missingRole,
   onRequestRole,
   hidden,
 }: {
   d: ReportCardData;
-  tabs?: ReactNode;
   missingRole?: Role;
   onRequestRole?: (role: Role) => void;
   hidden: boolean;
@@ -38,7 +36,6 @@ function Front({
             {missingRole ?? d.role} 직무 · {d.checkedAt} 기준 <span className="tag" data-el="유형 배지">{d.typeLabel}</span>
           </p>
         </div>
-        {tabs}
         {missingRole ? (
           <>
             <div className="rc-fit" data-el="판정 라벨">
@@ -167,9 +164,11 @@ export function ReportCard({
 
   return (
     <div className="flip-wrap">
+      {/* 직무 탭은 카드 밖에 둔다. 이미지로 저장할 때 카드만 찍히게 하려는 것 (11/21) */}
+      {tabs}
       <div className={`flip ${back ? "is-back" : ""} ${flipping ? "flipping" : ""}`} data-el="리포트 카드">
         <div className="flip-inner">
-          <Front d={shown} tabs={tabs} missingRole={missingRole} onRequestRole={onRequestRole} hidden={back} />
+          <Front d={shown} missingRole={missingRole} onRequestRole={onRequestRole} hidden={back} />
           <Back d={shown} hidden={!back} />
         </div>
         <span className="sheen" aria-hidden="true" />
