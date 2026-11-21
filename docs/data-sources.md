@@ -23,6 +23,7 @@
 | 라이브러리 | Next.js 16.4.6 | https://nextjs.org | 웹 프레임워크 (화면, API 라우트) | MIT | 사용 중 |
 | 라이브러리 | React 19.3.0 | https://react.dev | 화면 구성 | MIT | 사용 중 |
 | 라이브러리 | Tailwind CSS 4.3.3 | https://tailwindcss.com | 스타일 | MIT | 사용 중 |
+| 글꼴 | Pretendard v1.3.9 | https://github.com/orioncactus/pretendard | 화면 글꼴 (11/21 스타일 타일에서 사용, 앱 적용 예정). 스타일 타일은 CDN 링크, 앱에 넣을 때는 파일을 프로젝트에 포함 | SIL Open Font License 1.1 (상업 이용 가능, 저작권 고지 유지) | 사용 중 |
 | 라이브러리 | TypeScript 5 | https://www.typescriptlang.org | 타입 검사 | Apache-2.0 | 사용 중 |
 | 라이브러리 | ESLint 9, eslint-config-next | https://eslint.org | 코드 검사 | MIT | 사용 중 |
 | 라이브러리 | Vitest | https://vitest.dev | 단위 테스트 (지표 등급, 역량 매칭 등) | MIT | 사용 중 (개발 전용) |
