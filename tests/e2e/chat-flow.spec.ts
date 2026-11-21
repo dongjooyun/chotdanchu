@@ -18,6 +18,11 @@ async function chooseRole(page: Page, role: string) {
   );
 }
 
+/** 메뉴에서 화면을 바꾼다 (PC 사이드바, 모바일 하단 탭 모두 같은 버튼) */
+async function openView(page: Page, name: "챗봇" | "기업 카드 모음" | "튜토리얼") {
+  await page.locator('[data-el="메뉴"]').getByRole("button", { name: new RegExp(`^${name}`) }).click();
+}
+
 async function searchCompany(page: Page, name: string) {
   await page.getByLabel("메시지 입력").fill(name);
   await page.getByRole("button", { name: "보내기" }).click();
@@ -57,7 +62,8 @@ test("E2E-03 동명 회사: 후보 2곳을 보여 주고 고르면 기업 카드
   await cardLog.getByText("어떻게 도출했나요?").click();
   await expect(cardLog.getByText("compute_indicators")).toBeVisible();
   // 기업 카드 다음에는 3년차 공고 비교 말풍선이 오고, 그 진행 기록에는 공고 비교 도구 줄이 있다 (CDC-16)
-  await expect(page.getByText(/서비스기획 직무에서 신입 때 쌓는 역량과 비교하면, 3년차 공고\(.+\)가 요구하는 역량 \d+개 중 \d+개는 신입 때 쌓는 역량이고, \d+개는 다른 직무 역량과 겹치고, \d+개는 따로 채워야 해요/)).toBeVisible();
+  await expect(page.getByText(/서비스기획 직무에서 신입 때 쌓을 수 있는 역량과 비교했어요/)).toBeVisible();
+  await expect(page.getByText(/신입 서비스기획 직무 때 쌓을 수 있는 역량: \d+개/)).toBeVisible();
   const careerLog = page.locator("details").filter({ hasText: "compare_career_posting" }).last();
   await careerLog.getByText("어떻게 도출했나요?").click();
   await expect(careerLog.getByText(/compare_career_posting/)).toBeVisible();
@@ -103,24 +109,28 @@ test("E2E-07 없는 회사를 입력하면 안내 문구가 나오고 화면이 
   await expect(page.getByLabel("메시지 입력")).toBeEnabled();
 });
 
-test("E2E-08 저장한 기업이 기업 카드 모음에 쌓이고, 같은 기업은 한 장, 새로고침해도 남는다", async ({ page }) => {
+test("E2E-08 저장한 기업이 기업 카드 모음 메뉴에 쌓이고, 같은 기업은 한 장, 새로고침해도 남는다", async ({ page }) => {
   await chooseRole(page, "서비스기획");
   await searchCompany(page, "별하늘랩스");
-  await expect(page.getByText("총 0장")).toBeVisible();
   await page.getByRole("button", { name: "기업 카드 저장하기" }).click();
-  await expect(page.getByText("총 1장")).toBeVisible();
   await searchCompany(page, "별하늘랩스");
   await expect(page.getByText(/공식 출처로 확인했어요/)).toHaveCount(2);
   // 같은 기업은 이미 저장되어 두 번째 카드의 버튼도 "저장했어요"로 보인다
   await expect(page.getByRole("button", { name: "저장했어요" })).toHaveCount(2);
-  await expect(page.getByText("총 1장")).toBeVisible();
   await searchCompany(page, "청솔기계");
   await page.getByRole("button", { name: /대표/ }).first().click();
   await page.getByRole("button", { name: "기업 카드 저장하기" }).click();
+  await openView(page, "기업 카드 모음");
   await expect(page.getByText("총 2장")).toBeVisible();
   await expect(page.getByText("기본 기준", { exact: true })).toHaveCount(2);
+  // 모은 직무를 이름으로 나열한다 ("직무 1/3" 같은 분수 표기 없음)
+  await expect(page.locator('[data-el="내 카드 모음"]')).not.toContainText("/3)");
   await page.reload();
+  await openView(page, "기업 카드 모음");
   await expect(page.getByText("총 2장")).toBeVisible();
+  // 대화 내용도 새로고침 뒤에 남는다
+  await openView(page, "챗봇");
+  await expect(page.getByText(/공식 출처로 확인했어요/).first()).toBeVisible();
 });
 
 test("E2E-09 가로 스크롤이 생기지 않는다 (기업 카드와 리포트 카드가 나온 뒤)", async ({ page }) => {
@@ -198,6 +208,7 @@ test("E2E-13 맞대결 7판을 끝내면 내 성향과 맞춤 판정 리포트�
   await expect(page.getByText("내 성향은 안정·시스템 지향이에요.")).toBeVisible();
   await expect(page.getByText("내 성향으로 판정한 최종 판단 리포트예요")).toBeVisible();
   await expect(page.locator(".chat .flip").last()).toContainText("안정·시스템 지향");
+  await openView(page, "기업 카드 모음");
   await expect(page.getByText("맞춤 판정 완료")).toBeVisible();
 });
 
@@ -225,38 +236,70 @@ test("E2E-15 맞대결을 다시 해 성향이 바뀌면 저장 카드를 다시
   await expect(dialog).toBeVisible();
   await dialog.getByRole("button", { name: "새 성향으로 다시 판정" }).click();
   await expect(dialog).toBeHidden();
-  // 모음에서 카드를 열면 새 성향이 적혀 있다
+  // 모음에서 카드를 열면 새 성향이 적혀 있다. 창은 화면 가운데에 뜨고 X로 닫힌다
+  await openView(page, "기업 카드 모음");
   await page.locator(".coll-title").first().click();
-  await expect(page.getByRole("dialog", { name: "기업 카드 보기" })).toContainText("자율·개척 지향");
+  const card = page.getByRole("dialog", { name: "기업 카드 보기" });
+  await expect(card).toContainText("자율·개척 지향");
+  const box = (await card.boundingBox())!;
+  const vp = page.viewportSize()!;
+  expect(Math.abs(box.x + box.width / 2 - vp.width / 2)).toBeLessThan(4);
+  await card.getByRole("button", { name: "닫기" }).click();
+  await expect(card).toBeHidden();
 });
 
-test("E2E-16 리포트 카드에서 요약·근거 카드를 이미지로 저장하면 PNG가 내려받아지고, QR 링크로 같은 카드가 다시 열린다", async ({ page }) => {
+test("E2E-16 리포트 카드: 보이는 면 하나를 이미지로 저장하고, 카드를 눌러 뒤집고, QR 링크로 같은 카드가 다시 열린다", async ({ page }) => {
   await chooseRole(page, "마케팅");
   await searchCompany(page, "별하늘랩스");
   await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
   await expect(page.getByText("최종 판단 리포트예요")).toBeVisible();
   const label = (await page.locator('.chat [data-el="판정 라벨"] b').last().textContent())?.trim();
   expect(label).toBeTruthy();
-  // 앞면에 QR과 역량 갭 세 줄이 있다
+  // 앞면에 QR과 역량 갭 줄이 있다
   await expect(page.locator('.chat [data-el="카드 QR"] svg').last()).toBeVisible();
-  await expect(page.getByText("마케팅 신입 때 쌓는 역량").last()).toBeVisible();
-  // 이미지로 저장: 공유 창 대신 항상 내려받기로 끝나게 해서 요약, 근거 카드를 각각 확인한다
+  await expect(page.getByText("신입 마케팅 직무 때 쌓을 수 있는 역량").last()).toBeVisible();
+  // 이미지로 저장: 공유 창 대신 항상 내려받기로 끝나게 해서 파일 이름을 확인한다
   await page.evaluate(() => Object.defineProperty(navigator, "canShare", { value: undefined, configurable: true }));
-  for (const face of ["요약", "근거"]) {
+  const save = async (face: string) => {
     const [download] = await Promise.all([
       page.waitForEvent("download", { timeout: 20000 }),
       page.getByRole("button", { name: `${face} 카드 저장하기` }).last().click(),
     ]);
-    expect(download.suggestedFilename()).toBe(`첫단추-별하늘랩스(주)-마케팅-${face}.png`);
-  }
+    expect(download.suggestedFilename()).toBe(`첫단추-별하늘랩스(주)-마케팅-${face}카드.png`);
+  };
+  await save("요약");
+  // 카드 아무 곳이나 누르면 뒤집히고, 저장 버튼도 근거 카드로 바뀐다
+  const flip = page.locator(".chat .flip").last();
+  await flip.click({ position: { x: 20, y: 120 } });
+  await expect(flip).toHaveClass(/is-back/);
+  await expect(page.locator('.chat [data-el="역량 비교 상세"]').last()).toContainText("마케팅 직무에서 신입 때 쌓을 수 있는 역량과 비교했어요");
+  await save("근거");
   await expect(page.getByText("이미지를 만들지 못했어요")).toHaveCount(0);
-  // 뒷면에는 역량 비교 상세가 있다
-  await page.getByRole("button", { name: "근거 보기" }).last().click();
-  await expect(page.locator('.chat [data-el="역량 비교 상세"]').last()).toContainText("마케팅 직무에서 신입 때 쌓는 역량과 견준 결과예요");
   // QR이 여는 주소로 가면 같은 라벨의 카드가 다시 그려진다
   const url = new URL(page.url());
   await page.goto(`${url.origin}/card?c=mock-001&r=${encodeURIComponent("마케팅")}`);
   await expect(page.locator('[data-el="공유 카드"] [data-el="판정 라벨"] b')).toHaveText(label!);
   await page.goto(`${url.origin}/card?c=none&r=${encodeURIComponent("마케팅")}`);
   await expect(page.getByText("열 수 없는 카드 링크예요")).toBeVisible();
+});
+
+test("E2E-17 첫 직무 선택도 내 말풍선으로 남고, 메뉴로 튜토리얼, 챗봇, 기업 카드 모음을 오간다", async ({ page }) => {
+  await chooseRole(page, "운영");
+  // 첫 인사는 그대로 남고, 내가 고른 직무가 내 말풍선으로 붙는다
+  await expect(page.getByText("먼저 어떤 직무로 준비하세요?")).toBeVisible();
+  await expect(page.locator('[data-el="내 말풍선"], .bubble-user').filter({ hasText: "운영" }).first()).toBeVisible();
+  await openView(page, "튜토리얼");
+  await expect(page.locator('[data-el="튜토리얼"]')).toBeVisible();
+  await expect(page.getByLabel("메시지 입력")).toBeHidden();
+  await openView(page, "기업 카드 모음");
+  await expect(page.locator('[data-el="내 카드 모음"]')).toBeVisible();
+  await openView(page, "챗봇");
+  await expect(page.getByLabel("메시지 입력")).toBeVisible();
+  // 대화 새로 시작: 확인 창(가운데, X 닫기) 뒤에 말풍선이 지워지고 직무는 남는다
+  await page.getByRole("button", { name: "대화 새로 시작" }).click();
+  const dlg = page.getByRole("dialog", { name: "대화를 새로 시작할까요?" });
+  await expect(dlg).toBeVisible();
+  await dlg.getByRole("button", { name: "새로 시작" }).click();
+  await expect(page.getByText("운영 직무로 볼게요. 어느 회사가 궁금하세요?")).toBeVisible();
+  await expect(page.getByText("먼저 어떤 직무로 준비하세요?")).toHaveCount(0);
 });

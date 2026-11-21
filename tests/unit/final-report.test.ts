@@ -1,8 +1,8 @@
 // 최종 판단 리포트 (CDC-16) 테스트. 역량 갭은 GAP-{번호}, 판정 라벨은 FIT-{번호}.
 // 설계: 라벨 표는 결정 테이블(두 축 x 높음·낮음 + 정보 보강), 기준값은 경계값 분석(기반 0.75, 이어짐 0.6의 바로 위·아래)으로 고른다 (docs/testing.md).
 import { describe, expect, test } from "vitest";
-import { classifyRequirement, computeCareerGap, connectRatio, gapDetail } from "@/lib/career-gap";
-import { realCompanies } from "@/lib/data";
+import { YEAR3_EXPECTED, classifyPhrase, computeCareerGap, connectRatio, gapDetail } from "@/lib/career-gap";
+import { getCompetencies, realCompanies } from "@/lib/data";
 import { BASE_THRESHOLD, CONNECT_THRESHOLD, baseScore, decideFit, equalWeights } from "@/lib/fit-label";
 import { computeIndicators } from "@/lib/indicators";
 import { preferenceFromPicks } from "@/lib/matchup";
@@ -36,23 +36,15 @@ function report(companyId: string, role: Role, pref = skippedPreference()) {
 }
 
 describe("역량 갭 (3년차 공고 비교)", () => {
-  test("GAP-01 같은 직무 신입 역량이면 이어짐, 3년차 예상 역량이거나 어디에도 없으면 공백, 다른 직무 신입 역량이면 일부", () => {
-    expect(classifyRequirement({ text: "", phrases: ["프로젝트 관리"] }, "서비스기획").kind).toBe("connected");
-    expect(classifyRequirement({ text: "", phrases: ["프로모션 기획"] }, "마케팅").kind).toBe("connected");
-    // 그로스·리텐션은 마케팅 사전에 있지만 3년차 예상 역량이라 신입 때 쌓는 역량이 아니다 (3년차에 새로 요구)
-    const g3 = classifyRequirement({ text: "", phrases: ["그로스 해킹"] }, "마케팅");
-    expect(g3.kind).toBe("missing");
-    expect(g3.newAtYear3).toBe(true);
-    // 사전에 없는 표현은 공백이고 사전 보강 후보로 모은다
-    const none = classifyRequirement({ text: "", phrases: ["Braze 사용"] }, "마케팅");
-    expect(none.kind).toBe("missing");
-    expect(none.unmatched).toEqual(["Braze 사용"]);
-    // 다른 직무 사전(서비스기획)의 신입 역량과 겹치면 일부, 어느 직무인지 남는다
-    const part = classifyRequirement({ text: "", phrases: ["유관 부서 협업"] }, "마케팅");
-    expect(part.kind).toBe("partial");
-    expect(part.fromRoles).toContain("서비스기획");
-    // 표현이 여럿이면 하나라도 신입 역량에 맞을 때 이어짐
-    expect(classifyRequirement({ text: "", phrases: ["Braze 사용", "프로모션 기획"] }, "마케팅").kind).toBe("connected");
+  test("GAP-01 같은 직무 신입 역량이면 이어짐(쌓을 수 있음), 3년차 예상 역량, 다른 직무 역량, 사전에 없는 표현은 공백(따로 채움)", () => {
+    expect(classifyPhrase("프로젝트 관리", "서비스기획").kind).toBe("connected");
+    expect(classifyPhrase("프로모션 기획", "마케팅").kind).toBe("connected");
+    // 그로스·리텐션은 마케팅 사전에 있지만 3년차 예상 역량이라 신입 때 쌓을 수 있는 역량이 아니다
+    expect(classifyPhrase("그로스 해킹", "마케팅")).toEqual({ name: "그로스·리텐션", kind: "missing", why: "year3" });
+    // 다른 직무(서비스기획) 사전에만 있는 역량도 이 직무 신입 때는 안 쌓이므로 따로 채움 (11/22 "일부" 폐지)
+    expect(classifyPhrase("유관 부서 협업", "마케팅")).toMatchObject({ kind: "missing", why: "other_role" });
+    // 사전에 없는 표현은 따로 채움이고 사전 보강 후보로 모은다
+    expect(classifyPhrase("Braze 사용", "마케팅")).toEqual({ name: "Braze 사용", kind: "missing", why: "unknown" });
   });
 
   test("GAP-02 시연 기업 4곳 x 직무 3개 모두 3년차 공고와 갭 결과가 있고, 원문 링크가 공식 채용 페이지다", () => {
@@ -61,8 +53,7 @@ describe("역량 갭 (3년차 공고 비교)", () => {
         const gap = computeCareerGap(id, role, "live");
         expect(gap, `${id} ${role}`).not.toBeNull();
         expect(gap!.posting.url).toMatch(/^https:\/\/(kurly\.career\.greetinghr\.com|www\.musinsacareers\.com|careers\.kakao\.com|careers\.daangn\.com)\//);
-        const c = gap!.counts;
-        expect(c.connected + c.partial + c.missing).toBeGreaterThan(0);
+        expect(gap!.counts.connected + gap!.counts.missing).toBeGreaterThan(0);
       }
   });
 
@@ -81,24 +72,24 @@ describe("역량 갭 (3년차 공고 비교)", () => {
       }
   });
 
-  test("GAP-04 공백 표현은 사전 보강 후보로 모인다", () => {
+  test("GAP-04 사전에 없는 표현은 사전 보강 후보로 모인다", () => {
     const gap = computeCareerGap("01137727", "마케팅", "live")!;
     expect(gap.unmatched).toContain("Braze 사용");
-    const missingPhrases = gap.items.filter((i) => i.kind === "missing").flatMap((i) => i.names);
-    expect(gap.unmatched).toEqual(missingPhrases);
+    expect(gap.unmatched).toEqual(gap.items.filter((i) => i.why === "unknown").map((i) => i.name));
   });
 
-  test("GAP-05 우대 항목과 연차·태도 문장(표현 없음)은 개수에서 뺀다", () => {
+  test("GAP-05 우대 항목과 연차·태도 문장(표현 없음)은 세지 않고, 같은 역량은 한 번만 센다", () => {
     const gap = computeCareerGap("01547845", "운영", "live")!;
-    const counted = gap.posting.requirements.filter((r) => !r.preferred && r.phrases.length > 0).length;
-    expect(gap.counts.connected + gap.counts.partial + gap.counts.missing).toBe(counted);
-    expect(gap.posting.requirements.length).toBeGreaterThan(counted);
+    const phrases = gap.posting.requirements.filter((r) => !r.preferred).flatMap((r) => r.phrases);
+    expect(gap.counts.connected + gap.counts.missing).toBeLessThanOrEqual(phrases.length);
+    expect(new Set(gap.items.map((i) => i.name)).size).toBe(gap.items.length);
+    expect(gap.items.some((i) => i.name === "SQL 쿼리 작성")).toBe(false); // 우대 항목
   });
 
-  test("GAP-06 이어짐 비율: 일부는 절반, 셀 문장이 없으면 null", () => {
-    expect(connectRatio({ connected: 1, partial: 2, missing: 1 })).toBe(0.5);
-    expect(connectRatio({ connected: 5, partial: 0, missing: 0 })).toBe(1);
-    expect(connectRatio({ connected: 0, partial: 0, missing: 0 })).toBeNull();
+  test("GAP-06 이어짐 비율 = 쌓을 수 있는 역량 / 전체, 셀 역량이 없으면 null", () => {
+    expect(connectRatio({ connected: 3, missing: 2 })).toBe(0.6);
+    expect(connectRatio({ connected: 5, missing: 0 })).toBe(1);
+    expect(connectRatio({ connected: 0, missing: 0 })).toBeNull();
   });
 
   test("GAP-07 리포트의 갭 숫자와 채팅 문장의 숫자가 계산 결과와 같다", () => {
@@ -107,39 +98,43 @@ describe("역량 갭 (3년차 공고 비교)", () => {
         const gap = computeCareerGap(id, role, "live")!;
         expect(report(id, role).gap).toEqual(gap.counts);
         const msg = careerMessage(gap, role);
-        const total = gap.counts.connected + gap.counts.partial + gap.counts.missing;
-        expect(msg).toContain(`요구하는 역량 ${total}개 중 ${gap.counts.connected}개는 신입 때 쌓는 역량이고, ${gap.counts.partial}개는 다른 직무 역량과 겹치고, ${gap.counts.missing}개는 따로 채워야 해요`);
+        expect(msg).toContain(`3년차 때 요구되는 역량: ${gap.counts.connected + gap.counts.missing}개`);
+        expect(msg).toContain(`신입 ${role} 직무 때 쌓을 수 있는 역량: ${gap.counts.connected}개`);
+        expect(msg).toContain(`따로 채워야 하는 역량: ${gap.counts.missing}개`);
       }
   });
 });
 
 describe("역량 갭 표시", () => {
-  test("GAP-08 이름 목록은 개수와 맞고, 3년차에 새로 요구되는 역량과 다른 직무는 표시한다", () => {
+  test("GAP-08 이름 목록은 개수와 같고, 3년차 때 새로 요구되는 역량에는 표시가 붙는다", () => {
     for (const id of DEMO)
       for (const role of ROLES) {
         const gap = computeCareerGap(id, role, "live")!;
         const d = gapDetail(gap);
-        expect(d.connected.length === 0).toBe(gap.counts.connected === 0);
-        expect(d.partial.length === 0).toBe(gap.counts.partial === 0);
-        expect(d.missing.length === 0).toBe(gap.counts.missing === 0);
-        for (const n of d.partial) expect(n).toMatch(/\((서비스기획|마케팅|운영)/);
+        expect(d.connected).toHaveLength(gap.counts.connected);
+        expect(d.missing).toHaveLength(gap.counts.missing);
       }
-    // 무신사 마케팅: CRM 마케팅은 신입 역량(이어짐), 실험·협업은 서비스기획 역량과 겹침(일부), Braze는 사전에 없는 표현(공백)
     const d = gapDetail(computeCareerGap("01137727", "마케팅", "live")!);
     expect(d.connected).toContain("CRM 마케팅");
-    expect(d.partial).toContain("협업·조율(서비스기획)");
     expect(d.missing).toContain("Braze 사용");
-    // 3년차 예상 역량이 공백으로 나오면 이름 뒤에 표시가 붙는다
-    expect(gapDetail({ ...computeCareerGap("01137727", "마케팅", "live")!, items: [{ text: "", kind: "missing", names: ["그로스·리텐션"], newAtYear3: true }] }).missing).toEqual(["그로스·리텐션(3년차에 새로 요구)"]);
+    expect(d.missing).toContain("그로스·리텐션(3년차 때 새로 요구)");
   });
 
-  test("GAP-09 채팅 안내는 직무와 신입 기준을 말하고, 공고가 경력 몇 년인지와 역량 이름을 보인다", () => {
-    const gap = computeCareerGap("01137727", "마케팅", "live")!;
-    const msg = careerMessage(gap, "마케팅");
-    expect(msg).toContain("마케팅 직무에서 신입 때 쌓는 역량과 비교하면");
+  test("GAP-09 채팅 안내는 한 줄씩 끊어 쓰고, 직무와 신입 기준, 공고 연차, 역량 이름을 보인다", () => {
+    const msg = careerMessage(computeCareerGap("01137727", "마케팅", "live")!, "마케팅");
+    expect(msg.split("\n").length).toBeGreaterThanOrEqual(4);
+    expect(msg).toContain("마케팅 직무에서 신입 때 쌓을 수 있는 역량과 비교했어요");
     expect(msg).toContain("경력 4년 이상");
-    expect(msg).toContain("따로 채워야 하는 것:");
     expect(msg).toContain("Braze 사용");
+    expect(msg).not.toMatch(/견주|견준/);
+  });
+
+  test("GAP-10 사전의 3년차 예상 역량 10개는 모두 사전에 있고 직무가 맞다", () => {
+    expect(YEAR3_EXPECTED).toHaveLength(10);
+    for (const y of YEAR3_EXPECTED) {
+      const dict = getCompetencies(y.role);
+      expect(dict.find((c) => c.id === y.id)?.name, y.id).toBe(y.name);
+    }
   });
 });
 

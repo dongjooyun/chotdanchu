@@ -19,6 +19,18 @@ const useOrigin = () => useSyncExternalStore(noopSubscribe, () => window.locatio
 
 const isFitLabel = (s: string): s is FitLabel => s in FIT_DESCRIPTIONS;
 
+/** 뒤집기 아이콘 (두 화살표가 도는 모양) */
+function FlipIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 12a9 9 0 0 1 15.5-6.2L21 8" />
+      <path d="M21 3v5h-5" />
+      <path d="M21 12a9 9 0 0 1-15.5 6.2L3 16" />
+      <path d="M3 21v-5h5" />
+    </svg>
+  );
+}
+
 /** 앞면: 한눈에 보는 결론. 판정 결과가 가장 크다 */
 function Front({
   d,
@@ -49,9 +61,9 @@ function Front({
         </div>
         {missingRole ? (
           <>
-            <div className="rc-fit" data-el="판정 라벨">
+            <div className="rc-fit rc-fit-empty" data-el="판정 라벨">
               <span className="small muted">판정 결과</span>
-              <b>이 직무는 아직 안 봤어요</b>
+              <p className="small">{missingRole} 직무로는 아직 판정하지 않았어요.</p>
             </div>
             {onRequestRole && (
               <button type="button" className="btn btn-link small" style={{ alignSelf: "flex-start" }} onClick={() => onRequestRole(missingRole)}>
@@ -81,18 +93,14 @@ function Front({
               {d.gap ? (
                 <>
                   <div>
-                    <dt>3년차 공고 요구 역량</dt>
+                    <dt>3년차 때 요구되는 역량</dt>
                     <dd>
-                      {d.gap.connected + d.gap.partial + d.gap.missing}개{d.careerYears ? ` (경력 ${d.careerYears})` : ""}
+                      {d.gap.connected + d.gap.missing}개{d.careerYears ? ` (경력 ${d.careerYears})` : ""}
                     </dd>
                   </div>
                   <div>
-                    <dt>{d.role} 신입 때 쌓는 역량</dt>
+                    <dt>신입 {d.role} 직무 때 쌓을 수 있는 역량</dt>
                     <dd>{d.gap.connected}개</dd>
-                  </div>
-                  <div>
-                    <dt>다른 직무와 겹치는 역량</dt>
-                    <dd>{d.gap.partial}개</dd>
                   </div>
                   <div>
                     <dt>따로 채워야 하는 역량</dt>
@@ -101,7 +109,7 @@ function Front({
                 </>
               ) : (
                 <div>
-                  <dt>3년차 공고 요구 역량</dt>
+                  <dt>3년차 때 요구되는 역량</dt>
                   <dd>확인 불가</dd>
                 </div>
               )}
@@ -150,11 +158,10 @@ function Back({ d, hidden }: { d: ReportCardData; hidden: boolean }) {
         )}
         {d.gapDetail && (
           <div className="small" data-el="역량 비교 상세">
-            <b>3년차 공고 요구 역량 비교</b>
-            <p className="muted">{d.role} 직무에서 신입 때 쌓는 역량과 견준 결과예요</p>
+            <b>3년차 때 요구되는 역량 비교</b>
+            <p className="muted">{d.role} 직무에서 신입 때 쌓을 수 있는 역량과 비교했어요</p>
             <ul>
-              {d.gapDetail.connected.length > 0 && <li>신입 때 쌓는 역량: {d.gapDetail.connected.join(", ")}</li>}
-              {d.gapDetail.partial.length > 0 && <li>다른 직무와 겹치는 역량: {d.gapDetail.partial.join(", ")}</li>}
+              {d.gapDetail.connected.length > 0 && <li>신입 때 쌓을 수 있는 역량: {d.gapDetail.connected.join(", ")}</li>}
               {d.gapDetail.missing.length > 0 && <li>따로 채워야 하는 역량: {d.gapDetail.missing.join(", ")}</li>}
             </ul>
           </div>
@@ -184,7 +191,11 @@ function Back({ d, hidden }: { d: ReportCardData; hidden: boolean }) {
           )}
         </section>
       </div>
-      <div className="rc-foot">수치 기반 등급은 공개 데이터로 계산했어요 · 기준일 {d.checkedAt}</div>
+      <div className="rc-foot">
+        수치 기반 등급은 공개 데이터로 계산했어요
+        <br />
+        기준일 {d.checkedAt}
+      </div>
     </div>
   );
 }
@@ -215,15 +226,21 @@ export function ReportCard({
 
   /** 이미지로 저장: 요약(앞면) 또는 근거(뒷면) 카드를 사진으로 만든다. 돌아가 있어도 같은 결과가 나오게, 저장하는 동안만 화면 밖에 그 면을 따로 그린다 */
   const [shot, setShot] = useState<"idle" | "making" | "failed">("idle");
-  const [face, setFace] = useState<"요약" | "근거">("요약");
+  const face: "요약" | "근거" = back ? "근거" : "요약";
   const capRef = useRef<HTMLDivElement>(null);
-  const fileName = `첫단추-${shown.companyName}-${shown.role}-${face}.png`;
+  const fileName = `첫단추-${shown.companyName}-${shown.role}-${face}카드.png`;
   useEffect(() => {
     if (shot !== "making") return;
     (async () => {
       try {
         await document.fonts?.ready;
-        const blob = capRef.current ? await toBlob(capRef.current, { pixelRatio: 2, cacheBust: true, backgroundColor: "#ffffff" }) : null;
+        const blob = capRef.current ? await toBlob(capRef.current, {
+              pixelRatio: 2,
+              cacheBust: true,
+              backgroundColor: "#ffffff",
+              // 화면 밖(left -9999px)에 둔 위치를 그대로 복제하면 빈 흰 이미지가 나온다. 찍을 때만 제자리로 돌린다
+              style: { position: "static", left: "0", top: "0", margin: "0" },
+            }) : null;
         if (!blob) throw new Error("empty");
         const file = new File([blob], fileName, { type: "image/png" });
         // 휴대폰에서는 공유 창으로 갤러리에 저장하고, 안 되면 파일로 내려받는다
@@ -275,30 +292,34 @@ export function ReportCard({
     <div className="flip-wrap">
       {/* 직무 탭은 카드 밖에 둔다. 이미지로 저장할 때 카드만 찍히게 하려는 것 (11/21) */}
       {tabs}
-      <div className={`flip ${back ? "is-back" : ""} ${flipping ? "flipping" : ""}`} data-el="리포트 카드">
+      {/* 카드 아무 곳이나 누르면 뒤집힌다 (링크와 버튼은 제외). 키보드는 아래 "근거 보기" 버튼으로 */}
+      <div
+        className={`flip ${back ? "is-back" : ""} ${flipping ? "flipping" : ""} ${missingRole ? "" : "is-clickable"}`}
+        data-el="리포트 카드"
+        onClick={(e) => {
+          if (missingRole || (e.target as HTMLElement).closest("a, button")) return;
+          flip();
+        }}
+      >
         <div className="flip-inner">
           <Front d={shown} missingRole={missingRole} onRequestRole={onRequestRole} hidden={back} />
           <Back d={shown} hidden={!back} />
         </div>
         <span className="sheen" aria-hidden="true" />
       </div>
+      {/* 지금 보이는 면 하나만 저장한다. 뒤집으면 저장 버튼도 그 면으로 바뀐다 */}
       <div className="rc-actions">
-        {(["요약", "근거"] as const).map((f) => (
-          <button
-            key={f}
-            type="button"
-            className={f === "요약" ? "btn btn-primary" : "btn"}
-            onClick={() => {
-              setFace(f);
-              setShot("making");
-            }}
-            disabled={Boolean(missingRole) || shot === "making" || !shown.fitLabel}
-            data-el={`${f} 카드 저장`}
-          >
-            {shot === "making" && face === f ? "이미지 만드는 중" : `${f} 카드 저장하기`}
-          </button>
-        ))}
-        <button type="button" className="btn" onClick={flip} disabled={Boolean(missingRole)}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => setShot("making")}
+          disabled={Boolean(missingRole) || shot === "making" || !shown.fitLabel}
+          data-el="카드 저장"
+        >
+          {shot === "making" ? "이미지 만드는 중" : `${face} 카드 저장하기`}
+        </button>
+        <button type="button" className="btn" onClick={flip} disabled={Boolean(missingRole)} data-el="카드 뒤집기">
+          <FlipIcon />
           {back ? "요약 보기" : "근거 보기"}
         </button>
       </div>

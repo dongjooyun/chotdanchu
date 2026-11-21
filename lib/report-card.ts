@@ -11,7 +11,7 @@ export interface ReportCardData {
   logo: string | null;
   /** 이니셜 두 글자. 예: "카카" */
   monogram: string;
-  /** 예: "외감 · 스타트업" */
+  /** 예: "감사보고서 공개 · 스타트업" */
   typeLabel: string;
   role: Role;
   /** 판정 라벨 (PRD 06, lib/fit-label.ts). 코드가 정한다. 폐업·휴업 회사는 null */
@@ -23,9 +23,9 @@ export interface ReportCardData {
   /** 내가 중시한 지표 3개와 이 회사의 등급 */
   topIndicators: { id: IndicatorId; grade: Grade | null }[];
   /** 3년차 공고 대비 역량 갭 개수 (PRD 05, lib/career-gap.ts). 공고가 없으면 null */
-  gap: { connected: number; partial: number; missing: number } | null;
+  gap: { connected: number; missing: number } | null;
   /** 역량 갭에서 맞은 역량 이름 (카드 뒷면에 보인다). 공고가 없으면 생략 */
-  gapDetail?: { connected: string[]; partial: string[]; missing: string[] };
+  gapDetail?: { connected: string[]; missing: string[] };
   /** 3년차 공고의 원문 요구 연차. 예: "5년 이상" */
   careerYears?: string;
   /** 3년차 공고 출처 한 줄. 공고가 없으면 null */

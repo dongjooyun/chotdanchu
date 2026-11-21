@@ -17,7 +17,10 @@ function summaryOf(r: AnalysisRecord) {
   const roles = Object.keys(r.reports ?? {}) as Role[];
   const role = r.lastRole ?? roles[0] ?? null;
   const saved = role ? r.reports?.[role] : undefined;
-  return { role, personalized: Boolean(saved?.personalized), count: roles.length, saved };
+  // 모은 직무를 고정 순서로 나열한다. "직무 1/3" 같은 분수 표기는 알아보기 어려워 없앴다 (11/22)
+  const ORDER: Role[] = ["서비스기획", "마케팅", "운영"];
+  const roleList = ORDER.filter((x) => roles.includes(x)).join(" · ");
+  return { role, personalized: Boolean(saved?.personalized), count: roles.length, saved, roleList };
 }
 
 function StateTag({ personalized }: { personalized: boolean }) {
@@ -86,7 +89,7 @@ export function CardCollection({
                   <span className="coll-sub">
                     <StateTag personalized={s.personalized} />
                     <span className="small muted">
-                      {s.role ? `${s.role} (직무 ${s.count}/3) · ` : ""}
+                      {s.roleList ? `${s.roleList} · ` : ""}
                       {day(s.saved?.savedAt ?? r.analyzedAt)}
                     </span>
                   </span>
@@ -110,7 +113,7 @@ export function CardCollection({
                   <CompanyMark logo={logoOf(r.companyId)} monogram={monogram(r.name)} />
                   <span className="gc-name">{r.name}</span>
                   <span className="gc-role">
-                    {s.role ? `${s.role} (직무 ${s.count}/3) · ` : ""}
+                    {s.roleList ? `${s.roleList} · ` : ""}
                     {day(s.saved?.savedAt ?? r.analyzedAt)}
                   </span>
                   {s.personalized ? <StateTag personalized /> : <span className="gc-cta">맞춤 판정 받기</span>}

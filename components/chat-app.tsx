@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { AppNav, type AppView } from "@/components/app-nav";
 import { AgentLogPanel } from "@/components/agent-log-panel";
 import { AppDialog } from "@/components/app-dialog";
 import { AppHeader } from "@/components/app-header";
@@ -10,6 +11,7 @@ import { Disclaimer } from "@/components/disclaimer";
 import { MessageList, type ChatMessage, type MessageWidget, type WidgetHandlers } from "@/components/message-list";
 import type { QuickReply } from "@/components/quick-replies";
 import { useSession } from "@/components/use-session";
+import { useStoredState } from "@/components/use-stored-state";
 import type { AppMode, ChatRequest, ChatResponse, LogLine } from "@/lib/chat";
 import { preferenceFromPicks } from "@/lib/matchup";
 import { typeSentence } from "@/lib/preference-sentence";
@@ -96,6 +98,12 @@ async function fetchSentence(pref: Preference): Promise<{ sentence: string; by: 
   }
 }
 
+// 대화 내용 저장의 첫 값. useSyncExternalStore가 같은 값을 받도록 모듈 상수로 둔다
+const NO_MESSAGES: ChatMessage[] = [];
+const NO_LOG: LogLine[] = [];
+/** 대화를 저장하는 칸 이름. 목업과 실데이터 대화가 섞이지 않게 모드를 붙인다 */
+const chatKey = (mode: AppMode, name: string) => `chotdanchu:chat:v1:${mode}:${name}`;
+
 /** 단색 반짝임 아이콘 (AI 표시). 색은 글자색을 따른다 */
 function SparkleIcon() {
   return (
@@ -110,19 +118,24 @@ function SparkleIcon() {
 export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] }) {
   const EXAMPLE_REPLIES = exampleReplies(examples);
   const [session, setSession] = useSession();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  // 대화가 시작된 순간의 직무. 이후 직무를 바꿔도 첫 인사 문구는 그대로 둔다
-  const [introRole, setIntroRole] = useState<Role | null | undefined>(undefined);
-  const [log, setLog] = useState<LogLine[]>([]);
+  // 대화 내용(말풍선, 사고 과정, 지금 보는 회사)은 브라우저에 저장해서 새로고침, 뒤로 가기, 창을 닫았다 열어도 남긴다 (11/22)
+  const [messages, setMessages] = useStoredState(chatKey(mode, "messages"), NO_MESSAGES);
+  // 대화가 시작된 순간의 직무. 이후 직무를 바꿔도 첫 인사 문구는 그대로 둔다. "unset"은 아직 대화 전
+  const [introRaw, setIntroRaw] = useStoredState<Role | null | "unset">(chatKey(mode, "intro"), "unset");
+  const introRole = introRaw === "unset" ? undefined : introRaw;
+  const [log, setLog] = useStoredState(chatKey(mode, "log"), NO_LOG);
   /** 지금 보고 있는 회사 이름. 고정 정보줄에 보인다 */
-  const [company, setCompany] = useState<string | null>(null);
+  const [company, setCompany] = useStoredState<string | null>(chatKey(mode, "company"), null);
   /** 가장 최근에 분석한 기업의 카드 내용. 리포트 카드를 만들 때 쓴다 */
-  const [current, setCurrent] = useState<Analysis | null>(null);
+  const [current, setCurrent] = useStoredState<Analysis | null>(chatKey(mode, "current"), null);
+  /** 화면 메뉴: 챗봇(기본), 기업 카드 모음, 튜토리얼 */
+  const [view, setView] = useState<AppView>("chat");
+  /** "대화 새로 시작" 확인 창 */
+  const [resetAsk, setResetAsk] = useState(false);
   const [pending, setPending] = useState(false);
   const [think, setThink] = useState(false);
   /** 맞대결을 다시 해 성향이 바뀌었을 때 저장 카드를 어떻게 할지 묻는 창 */
   const [retype, setRetype] = useState<{ from: Preference; to: Preference; count: number } | null>(null);
-  const nextId = useRef(1);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const intro = introMessage(introRole === undefined ? session.role : introRole, EXAMPLE_REPLIES);
@@ -133,9 +146,11 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   }, [messages.length]);
 
   function push(...items: Omit<ChatMessage, "id">[]) {
-    if (introRole === undefined) setIntroRole(session.role);
-    const withIds = items.map((m) => ({ ...m, id: nextId.current++ }));
-    setMessages((prev) => [...prev, ...withIds]);
+    if (introRole === undefined) setIntroRaw(session.role);
+    setMessages((prev) => {
+      const base = prev.reduce((max, m) => Math.max(max, m.id), 0) + 1;
+      return [...prev, ...items.map((m, i) => ({ ...m, id: base + i }))];
+    });
   }
 
   function appendLog(lines: LogLine[]) {
@@ -168,7 +183,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
         step: 0,
         type: "tool_call",
         title: gap
-          ? `compare_career_posting: ${role} 3년차 공고와 역량 비교 (이어짐 ${gap.counts.connected}, 일부 ${gap.counts.partial}, 공백 ${gap.counts.missing})`
+          ? `compare_career_posting: ${role} 3년차 공고와 역량 비교 (신입 때 쌓을 수 있음 ${gap.counts.connected}, 따로 채움 ${gap.counts.missing})`
           : `compare_career_posting: ${role} 3년차 공고 없음`,
         reason: "공고 문장의 역량 표현을 역량 사전과 맞춰 코드가 분류",
         mode,
@@ -328,8 +343,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     if (value.startsWith("role:")) {
       const role = value.slice(5) as Role;
       setSession({ ...session, role });
-      // 첫 인사에서 고른 경우: 첫 인사가 회사 질문으로 바뀌므로 말풍선을 더하지 않는다
-      if (messages.length === 0) return;
+      // 첫 인사에서 골라도 다른 선택과 똑같이 내 말풍선(직무)과 회사 질문을 이어 붙인다. 첫 인사는 그대로 남는다 (11/22)
       push({ from: "user", text: role }, { from: "agent", text: askCompany(role), replies: EXAMPLE_REPLIES });
       return;
     }
@@ -378,9 +392,31 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
 
   const handlers: WidgetHandlers = { onPickCompany, onSaveCompany, isSaved, onMatchupDone, onMatchupSkip };
 
+  /** 대화 새로 시작: 말풍선과 사고 과정만 지운다. 고른 직무, 성향, 기업 카드 모음은 남는다 */
+  function resetChat() {
+    setMessages(NO_MESSAGES);
+    setLog(NO_LOG);
+    setCompany(null);
+    setCurrent(null);
+    setIntroRaw("unset");
+    setResetAsk(false);
+  }
+
   return (
     <>
-      <div className="app" data-think={think ? "open" : "closed"}>
+      <AppNav view={view} onChange={setView} count={session.analyzed.length} />
+      {view === "tutorial" && (
+        <section className="coll tutorial" data-el="튜토리얼">
+          <div className="coll-h">
+            <b>튜토리얼</b>
+          </div>
+          <p className="small muted" style={{ padding: "var(--s-5)" }}>
+            첫단추를 처음부터 끝까지 따라 해 보는 안내를 준비하고 있어요. 지금은 챗봇 메뉴에서 바로 시작해 주세요.
+          </p>
+        </section>
+      )}
+      {/* 메뉴를 바꿔도 대화와 맞대결 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}
+      <div className="app" data-think={think ? "open" : "closed"} hidden={view !== "chat"}>
         <AppHeader mode={mode} />
         {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}
         <div className="infobar" data-el="고정 정보줄">
@@ -400,6 +436,11 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
               </button>
             )}
           </span>
+          {messages.length > 0 && (
+            <button type="button" className="btn btn-link small" onClick={() => setResetAsk(true)} disabled={pending}>
+              대화 새로 시작
+            </button>
+          )}
           <button
             type="button"
             className="btn btn-ai think-toggle"
@@ -431,7 +472,31 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
         </div>
         <Disclaimer />
       </div>
-      <CardCollection records={session.analyzed} onPersonalize={onPersonalize} onRequestRole={onRequestRole} busy={pending} />
+      {view === "collection" && (
+        <CardCollection
+          records={session.analyzed}
+          onPersonalize={(r) => {
+            setView("chat");
+            onPersonalize(r);
+          }}
+          onRequestRole={(r, role) => {
+            setView("chat");
+            onRequestRole(r, role);
+          }}
+          busy={pending}
+        />
+      )}
+      <AppDialog open={resetAsk} title="대화를 새로 시작할까요?" choice onClose={() => setResetAsk(false)}>
+        <p className="dlg-text">지금까지의 말풍선과 에이전트 사고 과정이 지워져요. 고른 직무, 내 성향, 기업 카드 모음은 그대로 남아요.</p>
+        <div className="dlg-actions">
+          <button type="button" className="btn btn-primary" onClick={resetChat}>
+            새로 시작
+          </button>
+          <button type="button" className="btn" onClick={() => setResetAsk(false)}>
+            취소
+          </button>
+        </div>
+      </AppDialog>
       <AppDialog open={retype !== null} title="내 성향이 달라졌어요" choice onClose={() => closeRetype(false)}>
         {retype && (
           <div data-el="성향 변경 확인">

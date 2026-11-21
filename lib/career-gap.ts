@@ -1,15 +1,16 @@
 // 3년차 공고와 비교한 역량 갭 (PRD 05). 모두 결정적 코드다. 사용자의 이력서나 경력은 쓰지 않는다.
 // 실데이터 모드는 data/real/postings.json(준오 수동 확인 시드), 목업 모드는 data/mock/postings.json(가상 공고)을 쓴다.
 //
-// 무엇과 무엇을 견주나: "이 직무의 신입이 쌓는 역량"과 "3년차(경력 3~5년) 공고가 요구하는 역량".
-// 신입이 쌓는 역량 = 직무별 역량 사전(data/competencies/competencies.json)에서 3년차 예상 역량 10개(year3-expected.json)를 뺀 것.
-// 한계: 사전은 신입 공고와 3년차 공고를 나눠 모은 것이 아니라 Claude 초안을 공고 몇 건으로 검수한 것이고, 신입 공고는 수집하지 않는다.
+// 무엇과 무엇을 비교하나: "이 회사의 3년차(경력 3~5년) 공고가 요구하는 역량"과 "그 직무 신입이 쌓을 수 있는 역량".
+// - 3년차 쪽: 그 회사 공식 채용 페이지의 3년차 공고에서 요구 역량 문장을 발췌하고, 문장에서 역량 표현을 골랐다 (phrases)
+// - 신입 쪽: 직무별 역량 사전(data/competencies/competencies.json)에서, 3년차 때 새로 요구될 것으로 따로 표시한 10개
+//   (data/competencies/year3-expected.json)를 뺀 나머지다. 사전은 직무 단위라 회사마다 다르지 않다
 //
-// 분류 (팀 자체 기준, 11/22). 공고 문장 하나는 역량 표현(phrases)을 사전에 맞춰 아래 순서로 정한다.
-// - 이어짐: 같은 직무의 신입 역량에 있다
-// - 공백: 같은 직무의 3년차 예상 역량에 있다(3년차에 새로 요구, newAtYear3), 또는 어느 사전에도 없다(사전 보강 후보). 따로 채워야 한다
-// - 일부: 위에 없고 다른 직무의 신입 역량에 있다. 이 직무 일만으로는 안 쌓이고 다른 직무 일과 겹친다
-// 연차 조건, 태도(phrases가 빈 문장)와 우대 항목은 개수에서 뺀다.
+// 분류 (팀 자체 기준, 11/22). 역량 하나(표현 하나)를 단위로 센다. 같은 역량이 두 번 나오면 한 번만 센다.
+// - 이어짐(신입 때 쌓을 수 있는 역량): 같은 직무의 신입 역량에 있다
+// - 공백(따로 채워야 하는 역량): 3년차 때 새로 요구되는 역량이거나, 다른 직무의 역량이거나, 어느 사전에도 없다(사전 보강 후보)
+// 연차 조건, 태도(phrases가 빈 문장)와 우대 항목은 세지 않는다.
+// 11/22 결정: 예전의 "일부(다른 직무 사전에만 있음)"는 사용자에게 쓸모가 없어 없앴다. 다른 직무의 역량도 이 직무 신입 때는 안 쌓이므로 공백이다.
 import mockPostingsJson from "@/data/mock/postings.json";
 import realPostingsJson from "@/data/real/postings.json";
 import year3Json from "@/data/competencies/year3-expected.json";
@@ -44,30 +45,28 @@ export interface Posting {
   requirements: PostingRequirement[];
 }
 
-export type GapKind = "connected" | "partial" | "missing";
+export type GapKind = "connected" | "missing";
 
+/** 역량 하나의 분류 결과 */
 export interface GapItem {
-  text: string;
+  /** 화면에 보일 이름. 사전에 맞으면 사전 이름, 없으면 공고에서 고른 표현 */
+  name: string;
   kind: GapKind;
-  /** 맞은 역량 이름 (이어짐, 일부, 3년차에 새로 요구). 사전에 없으면 문장에서 고른 표현 */
-  names: string[];
-  /** 공백 중 같은 직무 사전의 3년차 예상 역량에 맞은 것 (신입 때는 안 쌓이고 3년차에 새로 요구) */
-  newAtYear3?: boolean;
-  /** 일부일 때 그 역량이 있는 다른 직무 */
-  fromRoles?: Role[];
+  /** 공백인 이유. year3: 3년차 때 새로 요구, other_role: 다른 직무의 역량, unknown: 사전에 없음 */
+  why?: "year3" | "other_role" | "unknown";
 }
 
 export interface CareerGap {
   posting: Posting;
   items: GapItem[];
-  counts: { connected: number; partial: number; missing: number };
+  counts: { connected: number; missing: number };
   /** 사전에 없는 표현 (사전 보강 후보, PRD 05) */
   unmatched: string[];
 }
 
 const realPostings = (realPostingsJson as unknown as { postings: Posting[] }).postings;
 const mockPostings = (mockPostingsJson as unknown as { postings: Posting[] }).postings;
-const YEAR3_IDS = new Set((year3Json as { ids: string[] }).ids);
+const YEAR3_IDS = new Set((year3Json as { items: { id: string }[] }).items.map((i) => i.id));
 
 /** 기업과 직무에 맞는 3년차 공고. 예: findPosting("00258801", "마케팅", "live")?.substitute !== null */
 export function findPosting(companyId: string, role: Role, mode: AppMode): Posting | null {
@@ -76,80 +75,61 @@ export function findPosting(companyId: string, role: Role, mode: AppMode): Posti
 }
 
 /**
- * 공고 문장 하나를 분류한다.
- * 예: 마케팅 "유관 부서 협업" -> partial (서비스기획 신입 역량), "그로스 해킹" -> missing + newAtYear3 (그로스·리텐션은 3년차 예상 역량),
- * "Braze 사용" -> missing (사전에 없음), "프로모션 기획" -> connected
+ * 역량 표현 하나를 분류한다.
+ * 예: 마케팅 "프로모션 기획" -> connected(캠페인 기획·운영), "그로스 해킹" -> missing year3(그로스·리텐션),
+ * "유관 부서 협업" -> missing other_role(협업·조율), "Braze 사용" -> missing unknown
  */
-export function classifyRequirement(req: PostingRequirement, role: Role): GapItem & { unmatched: string[] } {
-  const own = getCompetencies(role);
-  const ownHits = req.phrases.map((p) => matchPhrase(p, own)).filter((m) => m !== null);
-  const juniorHits = ownHits.filter((m) => !YEAR3_IDS.has(m.id));
-  if (juniorHits.length > 0) return { text: req.text, kind: "connected", names: unique(juniorHits.map((m) => m.name)), unmatched: [] };
-  const year3Hits = ownHits.filter((m) => YEAR3_IDS.has(m.id));
-  if (year3Hits.length > 0) return { text: req.text, kind: "missing", names: unique(year3Hits.map((m) => m.name)), newAtYear3: true, unmatched: [] };
-  const others = competencyDictionary.roles
-    .filter((r) => r.role !== role)
-    .flatMap((r) => r.competencies.filter((c) => !YEAR3_IDS.has(c.id)).map((c) => ({ ...c, role: r.role })));
-  const otherHits = req.phrases
-    .map((p) => {
-      const m = matchPhrase(p, others);
-      return m ? { name: m.name, role: others.find((c) => c.id === m.id)!.role } : null;
-    })
-    .filter((m) => m !== null);
-  if (otherHits.length > 0)
-    return { text: req.text, kind: "partial", names: unique(otherHits.map((m) => m.name)), fromRoles: unique(otherHits.map((m) => m.role)), unmatched: [] };
-  return { text: req.text, kind: "missing", names: req.phrases, unmatched: req.phrases };
+export function classifyPhrase(phrase: string, role: Role): GapItem {
+  const own = matchPhrase(phrase, getCompetencies(role));
+  if (own && !YEAR3_IDS.has(own.id)) return { name: own.name, kind: "connected" };
+  if (own) return { name: own.name, kind: "missing", why: "year3" };
+  const others = competencyDictionary.roles.filter((r) => r.role !== role).flatMap((r) => r.competencies);
+  const other = matchPhrase(phrase, others);
+  if (other) return { name: other.name, kind: "missing", why: "other_role" };
+  return { name: phrase.trim(), kind: "missing", why: "unknown" };
 }
 
 /**
  * 역량 갭. 공고가 없으면 null (화면에는 "확인 불가").
- * 예: 무신사 마케팅 -> { connected: 0, partial: 1, missing: 3 }
+ * 예: 무신사 마케팅 -> { connected: 1, missing: 4 }
  */
 export function computeCareerGap(companyId: string, role: Role, mode: AppMode): CareerGap | null {
   const posting = findPosting(companyId, role, mode);
   if (!posting) return null;
-  const counted = posting.requirements.filter((r) => !r.preferred && r.phrases.length > 0);
-  const classified = counted.map((r) => classifyRequirement(r, role));
-  const counts = { connected: 0, partial: 0, missing: 0 };
-  for (const c of classified) counts[c.kind] += 1;
+  const phrases = posting.requirements.filter((r) => !r.preferred).flatMap((r) => r.phrases);
+  const items: GapItem[] = [];
+  for (const p of phrases) {
+    const it = classifyPhrase(p, role);
+    if (!items.some((x) => x.name === it.name)) items.push(it);
+  }
   return {
     posting,
-    items: classified.map(({ text, kind, names, newAtYear3, fromRoles }) => ({
-      text,
-      kind,
-      names,
-      ...(newAtYear3 ? { newAtYear3 } : {}),
-      ...(fromRoles ? { fromRoles } : {}),
-    })),
-    counts,
-    unmatched: unique(classified.flatMap((c) => c.unmatched)),
+    items,
+    counts: { connected: items.filter((i) => i.kind === "connected").length, missing: items.filter((i) => i.kind === "missing").length },
+    unmatched: items.filter((i) => i.why === "unknown").map((i) => i.name),
   };
 }
 
 /**
- * 이어짐 비율 0~1. 일부는 절반으로 센다. 셀 문장이 없으면 null.
- * 예: 이어짐 1, 일부 2, 공백 1 -> (1 + 2 * 0.5) / 4 = 0.5
+ * 이어짐 비율 0~1 (신입 때 쌓을 수 있는 역량 / 3년차 때 요구되는 역량). 셀 역량이 없으면 null.
+ * 예: 쌓을 수 있음 3, 따로 채움 2 -> 0.6
  */
 export function connectRatio(counts: CareerGap["counts"]): number | null {
-  const total = counts.connected + counts.partial + counts.missing;
+  const total = counts.connected + counts.missing;
   if (total === 0) return null;
-  return (counts.connected + counts.partial * 0.5) / total;
+  return counts.connected / total;
 }
 
 /**
- * 화면에 보일 역량 이름 목록. 예: { connected: ["프로모션 기획"], partial: ["협업·조율(서비스기획)"], missing: ["그로스·리텐션(3년차에 새로 요구)", "Braze 사용"] }
+ * 화면에 보일 역량 이름 목록. 3년차 때 새로 요구되는 역량에는 표시를 붙인다.
+ * 예: { connected: ["CRM 마케팅"], missing: ["그로스·리텐션(3년차 때 새로 요구)", "Braze 사용"] }
  */
-export function gapDetail(gap: CareerGap): { connected: string[]; partial: string[]; missing: string[] } {
-  const out = { connected: [] as string[], partial: [] as string[], missing: [] as string[] };
-  for (const it of gap.items) {
-    for (const n of it.names) {
-      const label = it.kind === "partial" ? `${n}(${(it.fromRoles ?? []).join(", ")})` : it.newAtYear3 ? `${n}(3년차에 새로 요구)` : n;
-      if (!out[it.kind].includes(label)) out[it.kind].push(label);
-    }
-  }
-  return out;
+export function gapDetail(gap: CareerGap): { connected: string[]; missing: string[] } {
+  return {
+    connected: gap.items.filter((i) => i.kind === "connected").map((i) => i.name),
+    missing: gap.items.filter((i) => i.kind === "missing").map((i) => (i.why === "year3" ? `${i.name}(3년차 때 새로 요구)` : i.name)),
+  };
 }
 
-function unique<T>(xs: T[]): T[] {
-  return [...new Set(xs)];
-}
+/** 사전에 따로 표시한 3년차 예상 역량 10개 (검증용) */
+export const YEAR3_EXPECTED = (year3Json as { items: { id: string; name: string; role: Role }[] }).items;

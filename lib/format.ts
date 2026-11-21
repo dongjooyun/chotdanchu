@@ -3,7 +3,7 @@ import type { CompanyNature, Disclosure, IndicatorValue, UnavailableReason } fro
 
 export const DISCLOSURE_LABELS: Record<Disclosure, string> = {
   listed: "상장",
-  audited: "외감",
+  audited: "감사보고서 공개",
   unlisted: "비공시",
 };
 
