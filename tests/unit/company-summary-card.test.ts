@@ -17,6 +17,7 @@ async function post(body: unknown) {
 
 afterEach(() => {
   vi.unstubAllEnvs();
+  vi.doUnmock("@/data/real/business-summaries.json");
   vi.resetModules();
 });
 
@@ -90,6 +91,36 @@ describe("SUM-06~08 채팅 응답 경로와 실데이터 모드", () => {
     vi.resetModules();
     const w = companyWidget(await post({ pickCompanyId: "00258801" }));
     expect(w.company.businessOverview).toBeUndefined();
+  });
+});
+
+describe("SUM-13~15 실데이터 모드: 사전 계산 파일의 값이 카드에 반영된다", () => {
+  /** data/real/business-summaries.json 대신 쓸 값을 넣고 실데이터 모드로 응답을 받는다 */
+  async function liveWith(store: unknown, pickCompanyId: string) {
+    vi.stubEnv("USE_MOCK", "false");
+    vi.stubEnv("USE_AGENT", "false");
+    vi.resetModules();
+    vi.doMock("@/data/real/business-summaries.json", () => ({ default: store }));
+    return post({ pickCompanyId });
+  }
+  const src = { name: "OpenDART 사업보고서 (2025.12)", url: "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423", checkedAt: "2026-11-22" };
+
+  test("SUM-13 저장된 요약은 그대로 카드에 실리고, 로그에 요약 줄이 남는다", async () => {
+    const json = await liveWith({ "00258801": { status: "ok", lines: ["가입니다.", "나입니다.", "다입니다."], source: src, method: "rule" } }, "00258801");
+    const w = companyWidget(json);
+    expect(w.summary).toEqual({ status: "ok", lines: ["가입니다.", "나입니다.", "다입니다."], source: src, method: "rule" });
+    expect(json.log.some((l) => l.title.startsWith("get_business_summary"))).toBe(true);
+  });
+
+  test("SUM-14 저장된 '공시 없음'은 카드에 공시 없음으로 나오고 확인 불가가 아니다", async () => {
+    const json = await liveWith({ "01137727": { status: "no_report", checkedAt: "2026-11-22" } }, "01137727");
+    expect(companyWidget(json).summary).toEqual({ status: "no_report" });
+    expect(json.log.find((l) => l.title === "하는 일 요약: 공시 없음")?.type).toBe("info");
+  });
+
+  test("SUM-15 같은 파일에서 저장되지 않은 기업은 확인 불가다 (저장된 기업과 구분)", async () => {
+    const json = await liveWith({ "00258801": { status: "no_report", checkedAt: "2026-11-22" } }, "01153956");
+    expect(companyWidget(json).summary).toEqual({ status: "unavailable", reason: "not_computed" });
   });
 });
 

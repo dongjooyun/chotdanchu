@@ -3,7 +3,7 @@
 import type { AppMode, ChatResponse, LogLine } from "@/lib/chat";
 import { getMode } from "@/lib/config";
 import { getBusinessSummary } from "@/lib/business-summary";
-import { exampleNames, findCandidates, toCandidateSummary } from "@/lib/data";
+import { exampleNames, findCandidates, realBusinessSummaries, toCandidateSummary } from "@/lib/data";
 import { SUMMARY_UNAVAILABLE_LABELS, UNAVAILABLE_REASON_LABELS } from "@/lib/format";
 import { computeIndicators, gradeDistribution } from "@/lib/indicators";
 import { INDICATOR_LABELS, type BusinessSummary, type Company } from "@/lib/types";
@@ -57,7 +57,7 @@ export function companyResponse(company: Company, lead: LogLine[]): ChatResponse
   const graded = computeIndicators(company);
   const d = gradeDistribution(graded, company.nature);
   const missing = graded.filter((g) => g.grade === null && g.reason);
-  const summary = getBusinessSummary(company, getMode());
+  const summary = getBusinessSummary(company, getMode(), { store: realBusinessSummaries });
   return {
     reply: `${company.name}의 기업 카드입니다.`,
     widget: { type: "company", company, graded, summary },
