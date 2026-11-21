@@ -44,7 +44,7 @@ export default function CatalogPage() {
   const twins = findMockCandidates("몽돌커머스").map(toCandidateSummary);
   const graded = startup ? computeIndicators(startup, CATALOG_AS_OF) : [];
   const report = startup
-    ? buildReportDraft({ company: startup, graded, role: "서비스기획", preference: null, log: SAMPLE_LOG, checkedAt: "2026-11-20" })
+    ? buildReportDraft({ company: startup, graded, role: "서비스기획", preference: null, log: SAMPLE_LOG, checkedAt: "2026-11-20", mode: "mock" })
     : SAMPLE_REPORT_CARD;
 
   return (

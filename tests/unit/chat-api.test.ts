@@ -126,7 +126,7 @@ describe("POST /api/chat (실데이터 모드, 사전 계산한 시연 기업)",
     const { computeIndicators } = await import("@/lib/indicators");
     const { buildReportDraft } = await import("@/lib/report-draft");
     const closed = getCompany("00918444", "live")!;
-    const d = buildReportDraft({ company: closed, graded: computeIndicators(closed), role: "운영", preference: null, log: [], checkedAt: "2026-11-21" });
+    const d = buildReportDraft({ company: closed, graded: computeIndicators(closed), role: "운영", preference: null, log: [], checkedAt: "2026-11-21", mode: "live" });
     expect(d.interviewQuestions).toEqual([]);
     expect(d.notice).toContain("폐업");
   });

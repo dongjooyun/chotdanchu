@@ -13,7 +13,8 @@ import { useSession } from "@/components/use-session";
 import type { AppMode, ChatRequest, ChatResponse, LogLine } from "@/lib/chat";
 import { preferenceFromPicks } from "@/lib/matchup";
 import { typeSentence } from "@/lib/preference-sentence";
-import { buildReportDraft, type ReportDraftInput } from "@/lib/report-draft";
+import { computeCareerGap } from "@/lib/career-gap";
+import { buildReportDraft, careerMessage, type ReportDraftInput } from "@/lib/report-draft";
 import { personalizedCount, saveReport, skippedPreference } from "@/lib/session";
 import {
   PREFERENCE_TYPE_LABELS,
@@ -143,7 +144,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
 
   /** 리포트 카드를 만들고 기업 카드 모음에도 담는다 (같은 기업은 한 장, 직무별로 저장) */
   function withReport(s: SessionState, a: Analysis, role: Role, preference: Preference | null) {
-    const data = buildReportDraft({ ...a, role, preference, checkedAt: new Date().toISOString().slice(0, 10) });
+    const data = buildReportDraft({ ...a, role, preference, mode, checkedAt: new Date().toISOString().slice(0, 10) });
     const next = saveReport(
       s,
       { companyId: a.company.id, name: a.company.name, analyzedAt: new Date().toISOString(), log: a.log, analysis: { company: a.company, graded: a.graded } },
@@ -155,12 +156,35 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     return { next, widget };
   }
 
+  /**
+   * 3년차 공고 비교 말풍선과 판단 로그. 공고 찾기와 역량 분류는 코드가 하고(같은 입력이면 같은 결과),
+   * 유사 기업 대체는 사람이 미리 확인해 정한 시드라 AI 판단이 아닌 정보 줄로 남긴다.
+   */
+  function careerStep(role: Role | null, a: Analysis): Omit<ChatMessage, "id"> {
+    if (!role) return { from: "agent", text: "직무를 고르면 3년차 공고와 비교해 드려요." };
+    const gap = computeCareerGap(a.company.id, role, mode);
+    const lines: LogLine[] = [
+      {
+        step: 0,
+        type: "tool_call",
+        title: gap
+          ? `compare_career_posting: ${role} 3년차 공고와 역량 비교 (이어짐 ${gap.counts.connected}, 일부 ${gap.counts.partial}, 공백 ${gap.counts.missing})`
+          : `compare_career_posting: ${role} 3년차 공고 없음`,
+        reason: "공고 문장의 역량 표현을 역량 사전과 맞춰 코드가 분류",
+        mode,
+      },
+    ];
+    if (gap?.posting.substitute)
+      lines.push({ step: 0, type: "info", title: `유사 기업 공고로 대체: ${gap.posting.postedBy} ${gap.posting.title}`, reason: gap.posting.substitute.reason, mode });
+    if (gap && gap.unmatched.length > 0)
+      lines.push({ step: 0, type: "info", title: `사전에 없는 표현 ${gap.unmatched.length}개를 사전 보강 후보로 모음`, reason: gap.unmatched.join(", "), mode });
+    appendLog(lines);
+    return { from: "agent", text: careerMessage(gap, role), log: lines };
+  }
+
   /** 기업 카드 다음 단계: 3년차 공고 안내, 그다음 맞대결 권유 또는 바로 리포트 */
   function afterCompanyCard(role: Role | null, a: Analysis) {
-    const career: Omit<ChatMessage, "id"> = {
-      from: "agent",
-      text: `${role ?? "선택한"} 직무의 3년차 공고 비교는 준비 중이라 이번 카드에는 "공고 비교 준비 중"으로 보여 드려요.`,
-    };
+    const career = careerStep(role, a);
     // 이미 맞대결을 했거나 건너뛴 사용자는 다시 묻지 않고 그 기준으로 바로 판정한다. 건너뛴 사용자에게는 리포트 뒤에 맞대결 버튼을 다시 준다
     if (session.preference && role) {
       const personal = isPersonalized(session.preference);

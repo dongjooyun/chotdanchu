@@ -3,11 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { CompanyMark } from "@/components/company-mark";
 import { GradeBadge } from "@/components/grade-badge";
+import { FIT_DESCRIPTIONS, type FitLabel } from "@/lib/fit-label";
 import type { ReportCardData } from "@/lib/report-card";
 import { SAMPLE_REPORT_CARD } from "@/lib/samples";
 import { INDICATOR_LABELS, type Role, type SavedReport } from "@/lib/types";
 
 const ROLES: Role[] = ["서비스기획", "마케팅", "운영"];
+
+const isFitLabel = (s: string): s is FitLabel => s in FIT_DESCRIPTIONS;
 
 /** 앞면: 한눈에 보는 결론. 판정 결과가 가장 크다 */
 function Front({
@@ -52,7 +55,8 @@ function Front({
           <>
             <div className="rc-fit" data-el="판정 라벨">
               <span className="small muted">판정 결과</span>
-              <b>{d.fitLabel ?? "판정 준비 중"}</b>
+              <b>{d.fitLabel ?? "판정 없음"}</b>
+              {d.fitLabel && isFitLabel(d.fitLabel) && <span className="small" data-el="라벨 설명">{FIT_DESCRIPTIONS[d.fitLabel]}</span>}
               <span className="small muted">{d.fitReason}</span>
             </div>
             <dl className="rc-facts">
@@ -68,10 +72,14 @@ function Front({
               )}
               <div>
                 <dt>3년 뒤 역량 갭</dt>
-                <dd>{d.gap ? `이어짐 ${d.gap.connected} · 일부 ${d.gap.partial} · 공백 ${d.gap.missing}` : "공고 비교 준비 중"}</dd>
+                <dd>{d.gap ? `이어짐 ${d.gap.connected} · 일부 ${d.gap.partial} · 공백 ${d.gap.missing}` : "확인 불가"}</dd>
               </div>
             </dl>
-            {d.substituteNote && <p className="small muted">{d.substituteNote}</p>}
+            {d.substituteNote && (
+              <p className="small muted" data-el="대체 공고 안내">
+                <span className="tag">유사 기업 공고로 비교</span> {d.substituteNote}
+              </p>
+            )}
           </>
         )}
       </div>
@@ -102,6 +110,18 @@ function Back({ d, hidden }: { d: ReportCardData; hidden: boolean }) {
             <span className="tag tag-ai">AI 판단</span>{" "}
             <span className="muted">{d.decisions.join(" · ")}</span>
           </div>
+        )}
+        {d.careerSource && (
+          <p className="small" data-el="3년차 공고 출처">
+            <span className="muted">3년차 공고: </span>
+            {d.careerUrl ? (
+              <a href={d.careerUrl} target="_blank" rel="noreferrer">
+                {d.careerSource}
+              </a>
+            ) : (
+              d.careerSource
+            )}
+          </p>
         )}
         <section className="rc-q">
           <h4>면접에서 물어볼 것</h4>

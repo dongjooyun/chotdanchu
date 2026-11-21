@@ -5,7 +5,7 @@ import { findMockCandidates } from "@/lib/data";
 import { computeIndicators } from "@/lib/indicators";
 import { buildReportDraft } from "@/lib/report-draft";
 import { skippedPreference } from "@/lib/session";
-import type { Role } from "@/lib/types";
+import { INDICATOR_LABELS, type Role } from "@/lib/types";
 
 function draft(name: string, role: Role, index = 0) {
   const company = findMockCandidates(name)[index];
@@ -17,6 +17,7 @@ function draft(name: string, role: Role, index = 0) {
     preference: skippedPreference(),
     log: [],
     checkedAt: "2026-11-20",
+    mode: "mock",
   });
 }
 
@@ -48,18 +49,22 @@ describe("리포트 카드 초안", () => {
     expect(d.typeLabel).toMatch(/·/);
   });
 
-  test("RPT-04 확인 불가 지표마다 면접 질문이 하나씩 있다", () => {
+  test("RPT-04 확인 불가 지표마다 면접 질문이 하나씩 있고, 3년차 공고의 공백 역량 질문이 최대 2개 붙는다", () => {
     const company = findMockCandidates("별하늘랩스")[0];
     const unavailable = computeIndicators(company).filter((g) => g.grade === null && g.reason !== undefined);
     expect(unavailable.length).toBeGreaterThan(0);
-    expect(draft("별하늘랩스", "마케팅").interviewQuestions).toHaveLength(unavailable.length);
+    const d = draft("별하늘랩스", "마케팅");
+    const missing = Math.min(d.gap!.missing, 2);
+    expect(d.interviewQuestions).toHaveLength(unavailable.length + missing);
+    for (const g of unavailable) expect(d.interviewQuestions.some((q) => q.startsWith(INDICATOR_LABELS[g.id]))).toBe(true);
   });
 
-  test("RPT-05 아직 없는 것(판정 라벨, 3년차 공고 비교)은 지어내지 않고 비워 둔다", () => {
+  test("RPT-05 목업 기업은 가상 공고와 비교하고, 출처에 가상 공고라고 적는다 (링크 없음)", () => {
     const d = draft("별하늘랩스", "마케팅");
-    expect(d.fitLabel).toBeNull();
-    expect(d.gap).toBeNull();
-    expect(d.careerSource).toBeNull();
+    expect(d.fitLabel).not.toBeNull();
+    expect(d.gap).not.toBeNull();
+    expect(d.careerSource).toContain("가상 공고");
+    expect(d.careerUrl).toBeUndefined();
   });
 
   test("RPT-06 맞대결을 건너뛰면 성향은 비고 중시한 지표도 없다", () => {
@@ -81,9 +86,12 @@ describe("리포트 카드 초안", () => {
       preference: skippedPreference(),
       log: [],
       checkedAt: "2026-11-21",
+      mode: "mock",
     });
     expect(d.interviewQuestions).toEqual([]);
     expect(d.notice).toContain("폐업");
+    expect(d.fitLabel).toBeNull();
+    expect(d.gap).toBeNull();
     // 영업 중인 회사는 그대로 질문이 있다
     expect(draft("별하늘랩스", "마케팅").notice).toBeUndefined();
   });
