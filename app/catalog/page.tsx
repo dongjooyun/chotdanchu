@@ -2,12 +2,11 @@ import { AgentLogPanel } from "@/components/agent-log-panel";
 import { AppHeader } from "@/components/app-header";
 import { CandidateChips } from "@/components/candidate-chips";
 import { CardCollection } from "@/components/card-collection";
-import { GradeBadge } from "@/components/grade-badge";
-import { InlineLog } from "@/components/inline-log";
 import { ChatInput } from "@/components/chat-input";
 import { CompanyCard } from "@/components/company-card";
 import { Disclaimer } from "@/components/disclaimer";
-import { LofiBox } from "@/components/lofi-box";
+import { GradeBadge } from "@/components/grade-badge";
+import { InlineLog } from "@/components/inline-log";
 import { MatchupPair } from "@/components/matchup-card";
 import { QuickReplies } from "@/components/quick-replies";
 import { ReportCard } from "@/components/report-card";
@@ -15,7 +14,8 @@ import type { LogLine } from "@/lib/chat";
 import { getMode } from "@/lib/config";
 import { findMockCandidates, getMockCompany, toCandidateSummary } from "@/lib/data";
 import { computeIndicators } from "@/lib/indicators";
-import { SAMPLE_MATCHUP_PAIR } from "@/lib/samples";
+import { buildReportDraft } from "@/lib/report-draft";
+import { SAMPLE_MATCHUP_PAIR, SAMPLE_REPORT_CARD } from "@/lib/samples";
 
 /** 카탈로그는 미리 그려 두는 페이지라 현재 시각 대신 고정 기준일로 등급을 계산한다 (투자 18개월 계산에 쓰임) */
 const CATALOG_AS_OF = new Date(2026, 10, 20);
@@ -27,77 +27,100 @@ const SAMPLE_LOG: LogLine[] = [
   { step: 4, type: "fallback", title: "3년차 공고 없음, 유사 기업 공고로 대체", reason: "같은 업종, 비슷한 규모", mode: "mock" },
 ];
 
-/** 개발용: 화면의 모든 요소를 한 페이지에 모아 이름과 모양을 확인한다. 디자인 시안을 맞출 때 쓴다 */
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <h2 style={{ fontSize: 18, fontWeight: 700, paddingBottom: 8, borderBottom: "1px solid var(--gray-4)", margin: 0 }}>{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+/** 개발용: 화면의 모든 요소를 한 페이지에 모아 모양을 확인한다. 데이터는 전부 목업이다 */
 export default function CatalogPage() {
   const mode = getMode();
   const startup = getMockCompany("mock-001");
   const general = getMockCompany("mock-026");
   const twins = findMockCandidates("몽돌커머스").map(toCandidateSummary);
+  const graded = startup ? computeIndicators(startup, CATALOG_AS_OF) : [];
+  const report = startup
+    ? buildReportDraft({ company: startup, graded, role: "서비스기획", preference: null, log: SAMPLE_LOG, checkedAt: "2026-11-20" })
+    : SAMPLE_REPORT_CARD;
 
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-4">
-      <AppHeader mode={mode} />
-      <LofiBox label="안내">
-        <p className="text-sm">
-          화면에 쓰이는 요소를 한곳에 모은 개발용 페이지입니다. 이름표가 붙은 상자 하나가 요소 하나입니다. 데이터는 전부 목업입니다.
-        </p>
-      </LofiBox>
-
-      <h2 className="text-base font-bold">01 시작과 직무 선택</h2>
-      <QuickReplies
-        replies={[
-          { label: "서비스기획", value: "a" },
-          { label: "마케팅", value: "b" },
-          { label: "운영", value: "c" },
-        ]}
-      />
-      <QuickReplies
-        replies={[
-          { label: "맞대결 먼저", value: "a" },
-          { label: "바로 기업 분석", value: "b" },
-        ]}
-      />
-      <ChatInput />
-
-      <h2 className="text-base font-bold">등급 배지 (한 색, 채움으로 구분)</h2>
-      <div className="flex items-center gap-2 text-xs">
-        <GradeBadge grade="A" /> 꽉 채움 <GradeBadge grade="B" /> 옅게 채움 <GradeBadge grade="C" /> 테두리만{" "}
-        <GradeBadge grade={null} /> 점선
+    <main className="wrap">
+      <div className="app">
+        <AppHeader mode={mode} />
       </div>
+      <p className="small muted">화면에 쓰이는 요소를 한곳에 모은 개발용 페이지입니다. 데이터는 전부 목업입니다.</p>
 
-      <h2 className="text-base font-bold">02 선호 파악 (맞대결)</h2>
-      <div className="max-w-[380px]">
-        <p className="mb-1 text-xs text-muted">모바일 폭 380px 확인용</p>
-        <MatchupPair cards={SAMPLE_MATCHUP_PAIR} />
-      </div>
-
-      <h2 className="text-base font-bold">03 기업 특정 (동명 판별)</h2>
-      <CandidateChips candidates={twins} />
-
-      <h2 className="text-base font-bold">04 기업 실사 (지표 카드)</h2>
-      {startup && <CompanyCard company={startup} graded={computeIndicators(startup, CATALOG_AS_OF)} />}
-      {general && <CompanyCard company={general} graded={computeIndicators(general, CATALOG_AS_OF)} />}
-
-      <h2 className="text-base font-bold">06 판단 리포트 카드 (앞면 결론, 뒷면 근거)</h2>
-      <ReportCard />
-
-      <h2 className="text-base font-bold">07 판단 로그 (말풍선 안 진행 기록, 옆 패널)</h2>
-      <p className="text-xs text-muted">&quot;판단&quot; 배지는 에이전트가 직접 고른 줄에만 붙고, 코드가 한 일은 흐린 배지로 보입니다.</p>
-      <InlineLog lines={SAMPLE_LOG} />
-      <div className="md:max-w-[320px]">
-        <AgentLogPanel lines={SAMPLE_LOG} />
-      </div>
-
-      <h2 className="text-base font-bold">내 카드 모음</h2>
-      <div className="md:max-w-[320px]">
-        <CardCollection
-          records={[
-            { companyId: "mock-001", name: startup?.name ?? "목업 기업", analyzedAt: "2026-11-19T00:00:00.000Z", label: null, log: [] },
+      <Section title="01 시작과 직무 선택">
+        <QuickReplies replies={[{ label: "서비스기획", value: "a" }, { label: "마케팅", value: "b" }, { label: "운영", value: "c" }]} />
+        <QuickReplies
+          replies={[
+            { label: "기업 맞대결로 내 성향 맞춤 판정 받기", value: "a", main: true },
+            { label: "건너뛰고 기본 기준으로", value: "b" },
           ]}
         />
-      </div>
+        <div className="inputbar" style={{ position: "static", border: 0, padding: 0 }}>
+          <ChatInput />
+        </div>
+      </Section>
 
-      <Disclaimer />
+      <Section title="등급 배지 (보라 한 색, 채움으로 구분)">
+        <div className="quick small" style={{ alignItems: "center" }}>
+          <GradeBadge grade="A" /> 꽉 채움 <GradeBadge grade="B" /> 연하게 채움 <GradeBadge grade="C" /> 테두리만 <GradeBadge grade={null} /> 확인 불가
+        </div>
+      </Section>
+
+      <Section title="02 선호 파악 (맞대결, 380px 확인용)">
+        <div style={{ maxWidth: 380 }}>
+          <MatchupPair cards={SAMPLE_MATCHUP_PAIR} />
+        </div>
+      </Section>
+
+      <Section title="03 기업 특정 (동명 판별)">
+        <CandidateChips candidates={twins} />
+      </Section>
+
+      <Section title="04 기업 실사 (기업 카드)">
+        {startup && <CompanyCard company={startup} graded={graded} />}
+        {general && <CompanyCard company={general} graded={computeIndicators(general, CATALOG_AS_OF)} />}
+      </Section>
+
+      <Section title="06 최종 판단 리포트 카드 (앞면 결론, 뒷면 근거)">
+        <ReportCard data={report} />
+      </Section>
+
+      <Section title="07 진행 기록과 에이전트 사고 과정">
+        <div className="bubble">
+          <p>같은 이름의 회사가 2곳 있습니다.</p>
+          <InlineLog lines={SAMPLE_LOG} />
+        </div>
+        <div style={{ maxWidth: 320 }}>
+          <AgentLogPanel lines={SAMPLE_LOG} />
+        </div>
+      </Section>
+
+      <Section title="기업 카드 모음">
+        <CardCollection
+          records={[
+            {
+              companyId: "mock-001",
+              name: startup?.name ?? "목업 기업",
+              analyzedAt: "2026-11-19T00:00:00.000Z",
+              label: null,
+              log: [],
+              lastRole: "서비스기획",
+              reports: { 서비스기획: { report, personalized: false, savedAt: "2026-11-19T00:00:00.000Z" } },
+            },
+          ]}
+        />
+      </Section>
+
+      <div className="app">
+        <Disclaimer />
+      </div>
     </main>
   );
 }
