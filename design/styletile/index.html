@@ -183,7 +183,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
       <span class="label">색</span>
       <div class="sw"><span class="chipc" style="background:var(--purple)"></span><div><b>보라 #6B4BC8</b><br><span class="muted">주 버튼(화면당 1개), 로고, 등급 배지, 선택된 칩의 테두리, 리포트 카드 윗띠</span></div></div>
       <div class="sw"><span class="chipc" style="background:var(--purple-tint)"></span><div><b>연보라 #EEE9F9, #F8F6FC</b><br><span class="muted">선택됨 표시, 리포트 카드 하단 띠, 강조 영역 배경에만. 화면 전체 배경에는 쓰지 않음</span></div></div>
-      <div class="sw"><span class="chipc" style="background:var(--yellow)"></span><div><b>노랑 #FFD54A</b><br><span class="muted">AI가 판단한 곳을 알리는 "판단" 배지에만</span></div></div>
+      <div class="sw"><span class="chipc" style="background:var(--yellow)"></span><div><b>노랑 #FFD54A</b><br><span class="muted">AI가 판단한 곳을 알리는 "AI 판단" 배지에만</span></div></div>
       <div class="sw"><span class="chipc" style="background:var(--ink)"></span><div><b>무채색 (#1B1B1F, #55555E, #D8D8DE, #F5F5F7)</b><br><span class="muted">나머지 전부: 글자, 선, 배경, 말풍선, 보조 버튼, 보내기 버튼</span></div></div>
     </div>
     <div class="box">
@@ -231,10 +231,10 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <span class="tag">상장 · 일반 기업</span>
         <span class="tag">비공시 · 스타트업</span>
-        <span class="tag tag-ai">판단</span>
+        <span class="tag tag-ai">AI 판단</span>
         <span class="tag tag-tool">도구 호출</span>
       </div>
-      <p class="tiny muted" style="margin-top:12px">노랑은 "판단" 하나뿐입니다.</p>
+      <p class="tiny muted" style="margin-top:12px">노랑은 "AI 판단" 하나뿐입니다.</p>
     </div>
     <div class="box">
       <span class="label">입력창 (data-el 입력창)</span>
@@ -269,7 +269,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
           <p>같은 이름의 회사가 2곳 있습니다. 대표자, 소재지, 업종, 설립연도를 보고 골라 주세요.</p>
           <div class="ilog" data-el="진행 기록">
             <div class="row"><span class="tag tag-tool">도구 호출</span><span class="mono">search_company: "카카오" 후보 2곳</span></div>
-            <div class="row"><span class="tag tag-ai">판단</span><span>후보가 여럿이라 사용자에게 묻기로 함</span></div>
+            <div class="row"><span class="tag tag-ai">AI 판단</span><span>후보가 여럿이라 사용자에게 묻기로 함</span></div>
           </div>
         </div>
         <div class="cc" data-el="기업 카드">
@@ -298,7 +298,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
       <aside class="aside" data-el="판단 로그 패널">
         <div class="panel-h">에이전트 판단 로그 <span class="info" aria-label="안내">i</span></div>
         <div class="logi"><span class="no">1</span><span><span class="tag tag-tool">도구 호출</span> <span class="mono">search_company</span></span><span class="muted">"카카오" 후보 2곳</span></div>
-        <div class="logi"><span class="no">2</span><span><span class="tag tag-ai">판단</span></span><span>후보가 여럿이라 사용자에게 묻기로 함</span></div>
+        <div class="logi"><span class="no">2</span><span><span class="tag tag-ai">AI 판단</span></span><span>후보가 여럿이라 사용자에게 묻기로 함</span></div>
         <div class="logi"><span class="no">3</span><span><span class="tag tag-tool">도구 호출</span> <span class="mono">compute_indicators</span></span><span class="muted">A 4 · B 3 · C 0, 확인 불가 1개</span></div>
       </aside>
     </div>
@@ -366,7 +366,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <tr><td>글꼴</td><td>Noto Sans KR</td><td>Pretendard, 숫자는 등폭</td><td>동주 결정. 숫자가 많은 화면이라 정렬이 중요</td></tr>
         <tr><td>등급 배지</td><td>보라 채움 정도로 구분 (원형, 알약)</td><td>같은 규칙, 28px 사각 배지로. 확인 불가는 점선</td><td>규칙은 유지하고 모양만 사각으로</td></tr>
         <tr><td>지표 칸</td><td>카드 칸을 격자로 나열</td><td>표 행 (라벨, 값, 배지, 출처 한 줄)</td><td>공시 사이트처럼 숫자 비교가 쉬움. 요소 이름 "지표 칸"은 그대로</td></tr>
-        <tr><td>노랑</td><td>판단 배지에만</td><td>그대로 (판단 배지에만)</td><td>유지. 도구 호출 배지는 먹색 테두리로 구분</td></tr>
+        <tr><td>노랑</td><td>판단 배지에만, 문구는 "판단"</td><td>AI 판단 배지에만, 문구를 "AI 판단"으로</td><td>동주 결정. AI가 한 판단이라는 것이 글자로 바로 보이게. 도구 호출 배지는 먹색 테두리로 구분</td></tr>
         <tr><td>유지한 것</td><td colspan="3">요소 이름표 17개, 화면 6개 구성, 문구, 주 버튼 화면당 1개, 판단 로그 패널 위치(PC 오른쪽), 하단 면책 문구, 긴 문장은 (i) 안내로, 진보라 #6B4BC8 주색, 맞대결 진행 "4 / 7"</td></tr>
       </tbody>
     </table>
