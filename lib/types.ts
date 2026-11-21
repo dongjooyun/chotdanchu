@@ -87,6 +87,35 @@ export interface GradedIndicator {
   reason?: UnavailableReason;
 }
 
+/**
+ * 사업보고서 "사업의 개요" 문단 하나 (II. 사업의 내용). "하는 일 세 줄 요약"의 재료 (PRD 04, CDC-26).
+ * 목업은 가상 문단이고, 사업보고서가 없는 기업은 Company에 이 필드가 없다.
+ * 실데이터는 원문을 저장하지 않고 요약 결과만 data/real/business-summaries.json에 둔다.
+ */
+export interface BusinessOverview {
+  /** 개요 문단 (전문이 아니라 이 문단 하나) */
+  text: string;
+  /** 공시 원문 링크와 확인 날짜. 목업은 url이 빈 문자열이고 화면에 "가상 링크"로 보인다 */
+  source: Source;
+}
+
+/**
+ * 기업 카드에 보일 "하는 일 세 줄 요약" 상태. 세 가지를 서로 다르게 보여준다.
+ * ok: 요약 3줄 + 원문 링크
+ * no_report: 사업보고서가 없는 기업. 요약을 보여주지 않고 "공시 없음" (확인한 결과다)
+ * unavailable: 아직 만들지 않았거나 조회에 실패함. "확인 불가" (결과를 모르는 상태)
+ */
+export type BusinessSummary =
+  | { status: "ok"; lines: string[]; source: Source; method: SummaryMethod }
+  | { status: "no_report" }
+  | { status: "unavailable"; reason: SummaryUnavailableReason };
+
+/** rule: 문장 뽑기(코드), llm: 작은 모델이 요약하고 코드가 검증함 */
+export type SummaryMethod = "rule" | "llm";
+
+/** 요약을 못 보여주는 이유: 아직 계산하지 않음 / 원문 조회나 추출에 실패함 */
+export type SummaryUnavailableReason = "not_computed" | "fetch_failed";
+
 export interface Company {
   /** 목업 "mock-001", 실데이터는 OpenDART 고유번호, DART에 없으면 "manual-영문이름" */
   id: string;
@@ -110,6 +139,8 @@ export interface Company {
   natureBasis: string;
   /** 공공 인증 (보조 신호): 이노비즈, 메인비즈, 워크넷 강소기업 */
   certifications: string[];
+  /** 사업의 개요 문단. 목업 전용 샘플이고, 사업보고서가 없는 기업은 이 필드가 없다 ("공시 없음") */
+  businessOverview?: BusinessOverview;
   indicators: IndicatorValue[];
   /** 사람들이 부르는 다른 이름 (예: 법인명 "당근마켓"을 "당근"으로도 찾기). 없으면 생략 */
   aliases?: string[];
