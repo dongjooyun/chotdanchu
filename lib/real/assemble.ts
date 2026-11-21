@@ -41,6 +41,17 @@ const PROVINCE: Record<string, string> = {
   전라남도: "전남", 경상북도: "경북", 경상남도: "경남", 제주특별자치도: "제주",
 };
 
+/**
+ * 공시 법인명의 "주식회사"를 (주)로 줄여 화면에 보인다 (11/21 결정). 앞뒤 위치는 공시 그대로 둔다.
+ * 예: "주식회사 무신사" -> "(주)무신사", "청솔기계 주식회사" -> "청솔기계(주)", "(주)카카오" -> "(주)카카오"
+ */
+export function shortCorpName(name: string): string {
+  const t = name.trim();
+  if (/^주식회사\s*/.test(t)) return `(주)${t.replace(/^주식회사\s*/, "")}`;
+  if (/\s*주식회사$/.test(t)) return `${t.replace(/\s*주식회사$/, "")}(주)`;
+  return t;
+}
+
 /** 시·구까지만. 예: "제주특별자치도 제주시 첨단로 242" -> "제주 제주시", "서울특별시 강남구 역삼동" -> "서울 강남구" */
 export function shortAddress(adres: string): string {
   const [p, c] = adres.trim().split(/\s+/);
@@ -148,7 +159,7 @@ export function assembleCompany(x: AssembleInput): Company {
     bizRegNoSource: profile.bizr_no
       ? { name: "OpenDART 기업개황", url: "https://opendart.fss.or.kr", checkedAt: x.checkedAt }
       : null,
-    name: profile.corp_name.replace(/^\(주\)\s*/, "주식회사 "),
+    name: shortCorpName(profile.corp_name),
     ceoName: (profile.ceo_nm ?? "").trim(),
     address: shortAddress(profile.adres),
     industry: x.npsIndustry ?? target.industry ?? "업종 정보 없음",

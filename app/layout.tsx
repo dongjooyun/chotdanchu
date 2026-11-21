@@ -10,7 +10,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <head>
+        {/* 글꼴 Pretendard v1.3.9 (SIL OFL 1.1, docs/data-sources.md). 정적 CSS 한 장이라 외부 링크로 둔다 */}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+      </head>
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

@@ -1,0 +1,14 @@
+{
+  "note": "맞대결용 가상 카드 8장 (PRD 02). 실존 기업이 아니다. 지표 6개의 등급 조합을 유형별로 일부러 설계했다. 8강 대진은 배열 순서대로 1-2, 3-4, 5-6, 7-8이고, 매 판 서로 다른 유형이 맞붙는다.",
+  "indicators": ["financial_health", "growth", "hiring_flow", "compensation", "tenure", "funding_stage"],
+  "cards": [
+    { "id": "card-1", "archetype": "stable_system", "grades": { "financial_health": "A", "growth": "C", "hiring_flow": "B", "compensation": "B", "tenure": "A", "funding_stage": "unavailable" } },
+    { "id": "card-2", "archetype": "autonomy_pioneer", "grades": { "financial_health": "C", "growth": "A", "hiring_flow": "A", "compensation": "C", "tenure": "unavailable", "funding_stage": "A" } },
+    { "id": "card-3", "archetype": "balance_practical", "grades": { "financial_health": "B", "growth": "B", "hiring_flow": "B", "compensation": "A", "tenure": "B", "funding_stage": "C" } },
+    { "id": "card-4", "archetype": "stable_system", "grades": { "financial_health": "A", "growth": "B", "hiring_flow": "C", "compensation": "B", "tenure": "A", "funding_stage": "unavailable" } },
+    { "id": "card-5", "archetype": "autonomy_pioneer", "grades": { "financial_health": "B", "growth": "A", "hiring_flow": "B", "compensation": "B", "tenure": "C", "funding_stage": "A" } },
+    { "id": "card-6", "archetype": "balance_practical", "grades": { "financial_health": "B", "growth": "C", "hiring_flow": "A", "compensation": "A", "tenure": "B", "funding_stage": "unavailable" } },
+    { "id": "card-7", "archetype": "stable_system", "grades": { "financial_health": "A", "growth": "B", "hiring_flow": "B", "compensation": "C", "tenure": "B", "funding_stage": "C" } },
+    { "id": "card-8", "archetype": "autonomy_pioneer", "grades": { "financial_health": "C", "growth": "A", "hiring_flow": "A", "compensation": "B", "tenure": "C", "funding_stage": "B" } }
+  ]
+}

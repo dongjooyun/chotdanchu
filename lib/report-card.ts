@@ -3,9 +3,14 @@
 import type { Grade, IndicatorId, Role } from "@/lib/types";
 
 export interface ReportCardData {
-  /** 모은 순서. 포켓몬 카드의 도감 번호처럼 보인다. 예: 1 -> "No. 001" */
-  no: number;
+  /** 카드 번호: OpenDART 고유번호 8자리 (lib/brand.ts cardNo). 같은 회사는 누가 봐도 같은 번호. 예: "00258801" */
+  no: string;
+  companyId: string;
   companyName: string;
+  /** 로고 경로. 없으면 null이고 이니셜을 그린다 */
+  logo: string | null;
+  /** 이니셜 두 글자. 예: "카카" */
+  monogram: string;
   /** 예: "외감 · 스타트업" */
   typeLabel: string;
   role: Role;
@@ -21,6 +26,8 @@ export interface ReportCardData {
   gap: { connected: number; partial: number; missing: number } | null;
   /** 3년차 공고 출처. 유사 기업으로 대체했으면 그 사실. 공고 수집 전에는 null */
   careerSource: string | null;
+  /** 유사 기업 공고로 대체했을 때 화면에 보일 사유 한 줄 (PRD 05). 없으면 생략 */
+  substituteNote?: string;
   /** 뒷면: 지표 10개 등급 */
   grades: { id: IndicatorId; grade: Grade | null }[];
   /** 뒷면: 면접에서 물어볼 질문. 확인 불가 항목마다 하나 이상. 폐업·휴업 회사는 빈 배열 */
