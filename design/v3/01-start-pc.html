@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>첫단추 시안 v3, 01 첫 화면 (PC)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="v3.css">
+</head>
+<body>
+  <div class="cap"><strong>시안 01 첫 화면 (직무 고르기)</strong> · v2.1 카드 크기와 새 색 기준 · PC 1280px 화면, 본문 최대 1024px · 직무 버튼은 모두 같은 선택지라 주 버튼 없음 · 값은 모두 시안용 예시입니다</div>
+  <div class="screen pc">
+    <header class="app-header" data-el="헤더">
+      <div class="brand">
+        <span class="logo-slot" data-el="로고 자리" role="img" aria-label="로고 자리"></span>
+        <div>
+          <h1>첫단추</h1>
+          <p>첫 회사, 3년 뒤까지 보고 고르세요.</p>
+        </div>
+      </div>
+      <span class="mode-pill" data-el="모드 배지">목업 모드</span>
+    </header>
+    <div class="body">
+      <div class="col">
+      <div>
+        <span class="state-h">상태 1: 처음 방문 (직무 고르기)</span>
+        <section class="chat" data-el="채팅 영역">
+        <div class="infobar" data-el="고정 정보줄">
+          <span class="grp"><span class="k">직무</span><strong>아직 안 고름</strong></span>
+          <span class="grp"><span class="k">회사</span><strong>아직 없음</strong></span>
+        </div>
+        <div class="msgs">
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">안녕하세요. 첫단추는 첫 회사가 3년 뒤 어디로 이어지는지, 공공데이터와 3년차 공고로 판단해 드리는 에이전트예요. 먼저 어떤 직무로 준비하세요?</div>
+            <div class="quick" data-el="빠른 응답 버튼"><button class="btn" type="button">서비스기획</button><button class="btn" type="button">마케팅</button><button class="btn" type="button">운영</button></div>
+          </div>
+        </div>
+        <form class="inputbar" data-el="입력창" onsubmit="return false">
+          <input type="text" placeholder="먼저 위에서 직무를 골라 주세요" aria-label="메시지 입력" disabled>
+          <button class="btn" type="button" disabled>보내기</button>
+        </form>
+        </section>
+      </div>
+      <div>
+        <span class="state-h">상태 2: 두 번째 방문 (저장된 직무로 바로 회사 질문)</span>
+        <section class="chat" data-el="채팅 영역">
+        <div class="infobar" data-el="고정 정보줄">
+          <span class="grp"><span class="k">직무</span><strong>서비스기획</strong><button class="chip-btn" type="button">바꾸기</button></span>
+          <span class="grp"><span class="k">회사</span><strong>아직 없음</strong></span>
+        </div>
+        <div class="msgs">
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">안녕하세요. 첫단추는 첫 회사가 3년 뒤 어디로 이어지는지, 공공데이터와 3년차 공고로 판단해 드리는 에이전트예요. 서비스기획 직무로 볼게요. 어느 회사가 궁금하세요?</div>
+            <div class="quick" data-el="빠른 응답 버튼"><button class="btn" type="button">하늘커머스</button><button class="btn" type="button">몽돌커머스</button><button class="btn" type="button">청솔기계</button></div>
+          </div>
+        </div>
+        <form class="inputbar" data-el="입력창" onsubmit="return false">
+          <input type="text" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력">
+          <button class="btn" type="button" disabled>보내기</button>
+        </form>
+        </section>
+      </div>
+      </div>
+      <aside class="aside">
+      <section class="panel" data-el="판단 로그 패널">
+        <h2>에이전트 판단 로그</h2>
+        <p class="empty">아직 기록이 없어요. 기업을 분석하면 에이전트가 무엇을 왜 했는지 여기에 쌓여요.</p>
+      </section>
+      <section class="panel" data-el="내 카드 모음">
+        <h2>내 카드 0장</h2>
+        <p class="empty" data-el="내 카드 모음 빈 상태">기업을 분석하면 카드가 여기에 모여요</p>
+      </section>
+      </aside>
+    </div>
+    <p class="disc" data-el="면책 문구">공개 데이터 기반 참고 정보이며 기업 평가가 아니에요.</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>첫단추 시안 v3, 03 기업 카드 (PC)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="v3.css">
+</head>
+<body>
+  <div class="cap"><strong>시안 03 기업 카드 (결론 먼저, 지표 펼치기)</strong> · v2.1 시안 기준 · PC 1280px 화면, 본문 최대 1024px · 주 버튼은 기업 카드로 저장하기 하나, 펼치기는 상태에 따라 바뀌는 버튼 하나 · 값은 모두 시안용 예시입니다</div>
+  <div class="screen pc">
+    <header class="app-header" data-el="헤더">
+      <div class="brand">
+        <span class="logo-slot" data-el="로고 자리" role="img" aria-label="로고 자리"></span>
+        <div>
+          <h1>첫단추</h1>
+          <p>첫 회사, 3년 뒤까지 보고 고르세요.</p>
+        </div>
+      </div>
+      <span class="mode-pill" data-el="모드 배지">목업 모드</span>
+    </header>
+    <div class="body">
+      <div class="col">
+      <div>
+        <span class="state-h">상태 1: 접힌 상태 (세부 내용 확인하기), (i) 닫힘</span>
+        <section class="chat" data-el="채팅 영역">
+        <div class="infobar" data-el="고정 정보줄">
+          <span class="grp"><span class="k">직무</span><strong>서비스기획</strong><button class="chip-btn" type="button">바꾸기</button></span>
+          <span class="grp"><span class="k">회사</span><strong>하늘커머스</strong><button class="chip-btn" type="button">다른 회사</button></span>
+        </div>
+        <div class="msgs">
+          <div class="row user">
+            <div class="bubble" data-el="사용자 말풍선">이 회사로 할게요</div>
+          </div>
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">하늘커머스를 확인했어요. 결론부터 보여 드릴게요.</div>
+            <ul class="ilog" data-el="진행 기록">
+              <li><span class="lb" data-el="도구 호출 배지">도구 호출</span><span>get_company_profile: 하늘커머스 기업개황 조회</span></li>
+              <li><span class="lb judge" data-el="판단 배지">판단</span><span>외감 법인이라 감사보고서와 국민연금으로 지표를 계산해요 <span class="why">(감사보고서가 공시돼요)</span></span></li>
+              <li><span class="lb" data-el="확인 불가 배지">확인 불가</span><span>근속: 확인 불가</span></li>
+              <li><span class="lb" data-el="확인 불가 배지">확인 불가</span><span>기술 투자: 확인 불가</span></li>
+            </ul>
+            <div class="cc" id="w-cc-1">
+              <div class="cc-head"><span class="t">기업 실사 결과</span><span class="pill2">지표 7/9 확인</span></div>
+              <div class="cc-card" data-el="기업 카드">
+                <div class="cc-types"><span class="tag2" data-el="유형 배지"><small>공시 수준</small>외감</span><span class="tag2 alt" data-el="유형 배지"><small>기업 성격</small>스타트업</span></div>
+                <div class="ribbon"><span class="bar"></span><div class="flag"><span>하늘커머스</span></div></div>
+                <div class="cc-msg"><h2>기업 실사가 끝났어요</h2><p>9개 지표 중 7개를 공식 출처로 확인했어요.</p></div>
+                <div class="cc-dist" data-el="등급 분포"><span class="k">등급 분포</span><div class="row2"><span class="x"><span class="g3 a" data-el="등급 배지" aria-label="등급 A">A</span><b>2</b></span><span class="x"><span class="g3 b" data-el="등급 배지" aria-label="등급 B">B</span><b>6</b></span><span class="x"><span class="g3 c" data-el="등급 배지" aria-label="등급 C">C</span><b>0</b></span><span class="x"><span class="g3 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span><b>2</b></span></div></div>
+                <div class="cc-basis tip-host"><span>판정 근거</span><span class="tip"><input class="tip-chk" type="checkbox" id="tip-1-basis" aria-label="안내 보기" aria-describedby="tip-1-basis-p"><label class="tip-btn" for="tip-1-basis" aria-hidden="true">i</label><label class="tip-scrim" for="tip-1-basis" aria-hidden="true"></label><span class="tip-pop below" id="tip-1-basis-p" role="tooltip"><span>감사보고서가 공시돼서 외감, 투자 유치 공식 발표가 있어 스타트업으로 봤어요.</span></span></span></div>
+                <div class="cc-btns">
+                  <details class="tg"><summary class="bt-sec" data-el="지표 펼치기 버튼"><span class="t-closed">세부 내용 확인하기 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><span class="t-open">세부 내용 접기 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></span></summary></details>
+                  <button class="bt-pri" type="button" data-el="기업 카드로 저장하기">기업 카드로 저장하기</button>
+                  <p class="cc-disc" data-el="면책 문구">공개 데이터 기반 참고 정보이며 기업 평가가 아니에요.</p>
+                </div>
+              </div>
+              <p class="cc-fake">하늘커머스와 모든 수치는 가상 데이터(목업)예요.</p>
+              <div class="detail">
+                <div class="detail-h"><b>세부 지표</b><span>등급 띠로 구분해요</span></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip a"></span><div class="hd"><span class="nm">재무 체력</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="val">부채비율 62%, 유동비율 210%</div><div class="src">출처 금융감독원 DART 감사보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip a"></span><div class="hd"><span class="nm">성장성</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="val">매출 120억 원, 전년 대비 +38%</div><div class="src">출처 금융감독원 DART 감사보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">수익성</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">영업이익률 4.2%</div><div class="src">출처 금융감독원 DART 감사보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">고용 흐름</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">최근 1년간 가입자 +12명</div><div class="src">출처 국민연금공단 사업장 가입자 통계 · 2026.10 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">보상<span class="tag3">추정 범위</span></span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">추정 4,200~5,000만 원</div><div class="src">출처 국민연금 가입자 소득 기반 추정 · 2026.10 기준</div></div>
+                <div class="dcard un" data-el="확인 불가 칸"><div class="hd"><span class="nm">근속</span><span class="g2 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span></div><div class="msg">평균 근속연수는 사업보고서를 내는 법인만 공시해요. 이 기업은 감사보고서만 공시해요.</div><div class="src">대신 위의 고용 흐름으로 조직 안정성을 가늠해요.</div></div>
+                <div class="dcard un" data-el="확인 불가 칸"><div class="hd"><span class="nm">기술 투자</span><span class="g2 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span></div><div class="msg">연구개발비는 사업보고서를 내는 법인만 공시해요. 이 기업은 감사보고서만 공시해요.</div><div class="src">기술 투자는 사업보고서의 연구개발활동 항목으로만 확인해요.</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">투자 단계<span class="tag3 manual">수동 확인</span></span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">시리즈 A 유치 (2024.06)</div><div class="src">출처 투자사 공식 발표 · 확인일 2026.11.18 · <a href="#">원문 링크</a></div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">리스크</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">확인된 중대 공시 없음</div><div class="src">출처 금융감독원 전자공시 · 2026.11 기준</div></div>
+                <div class="dcard" data-el="정보 투명도 칸"><span class="strip b"></span><div class="hd"><span class="nm">정보 투명도</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">나머지 9개 지표 중 7개 확인 (78%)</div><div class="src">출처 위 지표들의 확인 여부로 계산 · 2026.11 기준</div></div>
+                <p class="detail-note">이 카드의 숫자는 코드가 공식 출처에서 그대로 가져온 값이에요. AI는 숫자나 등급을 만들거나 바꾸지 않아요.</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">내 기준에 맞춰 최종 판정할까요? 카드 7판, 1분</div>
+            <div class="quick" data-el="빠른 응답 버튼"><button class="btn" type="button">맞춰 보기</button><button class="btn" type="button">건너뛰기</button></div>
+          </div>
+        </div>
+        <form class="inputbar" data-el="입력창" onsubmit="return false">
+          <input type="text" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력">
+          <button class="btn" type="button" disabled>보내기</button>
+        </form>
+        </section>
+      </div>
+      <div>
+        <span class="state-h">상태 2: 펼친 상태 (세부 내용 접기)</span>
+        <section class="chat" data-el="채팅 영역">
+        <div class="infobar" data-el="고정 정보줄">
+          <span class="grp"><span class="k">직무</span><strong>서비스기획</strong><button class="chip-btn" type="button">바꾸기</button></span>
+          <span class="grp"><span class="k">회사</span><strong>하늘커머스</strong><button class="chip-btn" type="button">다른 회사</button></span>
+        </div>
+        <div class="msgs">
+          <div class="row user">
+            <div class="bubble" data-el="사용자 말풍선">이 회사로 할게요</div>
+          </div>
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">하늘커머스를 확인했어요. 결론부터 보여 드릴게요.</div>
+            <ul class="ilog" data-el="진행 기록">
+              <li><span class="lb" data-el="도구 호출 배지">도구 호출</span><span>get_company_profile: 하늘커머스 기업개황 조회</span></li>
+              <li><span class="lb judge" data-el="판단 배지">판단</span><span>외감 법인이라 감사보고서와 국민연금으로 지표를 계산해요 <span class="why">(감사보고서가 공시돼요)</span></span></li>
+              <li><span class="lb" data-el="확인 불가 배지">확인 불가</span><span>근속: 확인 불가</span></li>
+              <li><span class="lb" data-el="확인 불가 배지">확인 불가</span><span>기술 투자: 확인 불가</span></li>
+            </ul>
+            <div class="cc" id="w-cc-2">
+              <div class="cc-head"><span class="t">기업 실사 결과</span><span class="pill2">지표 7/9 확인</span></div>
+              <div class="cc-card" data-el="기업 카드">
+                <div class="cc-types"><span class="tag2" data-el="유형 배지"><small>공시 수준</small>외감</span><span class="tag2 alt" data-el="유형 배지"><small>기업 성격</small>스타트업</span></div>
+                <div class="ribbon"><span class="bar"></span><div class="flag"><span>하늘커머스</span></div></div>
+                <div class="cc-msg"><h2>기업 실사가 끝났어요</h2><p>9개 지표 중 7개를 공식 출처로 확인했어요.</p></div>
+                <div class="cc-dist" data-el="등급 분포"><span class="k">등급 분포</span><div class="row2"><span class="x"><span class="g3 a" data-el="등급 배지" aria-label="등급 A">A</span><b>2</b></span><span class="x"><span class="g3 b" data-el="등급 배지" aria-label="등급 B">B</span><b>6</b></span><span class="x"><span class="g3 c" data-el="등급 배지" aria-label="등급 C">C</span><b>0</b></span><span class="x"><span class="g3 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span><b>2</b></span></div></div>
+                <div class="cc-basis tip-host"><span>판정 근거</span><span class="tip"><input class="tip-chk" type="checkbox" id="tip-2-basis" aria-label="안내 보기" aria-describedby="tip-2-basis-p"><label class="tip-btn" for="tip-2-basis" aria-hidden="true">i</label><label class="tip-scrim" for="tip-2-basis" aria-hidden="true"></label><span class="tip-pop below" id="tip-2-basis-p" role="tooltip"><span>감사보고서가 공시돼서 외감, 투자 유치 공식 발표가 있어 스타트업으로 봤어요.</span></span></span></div>
+                <div class="cc-btns">
+                  <details class="tg" open><summary class="bt-sec" data-el="지표 펼치기 버튼"><span class="t-closed">세부 내용 확인하기 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><span class="t-open">세부 내용 접기 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></span></summary></details>
+                  <button class="bt-pri" type="button" data-el="기업 카드로 저장하기">기업 카드로 저장하기</button>
+                  <p class="cc-disc" data-el="면책 문구">공개 데이터 기반 참고 정보이며 기업 평가가 아니에요.</p>
+                </div>
+              </div>
+              <p class="cc-fake">하늘커머스와 모든 수치는 가상 데이터(목업)예요.</p>
+              <div class="detail">
+                <div class="detail-h"><b>세부 지표</b><span>등급 띠로 구분해요</span></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip a"></span><div class="hd"><span class="nm">재무 체력</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="val">부채비율 62%, 유동비율 210%</div><div class="src">출처 금융감독원 DART 감사보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip a"></span><div class="hd"><span class="nm">성장성</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="val">매출 120억 원, 전년 대비 +38%</div><div class="src">출처 금융감독원 DART 감사보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">수익성</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">영업이익률 4.2%</div><div class="src">출처 금융감독원 DART 감사보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">고용 흐름</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">최근 1년간 가입자 +12명</div><div class="src">출처 국민연금공단 사업장 가입자 통계 · 2026.10 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">보상<span class="tag3">추정 범위</span></span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">추정 4,200~5,000만 원</div><div class="src">출처 국민연금 가입자 소득 기반 추정 · 2026.10 기준</div></div>
+                <div class="dcard un" data-el="확인 불가 칸"><div class="hd"><span class="nm">근속</span><span class="g2 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span></div><div class="msg">평균 근속연수는 사업보고서를 내는 법인만 공시해요. 이 기업은 감사보고서만 공시해요.</div><div class="src">대신 위의 고용 흐름으로 조직 안정성을 가늠해요.</div></div>
+                <div class="dcard un" data-el="확인 불가 칸"><div class="hd"><span class="nm">기술 투자</span><span class="g2 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span></div><div class="msg">연구개발비는 사업보고서를 내는 법인만 공시해요. 이 기업은 감사보고서만 공시해요.</div><div class="src">기술 투자는 사업보고서의 연구개발활동 항목으로만 확인해요.</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">투자 단계<span class="tag3 manual">수동 확인</span></span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">시리즈 A 유치 (2024.06)</div><div class="src">출처 투자사 공식 발표 · 확인일 2026.11.18 · <a href="#">원문 링크</a></div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">리스크</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">확인된 중대 공시 없음</div><div class="src">출처 금융감독원 전자공시 · 2026.11 기준</div></div>
+                <div class="dcard" data-el="정보 투명도 칸"><span class="strip b"></span><div class="hd"><span class="nm">정보 투명도</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">나머지 9개 지표 중 7개 확인 (78%)</div><div class="src">출처 위 지표들의 확인 여부로 계산 · 2026.11 기준</div></div>
+                <p class="detail-note">이 카드의 숫자는 코드가 공식 출처에서 그대로 가져온 값이에요. AI는 숫자나 등급을 만들거나 바꾸지 않아요.</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">내 기준에 맞춰 최종 판정할까요? 카드 7판, 1분</div>
+            <div class="quick" data-el="빠른 응답 버튼"><button class="btn" type="button">맞춰 보기</button><button class="btn" type="button">건너뛰기</button></div>
+          </div>
+        </div>
+        <form class="inputbar" data-el="입력창" onsubmit="return false">
+          <input type="text" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력">
+          <button class="btn" type="button" disabled>보내기</button>
+        </form>
+        </section>
+      </div>
+      <div>
+        <span class="state-h">상태 3: (i) 안내를 연 모습 (판정 근거)</span>
+        <section class="chat" data-el="채팅 영역">
+        <div class="infobar" data-el="고정 정보줄">
+          <span class="grp"><span class="k">직무</span><strong>서비스기획</strong><button class="chip-btn" type="button">바꾸기</button></span>
+          <span class="grp"><span class="k">회사</span><strong>하늘커머스</strong><button class="chip-btn" type="button">다른 회사</button></span>
+        </div>
+        <div class="msgs">
+          <div class="row user">
+            <div class="bubble" data-el="사용자 말풍선">이 회사로 할게요</div>
+          </div>
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">하늘커머스를 확인했어요. 결론부터 보여 드릴게요.</div>
+            <ul class="ilog" data-el="진행 기록">
+              <li><span class="lb" data-el="도구 호출 배지">도구 호출</span><span>get_company_profile: 하늘커머스 기업개황 조회</span></li>
+              <li><span class="lb judge" data-el="판단 배지">판단</span><span>외감 법인이라 감사보고서와 국민연금으로 지표를 계산해요 <span class="why">(감사보고서가 공시돼요)</span></span></li>
+              <li><span class="lb" data-el="확인 불가 배지">확인 불가</span><span>근속: 확인 불가</span></li>
+              <li><span class="lb" data-el="확인 불가 배지">확인 불가</span><span>기술 투자: 확인 불가</span></li>
+            </ul>
+            <div class="cc" id="w-cc-3">
+              <div class="cc-head"><span class="t">기업 실사 결과</span><span class="pill2">지표 7/9 확인</span></div>
+              <div class="cc-card" data-el="기업 카드">
+                <div class="cc-types"><span class="tag2" data-el="유형 배지"><small>공시 수준</small>외감</span><span class="tag2 alt" data-el="유형 배지"><small>기업 성격</small>스타트업</span></div>
+                <div class="ribbon"><span class="bar"></span><div class="flag"><span>하늘커머스</span></div></div>
+                <div class="cc-msg"><h2>기업 실사가 끝났어요</h2><p>9개 지표 중 7개를 공식 출처로 확인했어요.</p></div>
+                <div class="cc-dist" data-el="등급 분포"><span class="k">등급 분포</span><div class="row2"><span class="x"><span class="g3 a" data-el="등급 배지" aria-label="등급 A">A</span><b>2</b></span><span class="x"><span class="g3 b" data-el="등급 배지" aria-label="등급 B">B</span><b>6</b></span><span class="x"><span class="g3 c" data-el="등급 배지" aria-label="등급 C">C</span><b>0</b></span><span class="x"><span class="g3 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span><b>2</b></span></div></div>
+                <div class="cc-basis tip-host"><span>판정 근거</span><span class="tip is-open"><input class="tip-chk" type="checkbox" id="tip-3-basis" aria-label="안내 보기" aria-describedby="tip-3-basis-p"><label class="tip-btn" for="tip-3-basis" aria-hidden="true">i</label><label class="tip-scrim" for="tip-3-basis" aria-hidden="true"></label><span class="tip-pop below" id="tip-3-basis-p" role="tooltip"><span>감사보고서가 공시돼서 외감, 투자 유치 공식 발표가 있어 스타트업으로 봤어요.</span></span></span></div>
+                <div class="cc-btns">
+                  <details class="tg"><summary class="bt-sec" data-el="지표 펼치기 버튼"><span class="t-closed">세부 내용 확인하기 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><span class="t-open">세부 내용 접기 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></span></summary></details>
+                  <button class="bt-pri" type="button" data-el="기업 카드로 저장하기">기업 카드로 저장하기</button>
+                  <p class="cc-disc" data-el="면책 문구">공개 데이터 기반 참고 정보이며 기업 평가가 아니에요.</p>
+                </div>
+              </div>
+              <p class="cc-fake">하늘커머스와 모든 수치는 가상 데이터(목업)예요.</p>
+              <div class="detail">
+                <div class="detail-h"><b>세부 지표</b><span>등급 띠로 구분해요</span></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip a"></span><div class="hd"><span class="nm">재무 체력</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="val">부채비율 62%, 유동비율 210%</div><div class="src">출처 금융감독원 DART 감사보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip a"></span><div class="hd"><span class="nm">성장성</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="val">매출 120억 원, 전년 대비 +38%</div><div class="src">출처 금융감독원 DART 감사보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">수익성</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">영업이익률 4.2%</div><div class="src">출처 금융감독원 DART 감사보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">고용 흐름</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">최근 1년간 가입자 +12명</div><div class="src">출처 국민연금공단 사업장 가입자 통계 · 2026.10 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">보상<span class="tag3">추정 범위</span></span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">추정 4,200~5,000만 원</div><div class="src">출처 국민연금 가입자 소득 기반 추정 · 2026.10 기준</div></div>
+                <div class="dcard un" data-el="확인 불가 칸"><div class="hd"><span class="nm">근속</span><span class="g2 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span></div><div class="msg">평균 근속연수는 사업보고서를 내는 법인만 공시해요. 이 기업은 감사보고서만 공시해요.</div><div class="src">대신 위의 고용 흐름으로 조직 안정성을 가늠해요.</div></div>
+                <div class="dcard un" data-el="확인 불가 칸"><div class="hd"><span class="nm">기술 투자</span><span class="g2 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span></div><div class="msg">연구개발비는 사업보고서를 내는 법인만 공시해요. 이 기업은 감사보고서만 공시해요.</div><div class="src">기술 투자는 사업보고서의 연구개발활동 항목으로만 확인해요.</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">투자 단계<span class="tag3 manual">수동 확인</span></span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">시리즈 A 유치 (2024.06)</div><div class="src">출처 투자사 공식 발표 · 확인일 2026.11.18 · <a href="#">원문 링크</a></div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">리스크</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">확인된 중대 공시 없음</div><div class="src">출처 금융감독원 전자공시 · 2026.11 기준</div></div>
+                <div class="dcard" data-el="정보 투명도 칸"><span class="strip b"></span><div class="hd"><span class="nm">정보 투명도</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">나머지 9개 지표 중 7개 확인 (78%)</div><div class="src">출처 위 지표들의 확인 여부로 계산 · 2026.11 기준</div></div>
+                <p class="detail-note">이 카드의 숫자는 코드가 공식 출처에서 그대로 가져온 값이에요. AI는 숫자나 등급을 만들거나 바꾸지 않아요.</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">내 기준에 맞춰 최종 판정할까요? 카드 7판, 1분</div>
+            <div class="quick" data-el="빠른 응답 버튼"><button class="btn" type="button">맞춰 보기</button><button class="btn" type="button">건너뛰기</button></div>
+          </div>
+        </div>
+        <form class="inputbar" data-el="입력창" onsubmit="return false">
+          <input type="text" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력">
+          <button class="btn" type="button" disabled>보내기</button>
+        </form>
+        </section>
+      </div>
+      <div>
+        <span class="state-h">상태 4: 상장 기업 예시 (펼친 상태, 사업보고서가 있는 기업)</span>
+        <section class="chat" data-el="채팅 영역">
+        <div class="infobar" data-el="고정 정보줄">
+          <span class="grp"><span class="k">직무</span><strong>서비스기획</strong><button class="chip-btn" type="button">바꾸기</button></span>
+          <span class="grp"><span class="k">회사</span><strong>바람마켓</strong><button class="chip-btn" type="button">다른 회사</button></span>
+        </div>
+        <div class="msgs">
+          <div class="row user">
+            <div class="bubble" data-el="사용자 말풍선">이 회사로 할게요</div>
+          </div>
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">바람마켓를 확인했어요. 결론부터 보여 드릴게요.</div>
+            <ul class="ilog" data-el="진행 기록">
+              <li><span class="lb" data-el="도구 호출 배지">도구 호출</span><span>get_company_profile: 바람마켓 기업개황 조회</span></li>
+              <li><span class="lb judge" data-el="판단 배지">판단</span><span>상장 법인이라 사업보고서와 국민연금으로 지표를 계산해요 <span class="why">(사업보고서가 공시돼요)</span></span></li>
+              <li><span class="lb" data-el="도구 호출 배지">도구 호출</span><span>get_financials: 바람마켓 재무와 연구개발비 조회</span></li>
+            </ul>
+            <div class="cc" id="w-cc-4">
+              <div class="cc-head"><span class="t">기업 실사 결과</span><span class="pill2">지표 9/9 확인</span></div>
+              <div class="cc-card" data-el="기업 카드">
+                <div class="cc-types"><span class="tag2" data-el="유형 배지"><small>공시 수준</small>상장</span><span class="tag2 alt" data-el="유형 배지"><small>기업 성격</small>일반</span></div>
+                <div class="ribbon"><span class="bar"></span><div class="flag"><span>바람마켓</span></div></div>
+                <div class="cc-msg"><h2>기업 실사가 끝났어요</h2><p>9개 지표 중 9개를 공식 출처로 확인했어요.</p></div>
+                <div class="cc-sum" data-el="하는 일 세 줄 요약">
+                  <div class="cc-sum-h"><b>하는 일 세 줄 요약</b><span class="tag3">예비 기능</span></div>
+                  <ol><li>전국의 중소 판매자가 입점해 물건을 파는 온라인 장터를 운영해요.</li><li>입점 수수료와 광고 상품이 주된 수입원이에요.</li><li>물건을 대신 보관하고 보내 주는 물류 서비스로 사업을 넓히고 있어요.</li></ol>
+                  <p>출처 금융감독원 DART 사업보고서 사업의 내용 · AI가 요약했고 숫자는 넣지 않았어요.</p>
+                </div>
+                <div class="cc-dist" data-el="등급 분포"><span class="k">등급 분포</span><div class="row2"><span class="x"><span class="g3 a" data-el="등급 배지" aria-label="등급 A">A</span><b>4</b></span><span class="x"><span class="g3 b" data-el="등급 배지" aria-label="등급 B">B</span><b>5</b></span><span class="x"><span class="g3 c" data-el="등급 배지" aria-label="등급 C">C</span><b>1</b></span><span class="x"><span class="g3 n" data-el="등급 배지" aria-label="확인 불가">확인 불가</span><b>0</b></span></div></div>
+                <div class="cc-basis tip-host"><span>판정 근거</span><span class="tip"><input class="tip-chk" type="checkbox" id="tip-4-basis" aria-label="안내 보기" aria-describedby="tip-4-basis-p"><label class="tip-btn" for="tip-4-basis" aria-hidden="true">i</label><label class="tip-scrim" for="tip-4-basis" aria-hidden="true"></label><span class="tip-pop below" id="tip-4-basis-p" role="tooltip"><span>사업보고서가 공시돼서 상장, 스타트업 투자 유치 이력이 없어 일반 기업으로 봤어요.</span></span></span></div>
+                <div class="cc-btns">
+                  <details class="tg" open><summary class="bt-sec" data-el="지표 펼치기 버튼"><span class="t-closed">세부 내용 확인하기 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span><span class="t-open">세부 내용 접기 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></span></summary></details>
+                  <button class="bt-pri" type="button" data-el="기업 카드로 저장하기">기업 카드로 저장하기</button>
+                  <p class="cc-disc" data-el="면책 문구">공개 데이터 기반 참고 정보이며 기업 평가가 아니에요.</p>
+                </div>
+              </div>
+              <p class="cc-fake">바람마켓와 모든 수치는 가상 데이터(목업)예요.</p>
+              <div class="detail">
+                <div class="detail-h"><b>세부 지표</b><span>등급 띠로 구분해요</span></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip a"></span><div class="hd"><span class="nm">재무 체력</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="val">부채비율 48%, 유동비율 260%</div><div class="src">출처 금융감독원 DART 사업보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">성장성</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">매출 2,310억 원, 전년 대비 +9%</div><div class="src">출처 금융감독원 DART 사업보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">수익성</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">영업이익률 6.1%</div><div class="src">출처 금융감독원 DART 사업보고서 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">고용 흐름</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">최근 1년간 가입자 +85명</div><div class="src">출처 국민연금공단 사업장 가입자 통계 · 2026.10 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">보상<span class="tag3">추정 범위</span></span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">추정 5,800~7,200만 원</div><div class="src">출처 국민연금 가입자 소득 기반 추정 · 2026.10 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip a"></span><div class="hd"><span class="nm">근속</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="val">평균 근속연수 5.8년</div><div class="src">출처 금융감독원 DART 사업보고서 직원 현황 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip c"></span><div class="hd"><span class="nm">기술 투자</span><span class="g2 c" data-el="등급 배지" aria-label="등급 C">C</span></div><div class="val">매출 대비 연구개발비 0.9%</div><div class="src">출처 금융감독원 DART 사업보고서 연구개발활동 · 2025.12 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip a"></span><div class="hd"><span class="nm">투자 단계</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="val">코스닥 상장 (2021.03)</div><div class="src">출처 금융감독원 DART 기업개황 · 2026.11 기준</div></div>
+                <div class="dcard" data-el="지표 칸"><span class="strip b"></span><div class="hd"><span class="nm">리스크</span><span class="g2 b" data-el="등급 배지" aria-label="등급 B">B</span></div><div class="val">확인된 중대 공시 없음</div><div class="src">출처 금융감독원 전자공시 · 2026.11 기준</div></div>
+                <div class="dcard" data-el="정보 투명도 칸"><span class="strip a"></span><div class="hd"><span class="nm">정보 투명도</span><span class="g2 a" data-el="등급 배지" aria-label="등급 A">A</span></div><div class="val">나머지 9개 지표 중 9개 확인 (100%)</div><div class="src">출처 위 지표들의 확인 여부로 계산 · 2026.11 기준</div></div>
+                <p class="detail-note">이 카드의 숫자는 코드가 공식 출처에서 그대로 가져온 값이에요. AI는 숫자나 등급을 만들거나 바꾸지 않아요.</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="bubble" data-el="에이전트 말풍선">내 기준에 맞춰 최종 판정할까요? 카드 7판, 1분</div>
+            <div class="quick" data-el="빠른 응답 버튼"><button class="btn" type="button">맞춰 보기</button><button class="btn" type="button">건너뛰기</button></div>
+          </div>
+        </div>
+        <form class="inputbar" data-el="입력창" onsubmit="return false">
+          <input type="text" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력">
+          <button class="btn" type="button" disabled>보내기</button>
+        </form>
+        </section>
+      </div>
+      </div>
+      <aside class="aside">
+      <section class="panel" data-el="판단 로그 패널">
+        <h2>에이전트 판단 로그</h2>
+        <ol class="logs">
+          <li class="li">
+            <div class="hd"><span class="no">#1</span><span class="lb" data-el="도구 호출 배지">도구 호출</span><span class="md">목업</span></div>
+            <p>get_company_profile: 하늘커머스 기업개황 조회</p>
+          </li>
+          <li class="li agent">
+            <div class="hd"><span class="no">#2</span><span class="lb judge" data-el="판단 배지">판단</span><span class="md">목업</span></div>
+            <p>외감 법인이라 감사보고서와 국민연금으로 지표를 계산해요</p>
+            <p class="why">이유: 감사보고서가 공시돼요</p>
+          </li>
+          <li class="li">
+            <div class="hd"><span class="no">#3</span><span class="lb" data-el="확인 불가 배지">확인 불가</span><span class="md">목업</span></div>
+            <p>근속: 확인 불가</p>
+            <p class="why">이유: 사업보고서를 내지 않는 법인이라 공시 없음</p>
+          </li>
+          <li class="li">
+            <div class="hd"><span class="no">#4</span><span class="lb" data-el="확인 불가 배지">확인 불가</span><span class="md">목업</span></div>
+            <p>기술 투자: 확인 불가</p>
+            <p class="why">이유: 사업보고서가 없어 연구개발비를 볼 수 없음</p>
+          </li>
+        </ol>
+      </section>
+      <section class="panel" data-el="내 카드 모음">
+        <h2>내 카드 0장</h2>
+        <p class="empty" data-el="내 카드 모음 빈 상태">기업을 분석하면 카드가 여기에 모여요</p>
+      </section>
+      </aside>
+    </div>
+    <p class="disc" data-el="면책 문구">공개 데이터 기반 참고 정보이며 기업 평가가 아니에요.</p>
+  </div>
+</body>
+</html>
