@@ -77,7 +77,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .btn-link::before { content: ""; position: absolute; left: 0; right: 0; bottom: 3px; height: 28%; background: var(--marker); border-radius: 2px; z-index: -1; }
 .btn-link:hover { background: none; }
 .btn-link:hover::before { background: var(--marker-hover); }
-.chip-btn { font: inherit; font-size: 14px; height: 40px; padding: 0 var(--s-4); border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); cursor: pointer; }
+.chip-btn { font: inherit; font-size: 14px; min-height: 40px; padding: var(--s-2) var(--s-4); line-height: 1.4; text-align: left; border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); cursor: pointer; }
 .chip-btn:hover { border-color: var(--gray-3); }
 .chip-btn[aria-pressed="true"] { background: var(--purple-tint); border-color: var(--purple); color: var(--purple-ink); font-weight: 600; }
 .tag { display: inline-block; font-size: 12px; line-height: 1; padding: 5px var(--s-2); border: 1px solid var(--line); border-radius: var(--r-1); background: var(--surface); color: var(--ink-2); white-space: nowrap; }
@@ -320,7 +320,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
           </div>
           <div class="cc-foot"><button class="btn btn-primary" type="button" data-el="기업 카드로 저장하기">기업 카드로 저장하기</button></div>
         </div>
-        <div class="quick"><button class="chip-btn" type="button">내 기준 맞추기</button><button class="chip-btn" type="button">건너뛰고 기본 기준으로</button></div>
+        <div class="quick"><button class="chip-btn" type="button">카드 7판으로 내 성향 맞춤 판정 받기</button><button class="chip-btn" type="button">건너뛰고 기본 기준으로</button></div>
       </main>
       <div class="inputbar"><input class="field" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력"><button class="btn btn-ink" type="button">보내기</button></div>
       </div>
@@ -400,6 +400,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <tr><td>링크형 버튼, 고정 정보줄 문구</td><td>밑줄만 있는 글자, "바꾸기"와 "다른 회사"</td><td>연보라 형광펜 칠(살짝 둥근 직사각형, 밑줄 없음), 문구는 둘 다 "변경하기"</td><td>동주 결정. 밑줄만으로는 버튼인지 알기 어려움. 같은 동작은 같은 말로 통일 (직무와 회사는 보조 설명으로 구분)</td></tr>
         <tr><td>맞대결 카드 제목</td><td>"카드 A", "카드 B"</td><td>"기업 A", "기업 B"</td><td>동주 결정. 회사 이름만 가린 실제 기업을 고르는 게임이라는 것이 제목에서 바로 보이게</td></tr>
         <tr><td>진행 기록 (말풍선 안)</td><td>항상 펼쳐져 있음</td><td>기본은 접고 "어떻게 도출했나요?" 토글로 보게 함</td><td>동주 결정. 도출 근거는 사용자보다 개발자와 심사위원이 보는 정보. 눌러 보게 유도하되 오른쪽 판단 로그 패널은 전체 기록으로 유지</td></tr>
+        <tr><td>맞대결 시작 버튼</td><td>"내 기준 맞추기"</td><td>"카드 7판으로 내 성향 맞춤 판정 받기"</td><td>동주 결정. 무엇을 하는지(카드 고르기), 얼마나 걸리는지(7판), 무엇을 얻는지(맞춤 판정)가 문구에서 바로 보이게. "추천" 대신 "판정"을 쓴 것은 첫단추가 회사를 골라 주는 서비스가 아니라 입력한 회사가 나와 맞는지 판정하는 서비스라서</td></tr>
         <tr><td>유지한 것</td><td colspan="3">요소 이름표 17개, 화면 6개 구성, 문구, 주 버튼 화면당 1개, 판단 로그 패널 위치(PC 오른쪽), 하단 면책 문구, 긴 문장은 (i) 안내로, 진보라 #6B4BC8 주색, 맞대결 진행 "4 / 7"</td></tr>
       </tbody>
     </table>
