@@ -21,8 +21,6 @@ import { personalizedCount, saveReport, skippedPreference } from "@/lib/session"
 import {
   PREFERENCE_TYPE_LABELS,
   type AnalysisRecord,
-  type Company,
-  type GradedIndicator,
   type Preference,
   type Role,
   type SessionState,
@@ -83,6 +81,15 @@ function introMessage(role: Role | null, examples: QuickReply[]): ChatMessage {
 
 const isPersonalized = (p: Preference | null): p is Preference => Boolean(p && !p.skipped && p.type);
 
+/** 모음에 담을 기록 (기업 카드 내용과 판단 로그 포함) */
+const recordOf = (a: Analysis) => ({
+  companyId: a.company.id,
+  name: a.company.name,
+  analyzedAt: new Date().toISOString(),
+  log: a.log,
+  analysis: { company: a.company, graded: a.graded },
+});
+
 /** 유형 설명 문장. 서버가 LLM 문장(USE_AGENT=true일 때)이나 규칙 문장을 준다. 실패하면 규칙 문장 */
 async function fetchSentence(pref: Preference): Promise<{ sentence: string; by: "llm" | "rule" }> {
   try {
@@ -103,6 +110,16 @@ const NO_MESSAGES: ChatMessage[] = [];
 const NO_LOG: LogLine[] = [];
 /** 대화를 저장하는 칸 이름. 목업과 실데이터 대화가 섞이지 않게 모드를 붙인다 */
 const chatKey = (mode: AppMode, name: string) => `chotdanchu:chat:v1:${mode}:${name}`;
+
+/** 대화 새로 시작 아이콘 (도는 화살표) */
+function RefreshIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 12a9 9 0 1 1-2.6-6.4L21 8" />
+      <path d="M21 3v5h-5" />
+    </svg>
+  );
+}
 
 /** 단색 반짝임 아이콘 (AI 표시). 색은 글자색을 따른다 */
 function SparkleIcon() {
@@ -132,6 +149,8 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   const [view, setView] = useState<AppView>("chat");
   /** "대화 새로 시작" 확인 창 */
   const [resetAsk, setResetAsk] = useState(false);
+  /** 모바일에서 사고 과정을 여는 창 */
+  const [thinkModal, setThinkModal] = useState(false);
   const [pending, setPending] = useState(false);
   const [think, setThink] = useState(false);
   /** 맞대결을 다시 해 성향이 바뀌었을 때 저장 카드를 어떻게 할지 묻는 창 */
@@ -141,9 +160,27 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   const intro = introMessage(introRole === undefined ? session.role : introRole, EXAMPLE_REPLIES);
   const shown = [intro, ...messages];
 
+  // 새 말풍선이 생기면(보냈거나 받았거나) 그 묶음의 첫 말풍선이 화면 위쪽에 오게 스크롤한다 (11/22).
+  // 처음 화면이 뜰 때(저장된 대화를 불러올 때)는 움직이지 않는다
+  const seenCount = useRef<number | null>(null);
   useEffect(() => {
-    if (messages.length > 0) bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages.length]);
+    const prev = seenCount.current;
+    seenCount.current = messages.length;
+    if (prev === null || messages.length <= prev) return;
+    const first = messages[prev];
+    if (!first) return;
+    requestAnimationFrame(() => {
+      document.querySelector(`[data-msg-id="${first.id}"]`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, [messages]);
+
+  // 메뉴를 오가도 챗봇 화면의 스크롤 위치를 기억한다
+  const chatScroll = useRef(0);
+  function changeView(v: AppView) {
+    if (view === "chat") chatScroll.current = window.scrollY;
+    setView(v);
+    requestAnimationFrame(() => window.scrollTo({ top: v === "chat" ? chatScroll.current : 0 }));
+  }
 
   function push(...items: Omit<ChatMessage, "id">[]) {
     if (introRole === undefined) setIntroRaw(session.role);
@@ -157,17 +194,16 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     setLog((prev) => [...prev, ...lines.map((l, i) => ({ ...l, step: prev.length + i + 1 }))]);
   }
 
-  /** 리포트 카드를 만들고 기업 카드 모음에도 담는다 (같은 기업은 한 장, 직무별로 저장) */
+  /**
+   * 리포트 카드를 만든다. 모음에는 사용자가 "기업 카드 모음에 담기"를 눌러야 담긴다 (11/22).
+   * 다만 이미 모음에 있는 같은 기업, 같은 직무 카드는 새 판정으로 바로 바꿔 둔다 (맞춤 판정 받기, 성향 변경 다시 판정)
+   */
   function withReport(s: SessionState, a: Analysis, role: Role, preference: Preference | null) {
     const data = buildReportDraft({ ...a, role, preference, mode, checkedAt: new Date().toISOString().slice(0, 10) });
-    const next = saveReport(
-      s,
-      { companyId: a.company.id, name: a.company.name, analyzedAt: new Date().toISOString(), log: a.log, analysis: { company: a.company, graded: a.graded } },
-      role,
-      data,
-      isPersonalized(preference),
-    );
-    const widget: MessageWidget = { type: "report", data };
+    const personalized = isPersonalized(preference);
+    const alreadySaved = Boolean(s.analyzed.find((r) => r.companyId === a.company.id)?.reports?.[role]);
+    const next = alreadySaved ? saveReport(s, recordOf(a), role, data, personalized) : s;
+    const widget: MessageWidget = { type: "report", data, personalized, analysis: { company: a.company, graded: a.graded }, log: a.log };
     return { next, widget };
   }
 
@@ -251,19 +287,19 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   }
 
   function onPickCompany(id: string) {
-    push({ from: "user", text: "이 회사로 할게요" });
+    push({ from: "user", text: "이 회사로 할게요." });
     void ask({ pickCompanyId: id });
   }
 
-  /** "기업 카드 저장하기": 지금 성향 기준으로 이 직무의 카드를 모음에 담는다. 맞대결 전이면 "기본 기준" 카드 */
-  function onSaveCompany(c: Company, graded: GradedIndicator[]) {
-    if (!session.role) return;
-    const a = current?.company.id === c.id ? current : { company: c, graded, log: [] };
-    setSession(withReport(session, a, session.role, session.preference).next);
+  /** 리포트 아래 "기업 카드 모음에 담기": 그 리포트(기업, 직무, 판정)를 모음에 담는다. 맞대결 전이면 "기본 기준" 카드 */
+  function onSaveReport(w: Extract<MessageWidget, { type: "report" }>) {
+    if (!w.analysis) return;
+    const a: Analysis = { ...w.analysis, log: w.log ?? [] };
+    setSession(saveReport(session, recordOf(a), w.data.role, w.data, Boolean(w.personalized)));
   }
 
-  const isSaved = (companyId: string) =>
-    Boolean(session.role && session.analyzed.find((r) => r.companyId === companyId)?.reports?.[session.role]);
+  const isReportSaved = (companyId: string, role: Role) =>
+    Boolean(session.analyzed.find((r) => r.companyId === companyId)?.reports?.[role]);
 
   function startMatchup(userText: string) {
     push(
@@ -335,7 +371,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   /** 카드 창의 "이 직무로 판정 받기": 직무를 바꾸고 같은 기업을 다시 분석한다 */
   function onRequestRole(r: AnalysisRecord, role: Role) {
     setSession({ ...session, role });
-    push({ from: "user", text: `${r.name}, ${role} 직무로 볼게요` });
+    push({ from: "user", text: `${r.name}, ${role} 직무로 볼게요.` });
     void ask({ pickCompanyId: r.companyId });
   }
 
@@ -366,7 +402,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       setSession(next);
       push({
         from: "agent",
-        text: "모든 지표를 같은 비중으로 보고 판정했어요. 최종 판단 리포트예요.",
+        text: "기본 기준으로 판정한 최종 판단 리포트예요.",
         widget,
         replies: nextReplies(false),
       });
@@ -390,7 +426,8 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     push({ from: "agent", text: askCompany(session.role), replies: EXAMPLE_REPLIES });
   }
 
-  const handlers: WidgetHandlers = { onPickCompany, onSaveCompany, isSaved, onMatchupDone, onMatchupSkip };
+  const matchupLabel = isPersonalized(session.preference) ? "기업 맞대결 다시 하기" : "기업 맞대결 하기";
+  const handlers: WidgetHandlers = { onPickCompany, onSaveReport, isReportSaved, onMatchupDone, onMatchupSkip };
 
   /** 대화 새로 시작: 말풍선과 사고 과정만 지운다. 고른 직무, 성향, 기업 카드 모음은 남는다 */
   function resetChat() {
@@ -404,7 +441,8 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
 
   return (
     <>
-      <AppNav view={view} onChange={setView} count={session.analyzed.length} />
+      <AppHeader mode={mode} />
+      <AppNav view={view} onChange={changeView} count={session.analyzed.length} />
       {view === "tutorial" && (
         <section className="coll tutorial" data-el="튜토리얼">
           <div className="coll-h">
@@ -417,7 +455,6 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       )}
       {/* 메뉴를 바꿔도 대화와 맞대결 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}
       <div className="app" data-think={think ? "open" : "closed"} hidden={view !== "chat"}>
-        <AppHeader mode={mode} />
         {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}
         <div className="infobar" data-el="고정 정보줄">
           <span>
@@ -436,14 +473,21 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
               </button>
             )}
           </span>
-          {messages.length > 0 && (
-            <button type="button" className="btn btn-link small" onClick={() => setResetAsk(true)} disabled={pending}>
-              대화 새로 시작
-            </button>
-          )}
+          <span className="infobar-actions">
+            {session.role && (
+              <button type="button" className="btn btn-link small" onClick={() => startMatchup(matchupLabel)} disabled={pending} data-el="맞대결 버튼">
+                {matchupLabel}
+              </button>
+            )}
+            {messages.length > 0 && (
+              <button type="button" className="btn btn-quiet small only-pc" onClick={() => setResetAsk(true)} disabled={pending}>
+                대화 새로 시작하기
+              </button>
+            )}
+          </span>
           <button
             type="button"
-            className="btn btn-ai think-toggle"
+            className="btn btn-ai think-toggle only-pc"
             aria-expanded={think}
             aria-controls="think-panel"
             data-el="사고 과정 버튼"
@@ -468,19 +512,39 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
               </p>
             </div>
           </div>
-          {think && <AgentLogPanel lines={log} onClose={() => setThink(false)} />}
+          {think && (
+            <div className="only-pc">
+              <AgentLogPanel lines={log} onClose={() => setThink(false)} />
+            </div>
+          )}
         </div>
         <Disclaimer />
       </div>
+      {/* 모바일: 사고 과정과 대화 새로 시작은 오른쪽 아래 둥근 아이콘 버튼. 사고 과정은 창으로 연다 */}
+      {view === "chat" && (
+        <div className="fab-stack only-mobile">
+          {messages.length > 0 && (
+            <button type="button" className="fab fab-quiet" aria-label="대화 새로 시작하기" title="대화 새로 시작하기" onClick={() => setResetAsk(true)} disabled={pending}>
+              <RefreshIcon />
+            </button>
+          )}
+          <button type="button" className="fab fab-ai" aria-label="에이전트 사고 과정 보기" title="에이전트 사고 과정 보기" onClick={() => setThinkModal(true)}>
+            <SparkleIcon />
+          </button>
+        </div>
+      )}
+      <AppDialog open={thinkModal} title="에이전트 사고 과정" onClose={() => setThinkModal(false)}>
+        <AgentLogPanel lines={log} />
+      </AppDialog>
       {view === "collection" && (
         <CardCollection
           records={session.analyzed}
           onPersonalize={(r) => {
-            setView("chat");
+            changeView("chat");
             onPersonalize(r);
           }}
           onRequestRole={(r, role) => {
-            setView("chat");
+            changeView("chat");
             onRequestRole(r, role);
           }}
           busy={pending}

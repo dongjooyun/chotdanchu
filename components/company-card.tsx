@@ -43,7 +43,7 @@ function IndicatorRow({ g, metric }: { g: GradedIndicator; metric?: string }) {
 function summary(graded: GradedIndicator[], company: Company): { head: string; none: number } {
   const d = gradeDistribution(graded, company.nature);
   const total = d.A + d.B + d.C + d.none;
-  return { head: `지표 ${total}개 중 ${total - d.none}개를 공식 출처로 확인했어요`, none: d.none };
+  return { head: `지표 ${total}개 중 ${total - d.none}개를 공식 출처로 확인했어요.`, none: d.none };
 }
 
 /**
@@ -73,18 +73,14 @@ function Highlights({ cells }: { cells: GradedIndicator[] }) {
 
 /**
  * 기업 카드: 결론(유형, 확인 개수, 등급 분포, 정보 투명도)을 먼저 보여주고 지표 행은 펼쳐서 본다.
- * 주 버튼은 "기업 카드 저장하기" 하나 (화면당 1개). 저장하면 기업 카드 모음에 "기본 기준" 카드로 들어간다.
+ * 저장 버튼은 두지 않는다. 기업 카드 모음에는 최종 판단 리포트 아래 "기업 카드 모음에 담기"로만 담는다 (11/22).
  */
 export function CompanyCard({
   company,
   graded,
-  onSave,
-  saved = false,
 }: {
   company: Company;
   graded: GradedIndicator[];
-  onSave?: () => void;
-  saved?: boolean;
 }) {
   const d = gradeDistribution(graded, company.nature);
   const s = summary(graded, company);
@@ -132,14 +128,7 @@ export function CompanyCard({
           {transparency && <IndicatorRow g={transparency} />}
         </div>
       </details>
-      {onSave && (
-        <div className="cc-foot">
-          {saved && <span className="small muted">기업 카드 모음에 담았어요</span>}
-          <button type="button" className="btn btn-primary" data-el="기업 카드 저장하기" onClick={onSave} disabled={saved}>
-            {saved ? "저장했어요" : "기업 카드 저장하기"}
-          </button>
-        </div>
-      )}
+
     </div>
   );
 }

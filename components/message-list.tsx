@@ -14,7 +14,8 @@ import { TYPE_INFO } from "@/lib/matchup";
 export type MessageWidget =
   | ChatWidget
   | { type: "matchup" }
-  | { type: "report"; data: ReportCardData }
+  /** 최종 판단 리포트. 모음에 담을 때 쓰려고 그 기업의 카드 내용(analysis)과 맞춤 판정 여부를 같이 둔다 */
+  | { type: "report"; data: ReportCardData; personalized?: boolean; analysis?: { company: Company; graded: GradedIndicator[] }; log?: LogLine[] }
   | { type: "preference"; preference: Preference; sentence: string };
 
 export interface ChatMessage {
@@ -29,8 +30,10 @@ export interface ChatMessage {
 
 export interface WidgetHandlers {
   onPickCompany: (id: string) => void;
-  onSaveCompany: (company: Company, graded: GradedIndicator[]) => void;
-  isSaved: (companyId: string) => boolean;
+  /** 리포트 아래 "기업 카드 모음에 담기" */
+  onSaveReport: (widget: Extract<MessageWidget, { type: "report" }>) => void;
+  /** 이 기업의 이 직무 카드가 이미 모음에 있는지 */
+  isReportSaved: (companyId: string, role: ReportCardData["role"]) => boolean;
   onMatchupDone: (picks: string[]) => void;
   onMatchupSkip: () => void;
 }
@@ -58,12 +61,7 @@ function Widget({ widget, active, h }: { widget: MessageWidget; active: boolean;
       return <CandidateChips candidates={widget.candidates} onPick={h.onPickCompany} disabled={!active} />;
     case "company":
       return (
-        <CompanyCard
-          company={widget.company}
-          graded={widget.graded}
-          saved={h.isSaved(widget.company.id)}
-          onSave={() => h.onSaveCompany(widget.company, widget.graded)}
-        />
+<CompanyCard company={widget.company} graded={widget.graded} />
       );
     case "matchup":
       return active ? (
@@ -73,9 +71,67 @@ function Widget({ widget, active, h }: { widget: MessageWidget; active: boolean;
       );
     case "preference":
       return <PreferenceResult preference={widget.preference} sentence={widget.sentence} />;
-    case "report":
-      return <ReportCard data={widget.data} />;
+    case "report": {
+      const saved = h.isReportSaved(widget.data.companyId, widget.data.role);
+      // 리포트 카드와 카드 버튼을 한 구역으로 묶어, 아래 빠른 응답 버튼과 섞여 보이지 않게 한다 (11/22)
+      return (
+        <section className="report-block" data-el="리포트 구역">
+          <ReportCard data={widget.data} />
+          <div className="report-save">
+            <button
+              type="button"
+              className="btn btn-quiet-primary"
+              data-el="모음에 담기"
+              disabled={saved || !widget.analysis || !widget.data.fitLabel}
+              onClick={() => h.onSaveReport(widget)}
+            >
+              {saved ? "기업 카드 모음에 담았어요." : "기업 카드 모음에 담기"}
+            </button>
+          </div>
+        </section>
+      );
+    }
   }
+}
+
+/** **굵게**를 b로 바꾼다 */
+function inline(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") ? <b key={i}>{part.slice(2, -2)}</b> : <span key={i}>{part}</span>,
+  );
+}
+
+/**
+ * 에이전트 말풍선용 아주 작은 마크다운: "- "로 시작하는 줄은 들여쓴 점 목록, "  - "는 한 단계 더 들여쓴 목록, 나머지 줄은 문단.
+ * 예: "비교했어요.\n- 3년차 때 요구되는 역량: 4개" -> 문단 하나 + 점 목록 한 줄
+ */
+function Markdown({ text }: { text: string }) {
+  const blocks: React.ReactNode[] = [];
+  let list: { depth: number; text: string }[] = [];
+  const flush = () => {
+    if (list.length === 0) return;
+    const items = list;
+    blocks.push(
+      <ul key={blocks.length} className="md-ul">
+        {items.map((it, i) => (
+          <li key={i} className={it.depth > 0 ? "md-sub" : undefined}>
+            {inline(it.text)}
+          </li>
+        ))}
+      </ul>,
+    );
+    list = [];
+  };
+  for (const line of text.split("\n")) {
+    const m = line.match(/^(\s*)- (.*)$/);
+    if (m) list.push({ depth: m[1].length >= 2 ? 1 : 0, text: m[2] });
+    else {
+      flush();
+      if (line.trim()) blocks.push(<p key={blocks.length}>{inline(line)}</p>);
+    }
+  }
+  flush();
+  return <div className="md">{blocks}</div>;
 }
 
 /** 말풍선 목록. 에이전트 말풍선 아래에 위젯과 빠른 응답 버튼을 그린다. 버튼과 맞대결은 마지막 말풍선에서만 누를 수 있다 */
@@ -95,12 +151,12 @@ export function MessageList({
       {messages.map((m, i) => {
         const active = i === messages.length - 1 && !pending;
         return (
-          <li key={m.id} className={m.from === "user" ? "msg msg-user" : "msg"}>
+          <li key={m.id} className={m.from === "user" ? "msg msg-user" : "msg"} data-msg-id={m.id}>
             <div
               className={m.from === "user" ? "bubble bubble-user" : "bubble"}
               data-el={m.from === "user" ? "사용자 말풍선" : "에이전트 말풍선"}
             >
-              <p>{m.text}</p>
+              {m.from === "agent" ? <Markdown text={m.text} /> : <p>{m.text}</p>}
               {m.log && <InlineLog lines={m.log} />}
             </div>
             {m.widget && <Widget widget={m.widget} active={active} h={handlers} />}
@@ -118,7 +174,7 @@ export function MessageList({
               <i />
               <i />
             </span>{" "}
-            <span className="small muted">에이전트가 확인하는 중이에요</span>
+            <span className="small muted">에이전트가 확인하는 중이에요.</span>
           </div>
         </li>
       )}

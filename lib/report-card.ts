@@ -25,7 +25,7 @@ export interface ReportCardData {
   /** 3년차 공고 대비 역량 갭 개수 (PRD 05, lib/career-gap.ts). 공고가 없으면 null */
   gap: { connected: number; missing: number } | null;
   /** 역량 갭에서 맞은 역량 이름 (카드 뒷면에 보인다). 공고가 없으면 생략 */
-  gapDetail?: { connected: string[]; missing: string[] };
+  gapDetail?: { required?: string[]; connected: string[]; missing: string[] };
   /** 3년차 공고의 원문 요구 연차. 예: "5년 이상" */
   careerYears?: string;
   /** 3년차 공고 출처 한 줄. 공고가 없으면 null */

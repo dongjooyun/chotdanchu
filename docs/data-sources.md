@@ -17,6 +17,7 @@
 | 수동 확인 | 고용노동부 체불사업주 명단 공개 | 고용노동부 대표 홈페이지 정보공개 | 리스크 (선택) | 실명 포함. 이름은 저장·LLM 전송하지 않음 | 시간 남으면 |
 | AI | Anthropic Claude API | https://docs.claude.com | 에이전트 판단, 역량 추출, 리포트 문장 | 유료, 상업 이용 약관 | 사용 중 (에이전트 판단, `claude-haiku-5-5`) |
 | 개발 도구 | Claude Code | https://docs.claude.com | 코드 작성 보조 | | 사용 중 |
+| AI | Higgsfield (GPT Image 2.6 모델) | https://higgsfield.ai | 서비스 로고와 파비콘 후보 2개 생성 (보라 단추, 과녁 단추와 다트). `design/logo-candidates/` | 서비스 이용 약관. 생성 이미지라 실존 브랜드나 사람을 쓰지 않음 | 11/22 후보 A(보라 단추)를 헤더와 파비콘에 임시 적용, 최종 선택 전 |
 | AI | Perplexity | https://www.perplexity.ai | 수동 확인 대상(투자 단계, KIPRIS 등록 특허, 기업 공식 채용 페이지의 3년차 공고)의 공식 출처 후보 검색 | 서비스 이용 약관. 서비스 코드와 LLM 프롬프트에는 들어가지 않는 사람의 조사 도구 | 사용 중. 사람이 원문을 직접 확인한 값만 기록 |
 | AI | ChatGPT (OpenAI GPT) | https://chatgpt.com | 위와 같은 수동 확인의 출처 후보 검색 보조 | 서비스 이용 약관. 서비스 코드와 LLM 프롬프트에는 들어가지 않는 사람의 조사 도구 | 사용 중. 사람이 원문을 직접 확인한 값만 기록 |
 | 라이브러리 | @anthropic-ai/sdk 1.11.0 | https://github.com/anthropics/anthropic-sdk-typescript | Claude API 호출 (에이전트 루프) | MIT | 사용 중 |

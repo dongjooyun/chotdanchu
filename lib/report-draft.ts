@@ -91,7 +91,7 @@ export function careerSourceText(gap: CareerGap): string {
 
 /**
  * 라벨 이유 한 줄 (규칙 문장, 숫자 없음). 내가 중시한 지표 이름이 들어가서 선호가 다르면 문장도 달라진다.
- * 예: 최적, 중시 지표 [성장성] -> "내가 중시한 성장성이 받쳐 주고, 3년차 때 요구되는 역량 대부분을 신입 때부터 쌓을 수 있어요"
+ * 예: 최적, 중시 지표 [성장성] -> "내가 중시한 성장성이 우수하고, 3년차 때 요구되는 역량 대부분을 신입 때부터 쌓을 수 있어요."
  */
 export function fitReason(fit: FitResult, top: IndicatorId[], graded: GradedIndicator[], gap: CareerGap | null): string {
   const gradeOf = (id: IndicatorId) => graded.find((g) => g.id === id)?.grade ?? null;
@@ -103,21 +103,21 @@ export function fitReason(fit: FitResult, top: IndicatorId[], graded: GradedIndi
   const missing = gap?.items.find((it) => it.kind === "missing")?.name;
   switch (fit.label) {
     case "최적":
-      return `${strongText}${i} 받쳐 주고, 3년차 때 요구되는 역량 대부분을 신입 때부터 쌓을 수 있어요`;
+      return `${strongText}${i} 우수하고, 3년차 때 요구되는 역량 대부분을 신입 때부터 쌓을 수 있어요.`;
     case "도전":
       return weak
-        ? `3년차 때 요구되는 역량 대부분을 신입 때부터 쌓을 수 있지만, 내가 중시한 ${INDICATOR_LABELS[weak]} 쪽은 감수할 부분이 있어요`
-        : "3년차 때 요구되는 역량 대부분을 쌓을 수 있지만, 내 기준으로 본 회사 기반은 아쉬운 편이에요";
+        ? `3년차 때 요구되는 역량 대부분을 신입 때부터 쌓을 수 있지만, 내가 중시한 ${INDICATOR_LABELS[weak]} 쪽은 감수할 부분이 있어요.`
+        : "3년차 때 요구되는 역량 대부분을 쌓을 수 있지만, 내 기준으로 본 회사 기반은 아쉬운 편이에요.";
     case "안정":
       return missing
-        ? `${strongText}${n} 든든하지만, 3년차 때 요구되는 "${missing}" 같은 역량은 따로 채워야 해요`
-        : `${strongText}${n} 든든하지만, 3년차 때 요구되는 역량 일부는 따로 채워야 해요`;
+        ? `${strongText}${n} 든든하지만, 3년차 때 요구되는 "${missing}" 같은 역량은 따로 채워야 해요.`
+        : `${strongText}${n} 든든하지만, 3년차 때 요구되는 역량 일부는 따로 채워야 해요.`;
     case "고려":
-      return "내 기준으로 본 회사 기반과 3년차 역량 모두 아쉬운 점이 있어, 다른 회사와 비교해 보면 좋아요";
+      return "내 기준으로 본 회사 기반과 3년차 역량 모두 아쉬운 점이 있어, 다른 회사와 비교해 보면 좋아요.";
     case "정보 보강":
       return fit.rule === "3년차 공고 없음"
-        ? "같은 직무의 3년차 공고를 찾지 못해, 쌓을 수 있는 역량은 면접에서 확인해야 해요"
-        : "공개된 정보가 적어, 판단에 필요한 내용을 면접에서 더 확인해야 해요";
+        ? "같은 직무의 3년차 공고를 찾지 못해, 쌓을 수 있는 역량은 면접에서 확인해야 해요."
+        : "공개된 정보가 적어, 판단에 필요한 내용을 면접에서 더 확인해야 해요.";
   }
 }
 
@@ -146,9 +146,9 @@ function interviewQuestions(graded: GradedIndicator[], role: Role, gap: CareerGa
  * 줄글이 길면 안 읽히므로 한 줄씩 나눈다 (말풍선은 줄바꿈을 그대로 보인다). 사용자 정보는 쓰지 않는다.
  * 예:
  *   마케팅 직무에서 신입 때 쌓을 수 있는 역량과 비교했어요.
- *   · 3년차 때 요구되는 역량: 5개 (경력 4년 이상 공고)
- *   · 신입 마케팅 직무 때 쌓을 수 있는 역량: 3개 (퍼포먼스 광고 운영, 검색 마케팅, 마케팅 데이터 분석)
- *   · 따로 채워야 하는 역량: 2개 (협업·조율, 생성형 AI 활용)
+ *   - 3년차 때 요구되는 역량: 5개 (경력 4년 이상 공고)
+ *   - 신입 마케팅 직무 때 쌓을 수 있는 역량: 3개 (퍼포먼스 광고 운영, 검색 마케팅, 마케팅 데이터 분석)
+ *   - 따로 채워야 하는 역량: 2개 (협업·조율, 생성형 AI 활용)
  */
 export function careerMessage(gap: CareerGap | null, role: Role): string {
   if (!gap) return `${role} 직무의 3년차 공고를 찾지 못해 역량 비교는 확인 불가로 둘게요.`;
@@ -158,9 +158,9 @@ export function careerMessage(gap: CareerGap | null, role: Role): string {
   const years = p.url ? ` (경력 ${p.years} 공고)` : "";
   const lines = [
     `${role} 직무에서 신입 때 쌓을 수 있는 역량과 비교했어요.`,
-    `· 3년차 때 요구되는 역량: ${c.connected + c.missing}개${years}`,
-    `· 신입 ${role} 직무 때 쌓을 수 있는 역량: ${c.connected}개${c.connected > 0 ? ` (${d.connected.join(", ")})` : ""}`,
-    `· 따로 채워야 하는 역량: ${c.missing}개${c.missing > 0 ? ` (${d.missing.join(", ")})` : ""}`,
+    `- 3년차 때 요구되는 역량: ${c.connected + c.missing}개${years}`,
+    `- 신입 ${role} 직무 때 쌓을 수 있는 역량: ${c.connected}개${c.connected > 0 ? ` (${d.connected.join(", ")})` : ""}`,
+    `- 따로 채워야 하는 역량: ${c.missing}개${c.missing > 0 ? ` (${d.missing.join(", ")})` : ""}`,
   ];
   if (p.substitute) lines.push(`${p.substitute.reason}.`);
   return lines.join("\n");

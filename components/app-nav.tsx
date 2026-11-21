@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 /**
  * 화면 메뉴 3개: 튜토리얼, 챗봇, 기업 카드 모음 (11/22).
  * - PC(821px 이상): 왼쪽에 아이콘만 있는 세로 사이드바. 마우스를 올리거나 키보드로 들어오면 펼쳐져 이름이 보인다
@@ -39,15 +41,22 @@ const ITEMS: { id: AppView; label: string; icon: React.ReactNode }[] = [
 ];
 
 export function AppNav({ view, onChange, count }: { view: AppView; onChange: (v: AppView) => void; count: number }) {
+  // 메뉴를 누르면 마우스가 사이드바 위에 있어도 바로 아이콘만 남게 접고, 마우스가 나갔다 다시 들어오면 다시 펼친다 (11/22)
+  const [picked, setPicked] = useState(false);
   return (
-    <nav className="app-nav" aria-label="메뉴" data-el="메뉴">
+    <nav className={picked ? "app-nav is-picked" : "app-nav"} aria-label="메뉴" data-el="메뉴" onMouseLeave={() => setPicked(false)}>
       {ITEMS.map((it) => (
         <button
           key={it.id}
           type="button"
           className="app-nav-item"
           aria-current={view === it.id ? "page" : undefined}
-          onClick={() => onChange(it.id)}
+          onClick={(e) => {
+            onChange(it.id);
+            setPicked(true);
+            // 마우스로 누른 뒤 포커스가 남아 사이드바가 펼쳐진 채로 있지 않게 한다
+            e.currentTarget.blur();
+          }}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             {it.icon}

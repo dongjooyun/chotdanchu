@@ -74,7 +74,7 @@ function Progress({ done }: { done: number }) {
 export function GradeLegend() {
   return (
     <p className="legend">
-      <b>A, B, C는 지표별 등급이에요</b>
+      <b>A, B, C는 지표별 등급이에요.</b>
       <span><GradeBadge grade="A" size="sm" /> 좋음</span>
       <span><GradeBadge grade="B" size="sm" /> 보통</span>
       <span><GradeBadge grade="C" size="sm" /> 미흡</span>
@@ -123,6 +123,7 @@ export function MatchupGame({
       <div className="mp-top">
         <b className="mp-title">더 끌리는 카드를 선택해 주세요</b>
         <Progress done={picks.length} />
+        <p className="mp-note" data-el="맞대결 안내">진행 중인 맞대결은 임시 저장되지 않아요. 새로고침하거나 창을 닫으면 1판부터 다시 해요.</p>
       </div>
       <div className="mp">
         <MatchupCardView card={pair[0]} title="기업 A" picked={picked === pair[0].id} onPick={() => pick(pair[0].id)} disabled={locked} />

@@ -12,7 +12,7 @@ export const SAMPLE_REPORT_CARD: ReportCardData = {
   typeLabel: "감사보고서 공개 · 스타트업",
   role: "서비스기획",
   fitLabel: "도전",
-  fitReason: "성장은 빠르지만 근속 정보가 없어 면접에서 확인이 필요해요",
+  fitReason: "성장은 빠르지만 근속 정보가 없어 면접에서 확인이 필요해요.",
   preferenceType: "자율·개척 지향",
   topIndicators: [
     { id: "growth", grade: "A" },

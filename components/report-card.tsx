@@ -19,6 +19,26 @@ const useOrigin = () => useSyncExternalStore(noopSubscribe, () => window.locatio
 
 const isFitLabel = (s: string): s is FitLabel => s in FIT_DESCRIPTIONS;
 
+/** 근거 카드의 역량 목록: 라벨 한 줄 아래에 점 목록. 비었으면 "없음" */
+function GapList({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div className="gap-list">
+      <span className="gap-k">
+        {title} {items.length}개
+      </span>
+      {items.length > 0 ? (
+        <ul>
+          {items.map((n) => (
+            <li key={n}>{n}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="small muted">없음</p>
+      )}
+    </div>
+  );
+}
+
 /** 뒤집기 아이콘 (두 화살표가 도는 모양) */
 function FlipIcon() {
   return (
@@ -122,13 +142,17 @@ function Front({
             {d.fitLabel && origin && (
               <div className="rc-qr" data-el="카드 QR">
                 <QRCodeSVG value={`${origin}${shareHref(d.companyId, d.role, d.weightsParam)}`} size={64} level="M" marginSize={0} />
-                <span className="tiny muted">QR로 이 카드를 다시 열 수 있어요. 링크에는 기업, 직무, 내 기준만 담겨요</span>
+                <span className="tiny muted">
+                  스캔하여 기업 카드 자세히 보기
+                  <br />
+                  URL에는 기업, 직무, 내 성향 정보만 담겨 있어요.
+                </span>
               </div>
             )}
           </>
         )}
       </div>
-      <div className="rc-foot">공개 데이터 기반 참고 정보이며 기업 평가가 아니에요</div>
+      <div className="rc-foot">공개 데이터 기반 참고 정보이며 기업 평가가 아니에요.</div>
     </div>
   );
 }
@@ -156,43 +180,44 @@ function Back({ d, hidden }: { d: ReportCardData; hidden: boolean }) {
             <span className="muted">{d.decisions.join(" · ")}</span>
           </div>
         )}
-        {d.gapDetail && (
-          <div className="small" data-el="역량 비교 상세">
-            <b>3년차 때 요구되는 역량 비교</b>
-            <p className="muted">{d.role} 직무에서 신입 때 쌓을 수 있는 역량과 비교했어요</p>
-            <ul>
-              {d.gapDetail.connected.length > 0 && <li>신입 때 쌓을 수 있는 역량: {d.gapDetail.connected.join(", ")}</li>}
-              {d.gapDetail.missing.length > 0 && <li>따로 채워야 하는 역량: {d.gapDetail.missing.join(", ")}</li>}
-            </ul>
-          </div>
-        )}
-        {d.careerSource && (
-          <p className="small" data-el="3년차 공고 출처">
-            <span className="muted">3년차 공고: </span>
-            {d.careerUrl ? (
-              <a href={d.careerUrl} target="_blank" rel="noreferrer">
-                {d.careerSource}
-              </a>
-            ) : (
-              d.careerSource
-            )}
-          </p>
-        )}
-        <section className="rc-q">
-          <h4>면접에서 물어볼 것</h4>
-          {d.notice ? (
-            <p>{d.notice}</p>
-          ) : (
-            <ol>
-              {d.interviewQuestions.map((q) => (
-                <li key={q}>{q}</li>
-              ))}
-            </ol>
+        {/* 아래 두 상자는 카드 맨 아래에 붙여 둔다. 앞면과 높이를 맞추느라 남는 여백은 상자 위로 간다 */}
+        <div className="rc-boxes">
+          {d.gapDetail && (
+            <section className="rc-q" data-el="역량 비교 상세">
+              <h4>3년차 때 요구되는 역량 비교</h4>
+              <p className="rc-q-sub">{d.role} 직무에서 신입 때 쌓을 수 있는 역량과 비교했어요.</p>
+              <GapList title="3년차 요구 역량" items={d.gapDetail.required ?? [...d.gapDetail.connected, ...d.gapDetail.missing]} />
+              <GapList title="신입 때 쌓을 수 있는 역량" items={d.gapDetail.connected} />
+              <GapList title="따로 채워야 하는 역량" items={d.gapDetail.missing} />
+              {d.careerSource && (
+                <p className="rc-src" data-el="3년차 공고 출처">
+                  {d.careerUrl ? (
+                    <a href={d.careerUrl} target="_blank" rel="noreferrer" className="src-link">
+                      공고 원문 보기: {d.careerSource}
+                    </a>
+                  ) : (
+                    <span className="muted">비교한 공고: {d.careerSource}</span>
+                  )}
+                </p>
+              )}
+            </section>
           )}
-        </section>
+          <section className="rc-q">
+            <h4>면접에서 물어볼 것</h4>
+            {d.notice ? (
+              <p>{d.notice}</p>
+            ) : (
+              <ol>
+                {d.interviewQuestions.map((q) => (
+                  <li key={q}>{q}</li>
+                ))}
+              </ol>
+            )}
+          </section>
+        </div>
       </div>
       <div className="rc-foot">
-        수치 기반 등급은 공개 데이터로 계산했어요
+        수치 기반 등급은 공개 데이터로 계산했어요.
         <br />
         기준일 {d.checkedAt}
       </div>
@@ -281,7 +306,15 @@ export function ReportCard({
   const tabs = reports ? (
     <div className="view-toggle role-tabs" role="group" aria-label="직무">
       {ROLES.map((r) => (
-        <button key={r} type="button" aria-pressed={r === role} onClick={() => setRole(r)}>
+        <button
+          key={r}
+          type="button"
+          aria-pressed={r === role}
+          onClick={() => {
+            setRole(r);
+            setBack(false);
+          }}
+        >
           {r}
         </button>
       ))}
@@ -303,7 +336,7 @@ export function ReportCard({
       >
         <div className="flip-inner">
           <Front d={shown} missingRole={missingRole} onRequestRole={onRequestRole} hidden={back} />
-          <Back d={shown} hidden={!back} />
+          {!missingRole && <Back d={shown} hidden={!back} />}
         </div>
         <span className="sheen" aria-hidden="true" />
       </div>

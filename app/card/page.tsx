@@ -18,7 +18,7 @@ export default function CardPage({ searchParams }: { searchParams: SearchParams 
     <main className="wrap">
       <section className="shared-card" data-el="공유 카드">
         {/* 링크 값(searchParams)은 요청마다 달라서 Suspense 안에서 읽는다 */}
-        <Suspense fallback={<p className="small muted">카드를 불러오는 중이에요</p>}>
+        <Suspense fallback={<p className="small muted">카드를 불러오는 중이에요.</p>}>
           <SharedCard searchParams={searchParams} />
         </Suspense>
         <p className="small">

@@ -80,10 +80,17 @@ export function CardCollection({
           {records.map((r) => {
             const s = summaryOf(r);
             return (
-              <div key={r.companyId} className="coll-r">
+              <div
+                key={r.companyId}
+                className="coll-r"
+                onClick={(e) => {
+                  if ((e.target as HTMLElement).closest("button")) return;
+                  openCard(r);
+                }}
+              >
                 <span className="coll-no">No. {cardNo(r.companyId)}</span>
                 <span>
-                  <button type="button" className="btn btn-link coll-title" onClick={() => openCard(r)}>
+                  <button type="button" className="btn coll-title" onClick={() => openCard(r)}>
                     {r.name}
                   </button>
                   <span className="coll-sub">
@@ -124,7 +131,7 @@ export function CardCollection({
           {Array.from({ length: Math.max(0, MAX_CARDS - records.length) }, (_, i) => (
             <div key={`empty-${i}`} className="gc-empty" aria-hidden="true">
               <b>No. ????????</b>
-              <span>아직 비어 있어요</span>
+              <span>아직 비어 있어요.</span>
             </div>
           ))}
         </div>

@@ -52,7 +52,7 @@ export function exampleNames(mode: AppMode): string[] {
   return [...new Set(realCompanies.map((c) => normalizeCompanyName(c.name)))];
 }
 
-/** 직무별 역량 목록. 예: getCompetencies("마케팅").length === 16 */
+/** 직무별 역량 목록. 예: getCompetencies("마케팅").length === 17 */
 export function getCompetencies(role: Role): Competency[] {
   return competencyDictionary.roles.find((r) => r.role === role)?.competencies ?? [];
 }

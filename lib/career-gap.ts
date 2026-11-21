@@ -124,8 +124,9 @@ export function connectRatio(counts: CareerGap["counts"]): number | null {
  * 화면에 보일 역량 이름 목록. 3년차 때 새로 요구되는 역량에는 표시를 붙인다.
  * 예: { connected: ["CRM 마케팅"], missing: ["그로스·리텐션(3년차 때 새로 요구)", "Braze 사용"] }
  */
-export function gapDetail(gap: CareerGap): { connected: string[]; missing: string[] } {
+export function gapDetail(gap: CareerGap): { required: string[]; connected: string[]; missing: string[] } {
   return {
+    required: gap.items.map((i) => i.name),
     connected: gap.items.filter((i) => i.kind === "connected").map((i) => i.name),
     missing: gap.items.filter((i) => i.kind === "missing").map((i) => (i.why === "year3" ? `${i.name}(3년차 때 새로 요구)` : i.name)),
   };

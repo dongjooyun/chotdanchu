@@ -73,7 +73,7 @@ describe("표현 목록 맞추기 (matchCompetencies)", () => {
 describe("역량 사전 자체의 품질 (데이터 검증)", () => {
   test("CMP-DICT-01 직무 3개, 역량 합계 52개", () => {
     expect(dict.roles.map((r) => r.role)).toEqual(["서비스기획", "마케팅", "운영"]);
-    expect(dict.roles.reduce((n, r) => n + r.competencies.length, 0)).toBe(52);
+    expect(dict.roles.reduce((n, r) => n + r.competencies.length, 0)).toBe(53);
   });
   test("CMP-DICT-02 모든 이름과 유의어는 자기 역량으로 돌아온다 (직무마다)", () => {
     for (const role of dict.roles) {
