@@ -1,6 +1,7 @@
 // 브라우저 localStorage에 두는 세션 상태 (계정 없음, 개인 식별 정보 없음).
 // 저장소를 못 쓰는 환경(사생활 보호 모드 등)에서도 화면이 깨지지 않게 모든 읽기·쓰기를 try로 감싼다.
-import type { AnalysisRecord, IndicatorId, Preference, SessionState } from "@/lib/types";
+import type { ReportCardData } from "@/lib/report-card";
+import type { AnalysisRecord, IndicatorId, Preference, Role, SessionState } from "@/lib/types";
 
 const STORAGE_KEY = "chotdanchu:session:v1";
 const CHANGE_EVENT = "chotdanchu:session-change";
@@ -67,8 +68,37 @@ export function saveSession(next: SessionState): void {
   window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 
-/** 최근 분석 기록 맨 앞에 추가. 같은 기업은 새 기록으로 바꾼다 */
+/**
+ * 기업 카드 모음 맨 앞에 넣는다. 같은 기업은 한 장으로 합치고, 이미 저장한 직무별 리포트는 남긴다.
+ * 예: 카카오 마케팅을 저장한 뒤 카카오 운영을 저장하면 카카오 한 장에 reports 두 개
+ */
 export function addAnalysis(session: SessionState, record: AnalysisRecord): SessionState {
+  const prev = session.analyzed.find((r) => r.companyId === record.companyId);
   const rest = session.analyzed.filter((r) => r.companyId !== record.companyId);
-  return { ...session, analyzed: [record, ...rest].slice(0, MAX_ANALYZED) };
+  const merged: AnalysisRecord = { ...prev, ...record, reports: { ...prev?.reports, ...record.reports } };
+  return { ...session, analyzed: [merged, ...rest].slice(0, MAX_ANALYZED) };
+}
+
+/** 기업 한 장에 직무 하나의 리포트를 저장한다. 그 기업이 모음에 없으면 새로 넣는다 */
+export function saveReport(
+  session: SessionState,
+  base: Omit<AnalysisRecord, "reports" | "label">,
+  role: Role,
+  report: ReportCardData,
+  personalized: boolean,
+): SessionState {
+  return addAnalysis(session, {
+    ...base,
+    label: report.fitLabel,
+    lastRole: role,
+    reports: { [role]: { report, personalized, savedAt: new Date().toISOString() } },
+  });
+}
+
+/** 저장한 카드 가운데 맞춤 판정을 받은 직무 수. 성향이 바뀌었을 때 다시 판정할지 물을 대상이다 */
+export function personalizedCount(session: SessionState): number {
+  return session.analyzed.reduce(
+    (n, r) => n + Object.values(r.reports ?? {}).filter((x) => x?.personalized).length,
+    0,
+  );
 }

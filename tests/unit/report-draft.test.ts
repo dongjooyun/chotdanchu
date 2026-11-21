@@ -16,7 +16,6 @@ function draft(name: string, role: Role, index = 0) {
     role,
     preference: skippedPreference(),
     log: [],
-    no: 1,
     checkedAt: "2026-11-20",
   });
 }
@@ -81,7 +80,6 @@ describe("리포트 카드 초안", () => {
       role: "마케팅",
       preference: skippedPreference(),
       log: [],
-      no: 1,
       checkedAt: "2026-11-21",
     });
     expect(d.interviewQuestions).toEqual([]);

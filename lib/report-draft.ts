@@ -1,5 +1,6 @@
 // 지금 보고 있는 기업과 직무로 리포트 카드 내용을 만든다. 리포트 태스크(CDC-16) 전까지의 초안이다.
 // 회사 이름, 유형, 직무, 지표 등급, 판단 로그는 실제 값이고, 판정 라벨과 3년차 공고 비교는 아직 없어서 비워 둔다.
+import { cardNo, logoOf, monogram } from "@/lib/brand";
 import type { LogLine } from "@/lib/chat";
 import { DISCLOSURE_LABELS, NATURE_LABELS } from "@/lib/format";
 import type { ReportCardData } from "@/lib/report-card";
@@ -18,8 +19,6 @@ export interface ReportDraftInput {
   role: Role;
   preference: Preference | null;
   log: LogLine[];
-  /** 모은 순서 (1부터) */
-  no: number;
   /** 기준일 YYYY-MM-DD */
   checkedAt: string;
 }
@@ -44,12 +43,15 @@ export function buildReportDraft(input: ReportDraftInput): ReportCardData {
     (g) => `${INDICATOR_LABELS[g.id]} 정보를 확인하지 못했어요. ${role} 직무로 일하게 되면 이 부분을 어떻게 알 수 있나요?`,
   );
   return {
-    no: input.no,
+    no: cardNo(company.id),
+    companyId: company.id,
     companyName: company.name,
+    logo: logoOf(company.id),
+    monogram: monogram(company.name),
     typeLabel: `${DISCLOSURE_LABELS[company.disclosure]} · ${NATURE_LABELS[company.nature]}`,
     role,
     fitLabel: null,
-    fitReason: "판정 라벨은 리포트 태스크(CDC-16)에서 붙어요",
+    fitReason: "판정 라벨은 최종 판단 리포트 단계에서 붙어요",
     preferenceType: preference?.type ? PREFERENCE_TYPE_LABELS[preference.type] : null,
     topIndicators: (preference?.topIndicators ?? []).map((id) => ({ id, grade: gradeOf(id) })),
     gap: null,
