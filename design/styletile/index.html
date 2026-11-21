@@ -63,13 +63,13 @@ th, td { text-align: left; vertical-align: top; padding: var(--s-3) var(--s-3); 
 th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px solid var(--line); background: var(--canvas); }
 
 /* ===== 부품 ===== */
-.btn { font: inherit; font-weight: 600; height: 44px; padding: 0 var(--s-5); border-radius: var(--r-2); cursor: pointer; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); }
+.btn { flex: none; white-space: nowrap; min-width: 88px; font: inherit; font-weight: 600; height: 44px; padding: 0 var(--s-5); border-radius: var(--r-2); cursor: pointer; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); }
 .btn:hover { background: var(--canvas); }
 .btn-primary { background: var(--purple); border-color: var(--purple); color: #fff; }
 .btn-primary:hover { background: var(--purple-ink); }
 .btn-ink { background: var(--ink); color: #fff; }
 .btn-ink:hover { background: #33333a; }
-.btn-link { border: 0; background: none; height: auto; padding: 0; text-decoration: underline; text-underline-offset: 3px; font-weight: 500; }
+.btn-link { min-width: 0; border: 0; background: none; height: auto; padding: 0; text-decoration: underline; text-underline-offset: 3px; font-weight: 500; }
 .chip-btn { font: inherit; font-size: 14px; height: 40px; padding: 0 var(--s-4); border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); cursor: pointer; }
 .chip-btn:hover { border-color: var(--ink); }
 .chip-btn[aria-pressed="true"] { background: var(--purple-tint); border-color: var(--purple); color: var(--purple-ink); font-weight: 600; }
@@ -84,7 +84,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .g-n { background: var(--surface); color: var(--ink-2); border: 1px dashed var(--ink-2); font-weight: 600; font-size: 12px; }
 .g-0 { background: var(--canvas); color: var(--ink-2); border: 1px solid var(--line); font-weight: 600; }
 .info { display: inline-flex; width: 18px; height: 18px; align-items: center; justify-content: center; border: 1px solid var(--ink-2); border-radius: 50%; font-size: 11px; font-weight: 700; color: var(--ink-2); vertical-align: middle; }
-.field { width: 100%; height: 44px; padding: 0 var(--s-4); font: inherit; border: 1px solid var(--ink-2); border-radius: var(--r-2); background: var(--surface); }
+.field { flex: 1 1 0; min-width: 0; width: 100%; height: 44px; padding: 0 var(--s-4); font: inherit; border: 1px solid var(--ink-2); border-radius: var(--r-2); background: var(--surface); }
 .field::placeholder { color: #8a8a93; }
 .wait { display: inline-flex; gap: 4px; vertical-align: middle; }
 .wait i { width: 6px; height: 6px; background: var(--ink-2); border-radius: 50%; animation: blink 1.2s infinite both; }
