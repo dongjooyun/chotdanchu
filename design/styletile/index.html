@@ -111,7 +111,17 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .chat-col { display: flex; flex-direction: column; min-width: 0; }
 .chat-col .chat { flex: 1; }
 .chat {padding: var(--s-5); display: flex; flex-direction: column; gap: var(--s-5); min-width: 0; }
-.aside { border-left: 1px solid var(--line); padding: var(--s-5); background: var(--canvas); display: flex; flex-direction: column; gap: var(--s-4); }
+.aside { border-left: 1px solid var(--line); padding: var(--s-5); background: var(--canvas); display: none; flex-direction: column; gap: var(--s-4); }
+.app[data-think="open"] .cols { grid-template-columns: minmax(0, 1fr) 320px; }
+.app[data-think="open"] .aside { display: flex; }
+.think-toggle { margin-left: auto; }
+.panel-sub { font-size: 13px; color: var(--ink-2); }
+.flow { list-style: none; margin: 0; padding: 0; counter-reset: step; display: flex; flex-direction: column; gap: var(--s-5); }
+.flow li { counter-increment: step; position: relative; padding-left: 40px; font-size: 14px; }
+.flow li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: var(--surface); border: 1px solid var(--gray-3); border-radius: var(--r-2); font-size: 12px; font-weight: 700; }
+.flow li:not(:last-child)::after { content: ""; position: absolute; left: 12.5px; top: 30px; bottom: -20px; width: 1px; background: var(--line); }
+.flow .what { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; margin-bottom: var(--s-1); }
+.flow .why { color: var(--ink-2); }
 .bubble { max-width: 560px; padding: var(--s-4) var(--s-4); border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface); }
 .bubble-user { align-self: flex-end; background: #ececf0; border-color: #ececf0; }
 .quick { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); }
@@ -172,7 +182,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 /* ===== 내 카드 모음 (목록형) ===== */
 .coll { border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface); }
 .coll-h { padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--line); font-weight: 700; display: flex; justify-content: space-between; }
-.coll-r { display: grid; grid-template-columns: 88px 1fr auto; gap: var(--s-4); align-items: center; padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--line-2); }
+.coll-r { display: grid; grid-template-columns: 108px 1fr auto; gap: var(--s-4); align-items: center; padding: var(--s-4) var(--s-5); border-bottom: 1px solid var(--line-2); }
 .coll-r:last-child { border-bottom: 0; }
 .coll-no { font-size: 12px; color: var(--ink-2); }
 
@@ -180,6 +190,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
   .grid2, .grid3 { grid-template-columns: 1fr; }
   .cols { grid-template-columns: 1fr; }
   .aside { border-left: 0; border-top: 1px solid var(--line); }
+  .app[data-think="open"] .cols { grid-template-columns: 1fr; }
   .mp { grid-template-columns: 1fr; gap: var(--s-3); }
   .vs { padding: var(--s-1) 0; }
   .im { grid-template-columns: 84px 1fr 28px; }
@@ -278,7 +289,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 <!-- 3. 화면 틀 -->
 <section class="tile-sec" aria-labelledby="s3">
   <h2 id="s3">3. 화면 틀 (03 기업 카드, PC 1280px 기준)</h2>
-  <div class="app">
+  <div class="app" data-think="closed">
     <header class="app-header" data-el="헤더">
       <span class="logo-slot" data-el="로고 자리" aria-hidden="true">첫</span>
       <span class="brand">첫단추</span>
@@ -288,6 +299,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
     <div class="infobar" data-el="고정 정보줄">
       <span><span class="muted">직무</span> <b>마케팅</b> <button class="btn btn-link small" type="button" aria-label="직무 변경하기">변경하기</button></span>
       <span><span class="muted">회사</span> <b>주식회사 카카오</b> <button class="btn btn-link small" type="button" aria-label="회사 변경하기">변경하기</button></span>
+      <button class="btn btn-link small think-toggle" type="button" aria-expanded="false" aria-controls="think-panel">AI 사고 과정 보기 (3단계)</button>
     </div>
     <div class="cols">
       <div class="chat-col">
@@ -326,11 +338,15 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
       </main>
       <div class="inputbar"><input class="field" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력"><button class="btn btn-ink" type="button">보내기</button></div>
       </div>
-      <aside class="aside" data-el="판단 로그 패널">
-        <div class="panel-h">에이전트 판단 로그 <span class="info" aria-label="안내">i</span></div>
-        <div class="logi"><span class="no">1</span><span><span class="tag tag-tool">도구 호출</span> <span class="mono">search_company</span></span><span class="muted">"카카오" 후보 2곳</span></div>
-        <div class="logi"><span class="no">2</span><span><span class="tag tag-ai">AI 판단</span></span><span>후보가 여럿이라 사용자에게 묻기로 함</span></div>
-        <div class="logi"><span class="no">3</span><span><span class="tag tag-tool">도구 호출</span> <span class="mono">compute_indicators</span></span><span class="muted">A 4 · B 3 · C 0, 확인 불가 1개</span></div>
+      <aside class="aside" id="think-panel" data-el="판단 로그 패널" aria-label="에이전트 사고 과정">
+        <div class="panel-h">에이전트 사고 과정 <span class="info" aria-label="안내">i</span></div>
+        <p class="panel-sub">답을 만들 때 거친 단계입니다. 숫자는 코드가 계산하고, AI는 판단과 문장만 맡습니다.</p>
+        <ol class="flow">
+          <li><div class="what"><span class="tag tag-tool">도구 호출</span><span class="mono">search_company</span></div><div class="why">"카카오" 후보 2곳을 찾음</div></li>
+          <li><div class="what"><span class="tag tag-ai">AI 판단</span></div><div class="why">후보가 여럿이라 사용자에게 묻기로 함</div></li>
+          <li><div class="what"><span class="tag tag-tool">도구 호출</span><span class="mono">compute_indicators</span></div><div class="why">A 4 · B 3 · C 0, 확인 불가 1개</div></li>
+        </ol>
+        <button class="btn btn-link small think-close" type="button" style="align-self:flex-start">닫기</button>
       </aside>
     </div>
     <div class="disc" data-el="면책 문구">공개 데이터 기반 참고 정보이며 기업 평가가 아닙니다. 수치마다 출처와 기준 시점을 확인해 주세요.</div>
@@ -352,7 +368,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
     </div>
     <div style="display:flex;gap:24px;flex-wrap:wrap">
       <div class="rc" data-el="리포트 카드" style="max-width:300px">
-        <div class="rc-top"><span>판단 리포트</span><span>No. 258801</span></div>
+        <div class="rc-top"><span>판단 리포트</span><span>No. 00258801</span></div>
         <div class="rc-body">
           <div><div class="rc-name">주식회사 카카오</div><p class="small muted">마케팅 직무 · 2026-11-21 기준</p></div>
           <div class="rc-fit" data-el="판정 라벨"><span class="small muted">판정</span><br><b>판정 준비 중</b></div>
@@ -361,7 +377,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <div class="rc-foot">공개 데이터 기반 참고 정보</div>
       </div>
       <div class="rc rc-back" style="max-width:300px">
-        <div class="rc-top"><span>근거</span><span>No. 258801</span></div>
+        <div class="rc-top"><span>근거</span><span>No. 00258801</span></div>
         <div class="rc-body">
           <div class="im" style="grid-template-columns:1fr 28px;padding-top:0"><span class="k">재무 체력</span><span class="g g-a">A</span></div>
           <div class="im" style="grid-template-columns:1fr 28px"><span class="k">성장성</span><span class="g g-b">B</span></div>
@@ -374,9 +390,9 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
   </div>
   <div style="margin-top:24px" class="coll" data-el="내 카드 모음">
     <div class="coll-h"><span>내 카드 3장</span><span class="muted small">최근 순</span></div>
-    <div class="coll-r"><span class="coll-no">No. 258801</span><span><b>주식회사 카카오</b><br><span class="small muted">마케팅 직무 · 2026-11-21</span></span><span class="tag" data-el="판정 라벨">판정 준비 중</span></div>
-    <div class="coll-r"><span class="coll-no">No. 1137727</span><span><b>주식회사 무신사</b><br><span class="small muted">서비스기획 직무 · 2026-11-21</span></span><span class="tag">판정 준비 중</span></div>
-    <div class="coll-r"><span class="coll-no">No. 1153956</span><span><b>주식회사 컬리</b><br><span class="small muted">운영 직무 · 2026-11-21</span></span><span class="tag">판정 준비 중</span></div>
+    <div class="coll-r"><span class="coll-no">No. 00258801</span><span><b>주식회사 카카오</b><br><span class="small muted">마케팅 직무 · 2026-11-21</span></span><span class="tag" data-el="판정 라벨">판정 준비 중</span></div>
+    <div class="coll-r"><span class="coll-no">No. 01137727</span><span><b>주식회사 무신사</b><br><span class="small muted">서비스기획 직무 · 2026-11-21</span></span><span class="tag">판정 준비 중</span></div>
+    <div class="coll-r"><span class="coll-no">No. 01153956</span><span><b>주식회사 컬리</b><br><span class="small muted">운영 직무 · 2026-11-21</span></span><span class="tag">판정 준비 중</span></div>
   </div>
 </section>
 
@@ -402,14 +418,28 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <tr><td>링크형 버튼, 고정 정보줄 문구</td><td>밑줄만 있는 글자, "바꾸기"와 "다른 회사"</td><td>연보라 형광펜 칠(살짝 둥근 직사각형, 밑줄 없음), 문구는 둘 다 "변경하기"</td><td>동주 결정. 밑줄만으로는 버튼인지 알기 어려움. 같은 동작은 같은 말로 통일 (직무와 회사는 보조 설명으로 구분)</td></tr>
         <tr><td>맞대결 카드 제목</td><td>"카드 A", "카드 B"</td><td>"기업 A", "기업 B"</td><td>동주 결정. 회사 이름만 가린 실제 기업을 고르는 게임이라는 것이 제목에서 바로 보이게</td></tr>
         <tr><td>진행 기록 (말풍선 안)</td><td>항상 펼쳐져 있음</td><td>기본은 접고 "어떻게 도출했나요?" 토글로 보게 함</td><td>동주 결정. 도출 근거는 사용자보다 개발자와 심사위원이 보는 정보. 눌러 보게 유도하되 오른쪽 판단 로그 패널은 전체 기록으로 유지</td></tr>
+        <tr><td>판단 로그 패널</td><td>오른쪽에 항상 펼쳐져 있음</td><td>기본은 숨김. "AI 사고 과정 보기"를 누르면 오른쪽에 단계 흐름(번호와 연결선)으로 열림</td><td>동주 결정. 평소에는 대화에 집중하게 하고 궁금한 사람만 AI가 어떻게 판단했는지 보게 함. 시연과 심사에서는 열어 둔 상태로 보여 주면 AI 활용의 증거가 됨</td></tr>
         <tr><td>맞대결 시작 버튼</td><td>"내 기준 맞추기"</td><td>"카드 7판으로 내 성향 맞춤 판정 받기"</td><td>동주 결정. 무엇을 하는지(카드 고르기), 얼마나 걸리는지(7판), 무엇을 얻는지(맞춤 판정)가 문구에서 바로 보이게. "추천" 대신 "판정"을 쓴 것은 첫단추가 회사를 골라 주는 서비스가 아니라 입력한 회사가 나와 맞는지 판정하는 서비스라서</td></tr>
-        <tr><td>카드 번호 (No.)</td><td>수집 순서 (No. 003)</td><td>실데이터의 OpenDART 고유번호 (앞의 0을 뺀 숫자, 예: No. 258801)</td><td>동주 요청, 제안 단계. 같은 회사는 누구에게나 같은 번호이고 도감 번호처럼 보이며, 카카오 동명 두 법인도 번호가 달라 구별됨. 전체 8자리는 카드 뒷면에 "DART 고유번호 00258801"로 적어 확인 가능</td></tr>
-        <tr><td>유지한 것</td><td colspan="3">요소 이름표 17개, 화면 6개 구성, 문구, 주 버튼 화면당 1개, 판단 로그 패널 위치(PC 오른쪽), 하단 면책 문구, 긴 문장은 (i) 안내로, 진보라 #6B4BC8 주색, 맞대결 진행 "4 / 7"</td></tr>
+        <tr><td>카드 번호 (No.)</td><td>수집 순서 (No. 003)</td><td>실데이터의 OpenDART 고유번호 (앞의 0을 뺀 숫자, 예: No. 00258801)</td><td>동주 요청, 제안 단계. 같은 회사는 누구에게나 같은 번호이고 도감 번호처럼 보이며, 카카오 동명 두 법인도 번호가 달라 구별됨. 전체 8자리는 카드 뒷면에 "DART 고유번호 00258801"로 적어 확인 가능</td></tr>
+        <tr><td>유지한 것</td><td colspan="3">요소 이름표 17개, 화면 6개 구성, 문구, 주 버튼 화면당 1개, 판단 로그 패널(PC 오른쪽), 하단 면책 문구, 긴 문장은 (i) 안내로, 진보라 #6B4BC8 주색, 맞대결 진행 "4 / 7"</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
 </div>
+<script>
+(function () {
+  var app = document.querySelector(".app");
+  var tg = document.querySelector(".think-toggle");
+  function set(open) {
+    app.setAttribute("data-think", open ? "open" : "closed");
+    tg.setAttribute("aria-expanded", open ? "true" : "false");
+    tg.textContent = open ? "AI 사고 과정 닫기" : "AI 사고 과정 보기 (3단계)";
+  }
+  tg.addEventListener("click", function () { set(app.getAttribute("data-think") !== "open"); });
+  document.querySelector(".think-close").addEventListener("click", function () { set(false); tg.focus(); });
+})();
+</script>
 </body>
 </html>
