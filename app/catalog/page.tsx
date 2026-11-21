@@ -12,6 +12,7 @@ import { MatchupPair } from "@/components/matchup-card";
 import { QuickReplies } from "@/components/quick-replies";
 import { ReportCard } from "@/components/report-card";
 import type { LogLine } from "@/lib/chat";
+import { getBusinessSummary } from "@/lib/business-summary";
 import { getMode } from "@/lib/config";
 import { findMockCandidates, getMockCompany, toCandidateSummary } from "@/lib/data";
 import { computeIndicators } from "@/lib/indicators";
@@ -75,8 +76,15 @@ export default function CatalogPage() {
       <CandidateChips candidates={twins} />
 
       <h2 className="text-base font-bold">04 기업 실사 (지표 카드)</h2>
-      {startup && <CompanyCard company={startup} graded={computeIndicators(startup, CATALOG_AS_OF)} />}
-      {general && <CompanyCard company={general} graded={computeIndicators(general, CATALOG_AS_OF)} />}
+      <p className="text-xs text-muted">
+        아래 두 장은 &quot;하는 일 세 줄 요약&quot;의 두 상태입니다: 사업보고서가 없는 비공시 스타트업(공시 없음), 사업의 개요가 있는 상장 일반 기업(3줄 요약).
+      </p>
+      {startup && (
+        <CompanyCard company={startup} graded={computeIndicators(startup, CATALOG_AS_OF)} summary={getBusinessSummary(startup, "mock")} />
+      )}
+      {general && (
+        <CompanyCard company={general} graded={computeIndicators(general, CATALOG_AS_OF)} summary={getBusinessSummary(general, "mock")} />
+      )}
 
       <h2 className="text-base font-bold">06 판단 리포트 카드 (앞면 결론, 뒷면 근거)</h2>
       <ReportCard />

@@ -1,5 +1,5 @@
 // 화면에 보일 이름과 수치 문구. 숫자 자체는 데이터에서 그대로 가져오고, 여기서는 모양만 바꾼다.
-import type { CompanyNature, Disclosure, IndicatorValue, UnavailableReason } from "@/lib/types";
+import type { CompanyNature, Disclosure, IndicatorValue, SummaryUnavailableReason, UnavailableReason } from "@/lib/types";
 
 export const DISCLOSURE_LABELS: Record<Disclosure, string> = {
   listed: "상장",
@@ -16,6 +16,12 @@ export const UNAVAILABLE_REASON_LABELS: Record<UnavailableReason, string> = {
   not_disclosed: "공시 의무가 없어 볼 수 없음",
   no_source: "가져올 공식 출처가 없음",
   fetch_failed: "조회에 실패함",
+};
+
+/** "하는 일 세 줄 요약"을 못 보여주는 이유. 사업보고서가 없는 "공시 없음"과는 다른 상태다 (CDC-26) */
+export const SUMMARY_UNAVAILABLE_LABELS: Record<SummaryUnavailableReason, string> = {
+  not_computed: "아직 요약을 만들지 못했어요",
+  fetch_failed: "원문에서 요약할 문장을 가져오지 못했어요",
 };
 
 export const METRIC_LABELS: Record<string, string> = {

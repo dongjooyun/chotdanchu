@@ -4,10 +4,11 @@ import {
   DISCLOSURE_LABELS,
   METRIC_LABELS,
   NATURE_LABELS,
+  SUMMARY_UNAVAILABLE_LABELS,
   UNAVAILABLE_REASON_LABELS,
 } from "@/lib/format";
 import { gradeDistribution } from "@/lib/indicators";
-import { INDICATOR_LABELS, type Company, type GradedIndicator } from "@/lib/types";
+import { INDICATOR_LABELS, type BusinessSummary, type Company, type GradedIndicator } from "@/lib/types";
 
 /** 지표 한 칸: 등급 배지 + 수치 한 줄 + 어느 기준으로 매겼는지 + 출처 (PRD 04) */
 function IndicatorCell({ g, metric }: { g: GradedIndicator; metric?: string }) {
@@ -73,8 +74,61 @@ function Highlights({ cells }: { cells: GradedIndicator[] }) {
   );
 }
 
+/**
+ * 하는 일 세 줄 요약 (PRD 04, CDC-26). 세 가지 상태를 다르게 보여준다.
+ * 요약 있음: 3줄 + 원문 링크 (목업은 "가상 링크"), 공시 없음: 사업보고서가 없는 기업, 확인 불가: 아직 못 만든 상태
+ */
+function BusinessSummaryBlock({ summary }: { summary: BusinessSummary }) {
+  return (
+    <div className="mt-2 rounded border border-line bg-box p-2 text-xs" data-summary-status={summary.status}>
+      <p className="font-semibold">[하는 일 세 줄 요약]</p>
+      {summary.status === "ok" && (
+        <>
+          <ol className="mt-1 list-decimal pl-4">
+            {summary.lines.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ol>
+          <p className="mt-1 text-[10px] text-muted">
+            {summary.method === "llm" ? "AI가 요약했고 숫자는 쓰지 않았어요. " : "원문 문장 중 숫자가 없는 문장만 골랐어요. "}
+            원문:{" "}
+            {summary.source.url ? (
+              <a href={summary.source.url} target="_blank" rel="noreferrer" className="underline">
+                {summary.source.name}
+              </a>
+            ) : (
+              <span>원문 링크 자리 (가상 링크, 목업)</span>
+            )}{" "}
+            · 확인 {summary.source.checkedAt}
+          </p>
+        </>
+      )}
+      {summary.status === "no_report" && (
+        <>
+          <p className="mt-1 font-medium">공시 없음</p>
+          <p className="text-[10px] text-muted">사업보고서가 없는 기업이라 요약을 보여주지 않아요.</p>
+        </>
+      )}
+      {summary.status === "unavailable" && (
+        <>
+          <p className="mt-1 font-medium">확인 불가</p>
+          <p className="text-[10px] text-muted">이유: {SUMMARY_UNAVAILABLE_LABELS[summary.reason]}</p>
+        </>
+      )}
+    </div>
+  );
+}
+
 /** 기업 카드: 결론(유형, 확인 개수, 등급 분포, 정보 투명도)을 먼저 보여주고 지표 칸들은 펼쳐서 본다 */
-export function CompanyCard({ company, graded }: { company: Company; graded: GradedIndicator[] }) {
+export function CompanyCard({
+  company,
+  graded,
+  summary,
+}: {
+  company: Company;
+  graded: GradedIndicator[];
+  summary: BusinessSummary;
+}) {
   const d = gradeDistribution(graded, company.nature);
   const transparency = graded.find((g) => g.id === "transparency");
   const cells = graded.filter((g) => g.id !== "transparency");
@@ -117,9 +171,7 @@ export function CompanyCard({ company, graded }: { company: Company; graded: Gra
           {transparency && <IndicatorCell g={transparency} />}
         </div>
       </details>
-      <p className="mt-2 text-[10px] text-muted">
-        [하는 일 세 줄 요약 자리] 사업보고서가 있는 기업만 표시 (예비 기능)
-      </p>
+      <BusinessSummaryBlock summary={summary} />
     </LofiBox>
   );
 }

@@ -2,10 +2,11 @@
 // 화면에 나가는 숫자(등급, 원시값)는 전부 여기서 코드로 만든다. LLM 문장에는 숫자를 넣지 않는다.
 import type { AppMode, ChatResponse, LogLine } from "@/lib/chat";
 import { getMode } from "@/lib/config";
+import { getBusinessSummary } from "@/lib/business-summary";
 import { exampleNames, findCandidates, toCandidateSummary } from "@/lib/data";
-import { UNAVAILABLE_REASON_LABELS } from "@/lib/format";
+import { SUMMARY_UNAVAILABLE_LABELS, UNAVAILABLE_REASON_LABELS } from "@/lib/format";
 import { computeIndicators, gradeDistribution } from "@/lib/indicators";
-import { INDICATOR_LABELS, type Company } from "@/lib/types";
+import { INDICATOR_LABELS, type BusinessSummary, type Company } from "@/lib/types";
 
 /** 임시 규칙으로 판단했을 때 붙이는 이유 */
 export const RULE_REASON = "정해진 규칙으로 판단 (에이전트 모드가 꺼져 있거나 대체 경로)";
@@ -27,22 +28,46 @@ export function renumber(lines: LogLine[]): LogLine[] {
 }
 
 /**
+ * "하는 일 세 줄 요약" 판단 로그 한 줄 (CDC-26).
+ * 예: 요약 있음 -> tool_call "get_business_summary: 사업의 개요를 3줄로 요약함 (원문 문장 선택)"
+ *     사업보고서 없음 -> info "하는 일 요약: 공시 없음" (확인한 결과라서 확인 불가 줄이 아니다)
+ *     아직 못 만듦 -> unavailable "하는 일 요약: 확인 불가"
+ */
+export function summaryLogLine(summary: BusinessSummary): LogLine {
+  switch (summary.status) {
+    case "ok":
+      return line(
+        0,
+        "tool_call",
+        `get_business_summary: 사업의 개요를 ${summary.lines.length}줄로 요약함 (${summary.method === "llm" ? "AI 요약, 숫자 없음 검증" : "원문 문장 선택, 숫자 문장 제외"})`,
+      );
+    case "no_report":
+      return line(0, "info", "하는 일 요약: 공시 없음", "사업보고서가 없는 기업이라 요약을 보여주지 않음");
+    case "unavailable":
+      return line(0, "unavailable", "하는 일 요약: 확인 불가", SUMMARY_UNAVAILABLE_LABELS[summary.reason]);
+  }
+}
+
+/**
  * 기업 카드 응답. compute_indicators로 등급을 계산하고, 확인 불가 지표를 로그에 따로 남긴다 (PRD 07).
- * 예: 비공시 스타트업 -> 로그 "compute_indicators: A 3 · B 2 · C 0, 확인 불가 4개" + 확인 불가 줄
+ * 하는 일 세 줄 요약은 코드가 만들어 카드에 같이 실어 보낸다 (CDC-26).
+ * 예: 비공시 스타트업 -> 로그 "compute_indicators: A 3 · B 2 · C 0, 확인 불가 4개" + 확인 불가 줄 + "하는 일 요약: 공시 없음"
  */
 export function companyResponse(company: Company, lead: LogLine[]): ChatResponse {
   const graded = computeIndicators(company);
   const d = gradeDistribution(graded, company.nature);
   const missing = graded.filter((g) => g.grade === null && g.reason);
+  const summary = getBusinessSummary(company, getMode());
   return {
     reply: `${company.name}의 기업 카드입니다.`,
-    widget: { type: "company", company, graded },
+    widget: { type: "company", company, graded, summary },
     log: renumber([
       ...lead,
       line(0, "tool_call", `compute_indicators: A ${d.A} · B ${d.B} · C ${d.C}, 확인 불가 ${d.none}개`),
       ...missing.map((g) =>
         line(0, "unavailable", `${INDICATOR_LABELS[g.id]}: 확인 불가`, g.reason ? UNAVAILABLE_REASON_LABELS[g.reason] : g.basis),
       ),
+      summaryLogLine(summary),
     ]),
   };
 }
