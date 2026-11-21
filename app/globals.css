@@ -229,6 +229,8 @@ body {
 .rc-name { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
 .rc-fit { border-top: 1px solid var(--gray-4); border-bottom: 1px solid var(--gray-4); padding: var(--s-4) 0; }
 .rc-fit b { font-size: 32px; line-height: 1.25; font-weight: 800; display: block; }
+/* 라벨 설명(PRD 06 표의 한 줄)은 라벨 바로 아래, 이유 문장은 그 아래 줄에 따로 둔다 */
+.rc-fit [data-el="라벨 설명"] { display: block; font-weight: 600; margin-bottom: var(--s-1); }
 .rc-facts { margin: 0; display: flex; flex-direction: column; gap: var(--s-2); font-size: 13px; }
 .rc-facts > div { display: flex; justify-content: space-between; gap: var(--s-3); }
 .rc-facts dt { color: var(--ink-2); flex: none; }
