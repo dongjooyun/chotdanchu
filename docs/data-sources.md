@@ -24,7 +24,7 @@
 | 라이브러리 | React 19.3.0 | https://react.dev | 화면 구성 | MIT | 사용 중 |
 | 라이브러리 | Tailwind CSS 4.3.3 | https://tailwindcss.com | 스타일 | MIT | 사용 중 |
 | 글꼴 | Pretendard v1.3.9 | https://github.com/orioncactus/pretendard | 화면 글꼴 (11/21 스타일 타일에서 사용, 앱 적용 예정). 스타일 타일은 CDN 링크, 앱에 넣을 때는 파일을 프로젝트에 포함 | SIL Open Font License 1.1 (상업 이용 가능, 저작권 고지 유지) | 사용 중 |
-| 이미지 | 시연 기업 4곳 로고 (카카오, 컬리, 당근, 무신사) | 각 사 공식 사이트 또는 브랜드 자료 (출처 주소는 동주가 아래에 채움) | 기업 카드 가운데 영역 (`public/logos/{DART 고유번호}.확장자`) | 각 사 브랜드 가이드라인 확인 필요. 변형하지 않고 가로로 맞춰 표시만 함. 폐업한 동명 법인에는 쓰지 않음 | 11/21 스타일 타일에서 사용, 이용 조건 확인 필요 |
+| 이미지 | 시연 기업 4곳 로고 (카카오, 컬리, 당근, 무신사) | 카카오 https://www.kakaocorp.com/page/detail/11340 , 컬리 https://newsroom.kurlycorp.com/medialibrary/logo/%ec%bb%ac%eb%a6%ac-%eb%a1%9c%ea%b3%a0-purple/ , 당근 https://bizschool.daangn.com/brand-resource , 무신사 https://prd-new.corp.musinsa.com/company | 기업 카드 가운데 영역 (`public/logos/{DART 고유번호}.확장자`) | 각 사가 공식 사이트에 공개한 브랜드 자료. 동주 확인: 상업적 목적이 아니면 사용 가능. 변형하지 않고 가로로 맞춰 표시만 함. 폐업한 동명 법인(카카오 00918444)에는 쓰지 않음. 서비스를 상업적으로 쓰게 되면 각 사 이용 조건을 다시 확인 | 11/21 스타일 타일에서 사용 중 |
 | 라이브러리 | TypeScript 5 | https://www.typescriptlang.org | 타입 검사 | Apache-2.0 | 사용 중 |
 | 라이브러리 | ESLint 9, eslint-config-next | https://eslint.org | 코드 검사 | MIT | 사용 중 |
 | 라이브러리 | Vitest | https://vitest.dev | 단위 테스트 (지표 등급, 역량 매칭 등) | MIT | 사용 중 (개발 전용) |
