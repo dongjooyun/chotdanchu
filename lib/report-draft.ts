@@ -69,6 +69,7 @@ export function buildReportDraft(input: ReportDraftInput): ReportCardData {
     ...(gap ? { gapDetail: gapDetail(gap), careerYears: gap.posting.years } : {}),
     careerSource: gap ? careerSourceText(gap) : null,
     ...(gap?.posting.url ? { careerUrl: gap.posting.url } : {}),
+    ...(gap ? { careerTitle: careerTitleText(gap), careerCheckedAt: gap.posting.checkedAt } : {}),
     ...(gap?.posting.substitute ? { substituteNote: gap.posting.substitute.reason } : {}),
     ...(preference && !preference.skipped ? { weightsParam: encodeWeights(preference.weights) } : {}),
     grades: graded.map((g) => ({ id: g.id, grade: g.grade })),
@@ -83,6 +84,13 @@ export function buildReportDraft(input: ReportDraftInput): ReportCardData {
  * 3년차 공고 출처 한 줄. 예: "(주)무신사 Growth Marketer (카테고리 전략 담당), 4년 이상, 수동 확인 2026-11-21"
  * 목업 가상 공고는 "가상 공고 (목업)"이 들어간다
  */
+/** 공고 이름 한 줄(링크 글자). 제목에 연차가 이미 있으면 다시 쓰지 않는다. 예: "(주)무신사 Growth Marketer (카테고리 전략 담당), 4년 이상" */
+export function careerTitleText(gap: CareerGap): string {
+  const p = gap.posting;
+  const years = p.title.includes(p.years) ? "" : `, ${p.years}`;
+  return `${p.postedBy} ${p.title}${years}`;
+}
+
 export function careerSourceText(gap: CareerGap): string {
   const p = gap.posting;
   if (!p.url) return `${p.title}, 목업용 가상 공고`;

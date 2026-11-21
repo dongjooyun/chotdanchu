@@ -32,6 +32,10 @@ export interface ReportCardData {
   careerSource: string | null;
   /** 3년차 공고 원문 링크 (회사 공식 채용 페이지). 가상 공고나 공고가 없으면 생략 */
   careerUrl?: string;
+  /** 3년차 공고 이름. 링크로 보이는 부분. 예: "(주)무신사 Growth Marketer (카테고리 전략 담당), 4년 이상" */
+  careerTitle?: string;
+  /** 공고를 사람이 확인한 날짜 YYYY-MM-DD */
+  careerCheckedAt?: string;
   /** 유사 기업 공고로 대체했을 때 화면에 보일 사유 한 줄 (PRD 05). 없으면 생략 */
   substituteNote?: string;
   /** 맞대결로 판정했을 때 선호 가중치를 링크용으로 줄인 값 (lib/share.ts). QR 링크에 들어간다. 기본 기준이면 생략 */

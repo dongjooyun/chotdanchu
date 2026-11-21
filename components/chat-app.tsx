@@ -187,6 +187,34 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     });
   }, [messages]);
 
+  // 모바일 둥근 버튼은 입력창 바로 위에 띄운다. 입력창이 어디에 있든(바닥에 붙었든, 아직 아래에 있든) 보내기 버튼을 가리지 않게
+  // 입력창의 실제 위쪽 위치를 재서 그 12px 위로 맞춘다 (스크롤, 크기가 바뀔 때마다)
+  useEffect(() => {
+    const el = document.querySelector<HTMLElement>(".inputbar");
+    if (!el) return;
+    let raf = 0;
+    const set = () => {
+      raf = 0;
+      const nav = 60 + 12; // 하단 탭 높이 + 여백
+      const above = window.innerHeight - el.getBoundingClientRect().top + 12;
+      document.documentElement.style.setProperty("--fab-bottom", `${Math.max(nav, above)}px`);
+    };
+    const queue = () => {
+      if (!raf) raf = requestAnimationFrame(set);
+    };
+    set();
+    const ro = new ResizeObserver(queue);
+    ro.observe(el);
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", queue);
+      window.removeEventListener("resize", queue);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [view, messages.length]);
+
   // 메뉴를 오가도 챗봇 화면의 스크롤 위치를 기억한다
   const chatScroll = useRef(0);
   function changeView(v: AppView) {

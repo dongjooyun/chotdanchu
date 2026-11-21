@@ -139,10 +139,11 @@ describe("SUM-16~19 실제 사전 계산 결과 파일 (data/real/business-summa
     }
   });
 
-  test("SUM-18 사업의 개요 원문은 저장하지 않는다 (항목에는 상태, 요약, 출처, 방식만 있고 줄은 한 문장 길이)", () => {
+  test("SUM-18 사업의 개요는 공시 공개 문서의 앞부분(4000자 이하)만 저장한다 (항목에는 상태, 요약, 출처, 방식, 원문 문단뿐이고 요약 줄은 한 문장 길이)", () => {
     for (const code of Object.keys(realBusinessSummaries)) {
       const e = realBusinessSummaries[code];
-      expect(Object.keys(e).sort(), code).toEqual(e.status === "ok" ? ["lines", "method", "source", "status"] : ["checkedAt", "status"]);
+      expect(Object.keys(e).sort(), code).toEqual(e.status === "ok" ? ["lines", "method", "overview", "source", "status"] : ["checkedAt", "status"]);
+      if (e.status === "ok") expect((e.overview ?? "").length, code).toBeLessThanOrEqual(4000);
       if (e.status === "ok") for (const l of e.lines) expect(l.length, code).toBeLessThanOrEqual(200);
     }
   });

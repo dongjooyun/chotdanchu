@@ -85,7 +85,7 @@ function Widget({ widget, active, h }: { widget: MessageWidget; active: boolean;
             >
               {saved ? "기업 카드 모음에 담았어요." : "기업 카드 모음에 담기"}
             </button>
-            {!saved && <p className="report-save-note">누르지 않으면 기업 카드 모음에 저장되지 않아요.</p>}
+            {!saved && <p className="report-save-note">지금 담지 않으면 기업 카드는 자동 저장되지 않아요.</p>}
           </div>
         </section>
       );

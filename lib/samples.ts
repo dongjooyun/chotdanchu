@@ -46,7 +46,7 @@ export const SAMPLE_REPORT_CARD: ReportCardData = {
 export const FIT_LABELS = [
   { id: "optimal", name: "최적", description: "3년 뒤가 보이는 자리" },
   { id: "challenge", name: "도전", description: "배울 건 많지만 감수할 게 있는 자리" },
-  { id: "stable", name: "안정", description: "든든하지만 역량은 따로 채울 자리" },
+  { id: "stable", name: "안정", description: "든든하지만 일부 역량은 따로 채우기" },
   { id: "consider", name: "고려", description: "다른 선택지와 비교해 볼 자리" },
   { id: "need_info", name: "정보 보강", description: "면접에서 더 알아볼 자리" },
 ] as const;

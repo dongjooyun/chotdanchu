@@ -211,7 +211,7 @@ test("E2E-10 화면 문구 규칙: em dash와 이모지를 쓰지 않는다", as
 async function playMatchup(page: Page, side: "기업 A" | "기업 B") {
   for (let i = 1; i <= 7; i++) {
     await expect(page.getByText(`${i} / 7`)).toBeVisible();
-    await page.getByRole("button", { name: `${side} 선택` }).click();
+    await page.getByRole("button", { name: `${side} 선택` }).click({ position: { x: 12, y: 12 } });
   }
 }
 
@@ -233,7 +233,7 @@ test("E2E-14 맞대결: 이전 판으로 돌아가면 진행 표시가 한 판 �
   await chooseRole(page, "운영");
   await searchCompany(page, "별하늘랩스");
   await page.getByRole("button", { name: "기업 맞대결로 내 성향 맞춤 판정 받기" }).click();
-  await page.getByRole("button", { name: "기업 B 선택" }).click();
+  await page.getByRole("button", { name: "기업 B 선택" }).click({ position: { x: 12, y: 12 } });
   await expect(page.getByText("2 / 7")).toBeVisible();
   await page.getByRole("button", { name: "이전 판으로 돌아가기" }).click();
   await expect(page.getByText("1 / 7")).toBeVisible();

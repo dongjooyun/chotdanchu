@@ -33,9 +33,12 @@ function GapTip({ role }: { role: Role }) {
     <span className="info tip" tabIndex={0} aria-label="역량 비교 설명" onClick={(e) => e.stopPropagation()}>
       i
       <span className="tip-pop" role="tooltip">
-        3년차 요구 역량은 이 회사 3년차 공고가 요구하는 역량이에요. 이것을 팀이 자체 개발한 {role} 직무 신입 역량 사전과 비교해, 어느 회사에서든 {role} 신입이면 보통 쌓는
-        역량(신입 때 쌓을 수 있는 역량)과 이 회사나 업계에서 따로 준비해야 하는 역량(따로 채워야 하는 역량)으로 나눴어요. 그래서 3년차 요구 역량 = 신입 때 쌓을 수 있는 역량 + 따로
-        채워야 하는 역량이에요.
+        3년차 요구 역량
+        <br />= 신입 때 쌓을 수 있는 역량
+        <br />+ 따로 채워야 하는 역량
+        <br />
+        <br />
+        기준은 팀이 개발한 {role} 직무 신입 역량 사전이에요.
       </span>
     </span>
   );
@@ -225,16 +228,24 @@ function Back({ d, hidden }: { d: ReportCardData; hidden: boolean }) {
               <GapList title="신입 때 쌓을 수 있는 역량" items={d.gapDetail.connected} />
               <GapList title="따로 채워야 하는 역량" items={d.gapDetail.missing} />
               {d.careerSource && (
-                <p className="rc-src" data-el="3년차 공고 출처">
+                <p className="rc-src label-block" data-el="3년차 공고 출처">
                   {d.careerUrl ? (
                     <>
-                      <span className="muted">공고 원문 보기: </span>
+                      <span className="muted">공고 원문 보기</span>
                       <a href={d.careerUrl} target="_blank" rel="noreferrer" className="src-link">
-                        {d.careerSource}
+                        {d.careerTitle ?? d.careerSource}
                       </a>
+                      <span className="tiny muted">
+                        수동 확인 {d.careerCheckedAt}
+                        <br />
+                        확인일 이후 마감됐을 수 있어요.
+                      </span>
                     </>
                   ) : (
-                    <span className="muted">비교한 공고: {d.careerSource}</span>
+                    <>
+                      <span className="muted">비교한 공고</span>
+                      <span>{d.careerSource}</span>
+                    </>
                   )}
                 </p>
               )}
