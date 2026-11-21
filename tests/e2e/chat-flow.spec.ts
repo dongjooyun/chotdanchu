@@ -53,8 +53,14 @@ test("E2E-03 동명 회사: 후보 2곳을 보여 주고 고르면 기업 카드
   await page.getByRole("button", { name: /대표/ }).first().click();
   await expect(page.getByText(/지표 \d+개 중 \d+개를 공식 출처로 확인했어요/)).toBeVisible();
   // 진행 기록은 접혀 있다가 "어떻게 도출했나요?"를 누르면 도구 호출 줄이 보인다
-  await page.getByText("어떻게 도출했나요?").last().click();
-  await expect(page.getByText("compute_indicators").last()).toBeVisible();
+  const cardLog = page.locator("details").filter({ hasText: "compute_indicators" }).last();
+  await cardLog.getByText("어떻게 도출했나요?").click();
+  await expect(cardLog.getByText("compute_indicators")).toBeVisible();
+  // 기업 카드 다음에는 3년차 공고 비교 말풍선이 오고, 그 진행 기록에는 공고 비교 도구 줄이 있다 (CDC-16)
+  await expect(page.getByText(/3년차 공고\(.+\)와 비교하면 요구 역량 중 이어짐 \d+, 일부 \d+, 공백 \d+이에요/)).toBeVisible();
+  const careerLog = page.locator("details").filter({ hasText: "compare_career_posting" }).last();
+  await careerLog.getByText("어떻게 도출했나요?").click();
+  await expect(careerLog.getByText(/compare_career_posting/)).toBeVisible();
 });
 
 test("E2E-04 기업 카드: 지표 자세히 보기를 열면 칸마다 등급이나 이유, 기준이 보인다", async ({ page }) => {
