@@ -115,7 +115,15 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .bubble { max-width: 560px; padding: var(--s-4) var(--s-4); border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface); }
 .bubble-user { align-self: flex-end; background: #ececf0; border-color: #ececf0; }
 .quick { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); }
-.ilog { margin-top: var(--s-4); padding-top: var(--s-3); border-top: 1px solid var(--line-2); display: flex; flex-direction: column; gap: var(--s-2); font-size: 13px; }
+.ilog-t { margin-top: var(--s-4); }
+.ilog-t summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; position: relative; isolation: isolate; padding: 0 4px; font-size: 13px; font-weight: 600; color: var(--purple-ink); }
+.ilog-t summary::-webkit-details-marker { display: none; }
+.ilog-t summary::before { content: ""; width: 6px; height: 6px; border-right: 2px solid var(--purple-ink); border-bottom: 2px solid var(--purple-ink); transform: rotate(-45deg); }
+.ilog-t[open] summary::before { transform: rotate(45deg); }
+.ilog-t summary::after { content: ""; position: absolute; left: 0; right: 0; bottom: 3px; height: 28%; background: var(--marker); border-radius: 2px; z-index: -1; }
+.ilog-t summary:hover::after { background: var(--marker-hover); }
+.ilog-t .ilog { margin-top: var(--s-3); }
+.ilog { padding-top: var(--s-3); border-top: 1px solid var(--line-2); display: flex; flex-direction: column; gap: var(--s-2); font-size: 13px; }
 .ilog .row { display: flex; gap: var(--s-2); align-items: baseline; }
 .mono { font-family: var(--mono); font-size: 12.5px; }
 .inputbar { display: flex; gap: var(--s-2); padding: var(--s-4) var(--s-5); border-top: 1px solid var(--line); }
@@ -256,6 +264,12 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
       <p><span class="wait" aria-hidden="true"><i></i><i></i><i></i></span> <span class="muted small">회사 정보를 확인하는 중</span></p>
       <p style="margin-top:12px" class="small">확인 불가 이유 <span class="info" aria-label="안내">i</span></p>
     </div>
+    <div class="box">
+      <span class="label">진행 기록 토글 (data-el 진행 기록)</span>
+      <details class="ilog-t" style="margin-top:0"><summary>어떻게 도출했나요?</summary><div class="ilog"><div class="row"><span class="tag tag-tool">도구 호출</span><span class="mono">compute_indicators</span></div></div></details>
+      <details class="ilog-t" open><summary>어떻게 도출했나요?</summary><div class="ilog"><div class="row"><span class="tag tag-ai">AI 판단</span><span>후보가 하나라 묻지 않고 확정함</span></div></div></details>
+      <p class="tiny muted" style="margin-top:12px">도출 근거는 사용자보다 개발자와 심사위원이 보는 정보라 기본은 접어 둡니다. 닫힘과 열림 모양입니다.</p>
+    </div>
   </div>
 </section>
 
@@ -279,10 +293,11 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <div class="bubble bubble-user" data-el="사용자 말풍선">카카오</div>
         <div class="bubble" data-el="에이전트 말풍선">
           <p>같은 이름의 회사가 2곳 있습니다. 대표자, 소재지, 업종, 설립연도를 보고 골라 주세요.</p>
-          <div class="ilog" data-el="진행 기록">
-            <div class="row"><span class="tag tag-tool">도구 호출</span><span class="mono">search_company: "카카오" 후보 2곳</span></div>
-            <div class="row"><span class="tag tag-ai">AI 판단</span><span>후보가 여럿이라 사용자에게 묻기로 함</span></div>
-          </div>
+          <details class="ilog-t" data-el="진행 기록">
+            <summary>어떻게 도출했나요?</summary>
+            <div class="ilog"><div class="row"><span class="tag tag-tool">도구 호출</span><span class="mono">search_company: "카카오" 후보 2곳</span></div>
+            <div class="row"><span class="tag tag-ai">AI 판단</span><span>후보가 여럿이라 사용자에게 묻기로 함</span></div></div>
+          </details>
         </div>
         <div class="cc" data-el="기업 카드">
           <div class="cc-head">
@@ -384,6 +399,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <tr><td>테두리 색</td><td>연한 선과 그림자로 구분</td><td>연한 회색 4단계, 중요할수록 진한 회색, 검정 금지</td><td>동주 결정. 강조해도 검정 선은 무거워 보임. 연한 회색 선은 그대로 유지</td></tr>
         <tr><td>링크형 버튼, 고정 정보줄 문구</td><td>밑줄만 있는 글자, "바꾸기"와 "다른 회사"</td><td>연보라 형광펜 칠(살짝 둥근 직사각형, 밑줄 없음), 문구는 둘 다 "변경하기"</td><td>동주 결정. 밑줄만으로는 버튼인지 알기 어려움. 같은 동작은 같은 말로 통일 (직무와 회사는 보조 설명으로 구분)</td></tr>
         <tr><td>맞대결 카드 제목</td><td>"카드 A", "카드 B"</td><td>"기업 A", "기업 B"</td><td>동주 결정. 회사 이름만 가린 실제 기업을 고르는 게임이라는 것이 제목에서 바로 보이게</td></tr>
+        <tr><td>진행 기록 (말풍선 안)</td><td>항상 펼쳐져 있음</td><td>기본은 접고 "어떻게 도출했나요?" 토글로 보게 함</td><td>동주 결정. 도출 근거는 사용자보다 개발자와 심사위원이 보는 정보. 눌러 보게 유도하되 오른쪽 판단 로그 패널은 전체 기록으로 유지</td></tr>
         <tr><td>유지한 것</td><td colspan="3">요소 이름표 17개, 화면 6개 구성, 문구, 주 버튼 화면당 1개, 판단 로그 패널 위치(PC 오른쪽), 하단 면책 문구, 긴 문장은 (i) 안내로, 진보라 #6B4BC8 주색, 맞대결 진행 "4 / 7"</td></tr>
       </tbody>
     </table>
