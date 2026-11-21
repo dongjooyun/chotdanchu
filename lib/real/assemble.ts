@@ -148,7 +148,8 @@ export function assembleCompany(x: AssembleInput): Company {
     bizRegNoSource: profile.bizr_no
       ? { name: "OpenDART 기업개황", url: "https://opendart.fss.or.kr", checkedAt: x.checkedAt }
       : null,
-    name: profile.corp_name.replace(/^\(주\)\s*/, "주식회사 "),
+    // 회사명은 공시 표기 그대로 둔다: "(주)카카오"처럼 (주)가 앞이나 뒤에 붙는다 (11/21 결정)
+    name: profile.corp_name.trim(),
     ceoName: (profile.ceo_nm ?? "").trim(),
     address: shortAddress(profile.adres),
     industry: x.npsIndustry ?? target.industry ?? "업종 정보 없음",

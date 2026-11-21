@@ -141,7 +141,7 @@ describe("리스크와 조립", () => {
     });
     expect(c.ceoName).toBe("공시대표");
     expect(c.disclosure).toBe("listed");
-    expect(c.name).toBe("주식회사 카카오");
+    expect(c.name).toBe("(주)카카오");
     expect(c.indicators.map((i) => i.id)).toEqual([
       "financial_health", "growth", "profitability", "hiring_flow", "compensation", "tenure", "tech_investment", "funding_stage", "risk",
     ]);
@@ -152,7 +152,7 @@ describe("사전 계산 결과 (data/real/companies.json)", () => {
   const companies = realCompanies as unknown as Company[];
 
   test("REAL-14 카카오는 동명 법인 2곳이고 설립연도와 소재지로 구별된다", () => {
-    const kakao = companies.filter((c) => c.name === "주식회사 카카오");
+    const kakao = companies.filter((c) => c.name === "(주)카카오");
     expect(kakao).toHaveLength(2);
     expect(new Set(kakao.map((c) => `${c.address} ${c.foundedOn}`)).size).toBe(2);
   });
