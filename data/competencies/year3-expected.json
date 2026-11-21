@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "note": "역량 사전(competencies.json) 중 '3년차 공고에서 요구될 것으로 예상해 추가한' 역량 10개의 id. 사전 PR #3의 커밋(서비스기획 4, 마케팅 3, 운영 3)에서 옮겼다. 사전 스키마에는 연차를 넣지 않고(PRD 05, 역량 자체에 연차 없음), 비교할 때 코드가 이 목록으로 '신입 때 쌓는 역량'과 '3년차에 새로 요구되는 역량'을 가른다. 공고 대조로 검증하는 중이다.",
+  "ids": [
+    "leading-experience",
+    "domain-expertise",
+    "qa-release",
+    "business-planning",
+    "growth-retention",
+    "agency-management",
+    "budget-ownership",
+    "team-leading",
+    "data-driven-operation",
+    "launch-operation"
+  ]
+}

@@ -57,7 +57,7 @@ test("E2E-03 동명 회사: 후보 2곳을 보여 주고 고르면 기업 카드
   await cardLog.getByText("어떻게 도출했나요?").click();
   await expect(cardLog.getByText("compute_indicators")).toBeVisible();
   // 기업 카드 다음에는 3년차 공고 비교 말풍선이 오고, 그 진행 기록에는 공고 비교 도구 줄이 있다 (CDC-16)
-  await expect(page.getByText(/3년차 공고\(.+\)가 요구하는 역량 \d+개를 신입 때 이 직무에서 쌓는 역량과 견주면, 이어지는 것 \d+개, 일부만 겹치는 것 \d+개, 따로 채워야 하는 것 \d+개예요/)).toBeVisible();
+  await expect(page.getByText(/서비스기획 직무에서 신입 때 쌓는 역량과 비교하면, 3년차 공고\(.+\)가 요구하는 역량 \d+개 중 \d+개는 신입 때 쌓는 역량이고, \d+개는 다른 직무 역량과 겹치고, \d+개는 따로 채워야 해요/)).toBeVisible();
   const careerLog = page.locator("details").filter({ hasText: "compare_career_posting" }).last();
   await careerLog.getByText("어떻게 도출했나요?").click();
   await expect(careerLog.getByText(/compare_career_posting/)).toBeVisible();
@@ -230,23 +230,29 @@ test("E2E-15 맞대결을 다시 해 성향이 바뀌면 저장 카드를 다시
   await expect(page.getByRole("dialog", { name: "기업 카드 보기" })).toContainText("자율·개척 지향");
 });
 
-test("E2E-16 리포트 카드에서 이미지로 저장하면 PNG가 내려받아지고, QR 링크로 같은 카드가 다시 열린다", async ({ page }) => {
+test("E2E-16 리포트 카드에서 요약·근거 카드를 이미지로 저장하면 PNG가 내려받아지고, QR 링크로 같은 카드가 다시 열린다", async ({ page }) => {
   await chooseRole(page, "마케팅");
   await searchCompany(page, "별하늘랩스");
   await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
   await expect(page.getByText("최종 판단 리포트예요")).toBeVisible();
   const label = (await page.locator('.chat [data-el="판정 라벨"] b').last().textContent())?.trim();
   expect(label).toBeTruthy();
-  // QR이 앞면에 있고, 링크에는 기업 ID와 직무만 있다 (기본 기준이라 가중치 없음)
+  // 앞면에 QR과 역량 갭 세 줄이 있다
   await expect(page.locator('.chat [data-el="카드 QR"] svg').last()).toBeVisible();
-  // 이미지로 저장: 내려받기(download) 또는 공유 창 중 하나로 끝나고 실패 안내가 없어야 한다
-  await page.evaluate(() => {
-    // 공유 창 대신 항상 내려받기로 끝나게 해서 파일을 확인한다
-    Object.defineProperty(navigator, "canShare", { value: undefined, configurable: true });
-  });
-  const [download] = await Promise.all([page.waitForEvent("download", { timeout: 20000 }), page.getByRole("button", { name: "이미지로 저장하기" }).last().click()]);
-  expect(download.suggestedFilename()).toBe("첫단추-별하늘랩스(주)-마케팅.png");
+  await expect(page.getByText("마케팅 신입 때 쌓는 역량").last()).toBeVisible();
+  // 이미지로 저장: 공유 창 대신 항상 내려받기로 끝나게 해서 요약, 근거 카드를 각각 확인한다
+  await page.evaluate(() => Object.defineProperty(navigator, "canShare", { value: undefined, configurable: true }));
+  for (const face of ["요약", "근거"]) {
+    const [download] = await Promise.all([
+      page.waitForEvent("download", { timeout: 20000 }),
+      page.getByRole("button", { name: `${face} 카드 저장하기` }).last().click(),
+    ]);
+    expect(download.suggestedFilename()).toBe(`첫단추-별하늘랩스(주)-마케팅-${face}.png`);
+  }
   await expect(page.getByText("이미지를 만들지 못했어요")).toHaveCount(0);
+  // 뒷면에는 역량 비교 상세가 있다
+  await page.getByRole("button", { name: "근거 보기" }).last().click();
+  await expect(page.locator('.chat [data-el="역량 비교 상세"]').last()).toContainText("마케팅 직무에서 신입 때 쌓는 역량과 견준 결과예요");
   // QR이 여는 주소로 가면 같은 라벨의 카드가 다시 그려진다
   const url = new URL(page.url());
   await page.goto(`${url.origin}/card?c=mock-001&r=${encodeURIComponent("마케팅")}`);

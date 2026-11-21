@@ -78,16 +78,34 @@ function Front({
                   <dd>{top}</dd>
                 </div>
               )}
-              <div>
-                <dt>3년차 공고 요구 역량</dt>
-                <dd>{d.gap ? `이어짐 ${d.gap.connected} · 일부 ${d.gap.partial} · 공백 ${d.gap.missing}` : "확인 불가"}</dd>
-              </div>
+              {d.gap ? (
+                <>
+                  <div>
+                    <dt>3년차 공고 요구 역량</dt>
+                    <dd>
+                      {d.gap.connected + d.gap.partial + d.gap.missing}개{d.careerYears ? ` (경력 ${d.careerYears})` : ""}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>{d.role} 신입 때 쌓는 역량</dt>
+                    <dd>{d.gap.connected}개</dd>
+                  </div>
+                  <div>
+                    <dt>다른 직무와 겹치는 역량</dt>
+                    <dd>{d.gap.partial}개</dd>
+                  </div>
+                  <div>
+                    <dt>따로 채워야 하는 역량</dt>
+                    <dd>{d.gap.missing}개</dd>
+                  </div>
+                </>
+              ) : (
+                <div>
+                  <dt>3년차 공고 요구 역량</dt>
+                  <dd>확인 불가</dd>
+                </div>
+              )}
             </dl>
-            {d.gap && (
-              <p className="tiny muted" data-el="역량 갭 설명">
-                신입 때 이 직무에서 쌓는 역량과 견준 결과예요. 이어짐: 이 직무에서 쌓임, 일부: 다른 직무와 겹침, 공백: 따로 채워야 함
-              </p>
-            )}
             {d.substituteNote && (
               <p className="small muted" data-el="대체 공고 안내">
                 <span className="tag">유사 기업 공고로 비교</span> {d.substituteNote}
@@ -128,6 +146,17 @@ function Back({ d, hidden }: { d: ReportCardData; hidden: boolean }) {
           <div className="small">
             <span className="tag tag-ai">AI 판단</span>{" "}
             <span className="muted">{d.decisions.join(" · ")}</span>
+          </div>
+        )}
+        {d.gapDetail && (
+          <div className="small" data-el="역량 비교 상세">
+            <b>3년차 공고 요구 역량 비교</b>
+            <p className="muted">{d.role} 직무에서 신입 때 쌓는 역량과 견준 결과예요</p>
+            <ul>
+              {d.gapDetail.connected.length > 0 && <li>신입 때 쌓는 역량: {d.gapDetail.connected.join(", ")}</li>}
+              {d.gapDetail.partial.length > 0 && <li>다른 직무와 겹치는 역량: {d.gapDetail.partial.join(", ")}</li>}
+              {d.gapDetail.missing.length > 0 && <li>따로 채워야 하는 역량: {d.gapDetail.missing.join(", ")}</li>}
+            </ul>
           </div>
         )}
         {d.careerSource && (
@@ -184,10 +213,11 @@ export function ReportCard({
   const shown = reports?.[role]?.report ?? data;
   const missingRole = reports && !reports[role] ? role : undefined;
 
-  /** 이미지로 저장: 앞면만 사진으로 만든다. 돌아가 있어도 같은 결과가 나오게, 저장하는 동안만 화면 밖에 앞면을 따로 그린다 */
+  /** 이미지로 저장: 요약(앞면) 또는 근거(뒷면) 카드를 사진으로 만든다. 돌아가 있어도 같은 결과가 나오게, 저장하는 동안만 화면 밖에 그 면을 따로 그린다 */
   const [shot, setShot] = useState<"idle" | "making" | "failed">("idle");
+  const [face, setFace] = useState<"요약" | "근거">("요약");
   const capRef = useRef<HTMLDivElement>(null);
-  const fileName = `첫단추-${data.companyName}-${role}.png`;
+  const fileName = `첫단추-${shown.companyName}-${shown.role}-${face}.png`;
   useEffect(() => {
     if (shot !== "making") return;
     (async () => {
@@ -253,15 +283,21 @@ export function ReportCard({
         <span className="sheen" aria-hidden="true" />
       </div>
       <div className="rc-actions">
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => setShot("making")}
-          disabled={Boolean(missingRole) || shot === "making" || !shown.fitLabel}
-          data-el="이미지로 저장"
-        >
-          {shot === "making" ? "이미지 만드는 중" : "이미지로 저장하기"}
-        </button>
+        {(["요약", "근거"] as const).map((f) => (
+          <button
+            key={f}
+            type="button"
+            className={f === "요약" ? "btn btn-primary" : "btn"}
+            onClick={() => {
+              setFace(f);
+              setShot("making");
+            }}
+            disabled={Boolean(missingRole) || shot === "making" || !shown.fitLabel}
+            data-el={`${f} 카드 저장`}
+          >
+            {shot === "making" && face === f ? "이미지 만드는 중" : `${f} 카드 저장하기`}
+          </button>
+        ))}
         <button type="button" className="btn" onClick={flip} disabled={Boolean(missingRole)}>
           {back ? "요약 보기" : "근거 보기"}
         </button>
@@ -273,7 +309,7 @@ export function ReportCard({
       )}
       {shot === "making" && (
         <div className="cap-offscreen" ref={capRef} aria-hidden="true">
-          <Front d={shown} hidden />
+          {face === "요약" ? <Front d={shown} hidden /> : <Back d={shown} hidden={false} />}
         </div>
       )}
     </div>

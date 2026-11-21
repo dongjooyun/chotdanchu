@@ -2,7 +2,8 @@
 //
 // 축 1, 회사 기반: 내 선호 가중치로 낸 등급 평균 (A 1, B 0.5, C 0). 확인 불가 지표는 빼고 남은 가중치로 다시 나눈다.
 // 축 2, 이어짐: 3년차 공고 요구 역량 중 이 자리에서 이어지는 비율 (lib/career-gap.ts connectRatio, 일부는 절반).
-// 기준값은 둘 다 0.6 (팀 자체 기준, 11/21). 0.6은 "평균이 B(보통)보다 한 칸 쪽 위", "요구 역량 다섯 중 셋 이상이 이어짐"이다.
+// 기준값 (팀 자체 기준, 11/22): 기반 0.75 = 등급 평균이 A와 B 사이 중간 이상(대부분 A, 나머지 B). 이어짐 0.6 = 요구 역량 다섯 중 셋 이상이 이어짐.
+// 기반을 0.75로 둔 이유: 시연 기업이 모두 큰 회사라 등급이 A 위주인데, 0.6이면 기반이 늘 "좋음"이라 성향이 달라도 라벨이 같다.
 import { skippedPreference } from "@/lib/session";
 import type { GradedIndicator, IndicatorId } from "@/lib/types";
 
@@ -18,7 +19,7 @@ export const FIT_DESCRIPTIONS: Record<FitLabel, string> = {
 };
 
 /** 회사 기반 "좋음"의 기준값 */
-export const BASE_THRESHOLD = 0.6;
+export const BASE_THRESHOLD = 0.75;
 /** 이어짐 "높음"의 기준값 */
 export const CONNECT_THRESHOLD = 0.6;
 
@@ -66,8 +67,9 @@ export function decideFit({ graded, weights, connect }: FitInput): FitResult {
   if (base === null || connect === null) {
     return { label: "정보 보강", base, connect, rule: connect === null ? "3년차 공고 없음" : "등급이 나온 지표 없음" };
   }
-  const good = base >= BASE_THRESHOLD;
-  const high = connect >= CONNECT_THRESHOLD;
+  // 0.1씩 더한 평균이 0.7499999처럼 나오는 오차를 허용한다
+  const good = base + 1e-9 >= BASE_THRESHOLD;
+  const high = connect + 1e-9 >= CONNECT_THRESHOLD;
   const label: FitLabel = high ? (good ? "최적" : "도전") : good ? "안정" : "고려";
   return { label, base, connect, rule: `이어짐 ${high ? "높음" : "낮음"}, 기반 ${good ? "좋음" : "약함"}` };
 }

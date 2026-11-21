@@ -1,7 +1,7 @@
 // 최종 판단 리포트 (CDC-16) 테스트. 역량 갭은 GAP-{번호}, 판정 라벨은 FIT-{번호}.
-// 설계: 라벨 표는 결정 테이블(두 축 x 높음·낮음 + 정보 보강), 기준값은 경계값 분석(0.6 바로 위·아래)으로 고른다 (docs/testing.md).
+// 설계: 라벨 표는 결정 테이블(두 축 x 높음·낮음 + 정보 보강), 기준값은 경계값 분석(기반 0.75, 이어짐 0.6의 바로 위·아래)으로 고른다 (docs/testing.md).
 import { describe, expect, test } from "vitest";
-import { classifyRequirement, computeCareerGap, connectRatio } from "@/lib/career-gap";
+import { classifyRequirement, computeCareerGap, connectRatio, gapDetail } from "@/lib/career-gap";
 import { realCompanies } from "@/lib/data";
 import { BASE_THRESHOLD, CONNECT_THRESHOLD, baseScore, decideFit, equalWeights } from "@/lib/fit-label";
 import { computeIndicators } from "@/lib/indicators";
@@ -36,12 +36,23 @@ function report(companyId: string, role: Role, pref = skippedPreference()) {
 }
 
 describe("역량 갭 (3년차 공고 비교)", () => {
-  test("GAP-01 같은 직무 사전에 있으면 이어짐, 다른 직무 사전에만 있으면 일부, 어디에도 없으면 공백", () => {
+  test("GAP-01 같은 직무 신입 역량이면 이어짐, 3년차 예상 역량이거나 어디에도 없으면 공백, 다른 직무 신입 역량이면 일부", () => {
     expect(classifyRequirement({ text: "", phrases: ["프로젝트 관리"] }, "서비스기획").kind).toBe("connected");
-    expect(classifyRequirement({ text: "", phrases: ["유관 부서 협업"] }, "마케팅").kind).toBe("partial");
-    expect(classifyRequirement({ text: "", phrases: ["Braze 사용"] }, "마케팅").kind).toBe("missing");
-    // 표현이 여럿이면 가장 가까운 쪽: 하나라도 같은 직무에 맞으면 이어짐
-    expect(classifyRequirement({ text: "", phrases: ["Braze 사용", "CRM 마케팅"] }, "마케팅").kind).toBe("connected");
+    expect(classifyRequirement({ text: "", phrases: ["프로모션 기획"] }, "마케팅").kind).toBe("connected");
+    // 그로스·리텐션은 마케팅 사전에 있지만 3년차 예상 역량이라 신입 때 쌓는 역량이 아니다 (3년차에 새로 요구)
+    const g3 = classifyRequirement({ text: "", phrases: ["그로스 해킹"] }, "마케팅");
+    expect(g3.kind).toBe("missing");
+    expect(g3.newAtYear3).toBe(true);
+    // 사전에 없는 표현은 공백이고 사전 보강 후보로 모은다
+    const none = classifyRequirement({ text: "", phrases: ["Braze 사용"] }, "마케팅");
+    expect(none.kind).toBe("missing");
+    expect(none.unmatched).toEqual(["Braze 사용"]);
+    // 다른 직무 사전(서비스기획)의 신입 역량과 겹치면 일부, 어느 직무인지 남는다
+    const part = classifyRequirement({ text: "", phrases: ["유관 부서 협업"] }, "마케팅");
+    expect(part.kind).toBe("partial");
+    expect(part.fromRoles).toContain("서비스기획");
+    // 표현이 여럿이면 하나라도 신입 역량에 맞을 때 이어짐
+    expect(classifyRequirement({ text: "", phrases: ["Braze 사용", "프로모션 기획"] }, "마케팅").kind).toBe("connected");
   });
 
   test("GAP-02 시연 기업 4곳 x 직무 3개 모두 3년차 공고와 갭 결과가 있고, 원문 링크가 공식 채용 페이지다", () => {
@@ -96,19 +107,50 @@ describe("역량 갭 (3년차 공고 비교)", () => {
         const gap = computeCareerGap(id, role, "live")!;
         expect(report(id, role).gap).toEqual(gap.counts);
         const msg = careerMessage(gap, role);
-        expect(msg).toContain(`이어지는 것 ${gap.counts.connected}개, 일부만 겹치는 것 ${gap.counts.partial}개, 따로 채워야 하는 것 ${gap.counts.missing}개`);
+        const total = gap.counts.connected + gap.counts.partial + gap.counts.missing;
+        expect(msg).toContain(`요구하는 역량 ${total}개 중 ${gap.counts.connected}개는 신입 때 쌓는 역량이고, ${gap.counts.partial}개는 다른 직무 역량과 겹치고, ${gap.counts.missing}개는 따로 채워야 해요`);
       }
   });
 });
 
+describe("역량 갭 표시", () => {
+  test("GAP-08 이름 목록은 개수와 맞고, 3년차에 새로 요구되는 역량과 다른 직무는 표시한다", () => {
+    for (const id of DEMO)
+      for (const role of ROLES) {
+        const gap = computeCareerGap(id, role, "live")!;
+        const d = gapDetail(gap);
+        expect(d.connected.length === 0).toBe(gap.counts.connected === 0);
+        expect(d.partial.length === 0).toBe(gap.counts.partial === 0);
+        expect(d.missing.length === 0).toBe(gap.counts.missing === 0);
+        for (const n of d.partial) expect(n).toMatch(/\((서비스기획|마케팅|운영)/);
+      }
+    // 무신사 마케팅: CRM 마케팅은 신입 역량(이어짐), 실험·협업은 서비스기획 역량과 겹침(일부), Braze는 사전에 없는 표현(공백)
+    const d = gapDetail(computeCareerGap("01137727", "마케팅", "live")!);
+    expect(d.connected).toContain("CRM 마케팅");
+    expect(d.partial).toContain("협업·조율(서비스기획)");
+    expect(d.missing).toContain("Braze 사용");
+    // 3년차 예상 역량이 공백으로 나오면 이름 뒤에 표시가 붙는다
+    expect(gapDetail({ ...computeCareerGap("01137727", "마케팅", "live")!, items: [{ text: "", kind: "missing", names: ["그로스·리텐션"], newAtYear3: true }] }).missing).toEqual(["그로스·리텐션(3년차에 새로 요구)"]);
+  });
+
+  test("GAP-09 채팅 안내는 직무와 신입 기준을 말하고, 공고가 경력 몇 년인지와 역량 이름을 보인다", () => {
+    const gap = computeCareerGap("01137727", "마케팅", "live")!;
+    const msg = careerMessage(gap, "마케팅");
+    expect(msg).toContain("마케팅 직무에서 신입 때 쌓는 역량과 비교하면");
+    expect(msg).toContain("경력 4년 이상");
+    expect(msg).toContain("따로 채워야 하는 것:");
+    expect(msg).toContain("Braze 사용");
+  });
+});
+
 describe("판정 라벨", () => {
-  test("FIT-01 기준값은 둘 다 0.6", () => {
-    expect(BASE_THRESHOLD).toBe(0.6);
+  test("FIT-01 기준값은 기반 0.75, 이어짐 0.6", () => {
+    expect(BASE_THRESHOLD).toBe(0.75);
     expect(CONNECT_THRESHOLD).toBe(0.6);
   });
 
   test("FIT-02 결정 테이블: 이어짐 높음·낮음 x 기반 좋음·약함 -> 최적, 도전, 안정, 고려", () => {
-    const good = gradedWithBase(3, 2); // (3 + 1) / 6
+    const good = gradedWithBase(5, 1); // A 6개(정보 투명도 포함), C 1개 = 6 / 7
     const weak = gradedWithBase(1, 2, "B"); // (1 + 0 + 0 + 0.5) / 4
     const w = equalWeights();
     expect(decideFit({ graded: good, weights: w, connect: 0.6 }).label).toBe("최적");
@@ -117,14 +159,14 @@ describe("판정 라벨", () => {
     expect(decideFit({ graded: weak, weights: w, connect: 0.5 }).label).toBe("고려");
   });
 
-  test("FIT-03 경계값: 기반과 이어짐이 정확히 0.6이면 좋음·높음, 그보다 작으면 약함·낮음", () => {
+  test("FIT-03 경계값: 기반 0.75와 이어짐 0.6이 정확히 기준이면 좋음·높음, 바로 아래면 약함·낮음", () => {
     const w = equalWeights();
-    // 정확히 0.6: A A B C + 정보 투명도 B = (1 + 1 + 0.5 + 0 + 0.5) / 5
-    const at = [g("financial_health", "A"), g("growth", "A"), g("profitability", "B"), g("hiring_flow", "C"), g("transparency", "B")];
-    // 바로 아래 0.583: A A A C C + 정보 투명도 B = 3.5 / 6
-    const below = [g("financial_health", "A"), g("growth", "A"), g("profitability", "A"), g("hiring_flow", "C"), g("compensation", "C"), g("transparency", "B")];
-    expect(baseScore(at, w)).toBeCloseTo(0.6, 10);
-    expect(baseScore(below, w)).toBeCloseTo(3.5 / 6, 10);
+    // 정확히 0.75: A A B B = (1 + 1 + 0.5 + 0.5) / 4 (마지막은 정보 투명도 B)
+    const at = [g("financial_health", "A"), g("growth", "A"), g("profitability", "B"), g("transparency", "B")];
+    // 바로 아래 0.714: A A A B B B B = 5 / 7
+    const below = [g("financial_health", "A"), g("growth", "A"), g("profitability", "A"), g("hiring_flow", "B"), g("compensation", "B"), g("tenure", "B"), g("transparency", "B")];
+    expect(baseScore(at, w)).toBeCloseTo(0.75, 10);
+    expect(baseScore(below, w)).toBeCloseTo(5 / 7, 10);
     expect(decideFit({ graded: at, weights: w, connect: 0.6 }).label).toBe("최적");
     expect(decideFit({ graded: at, weights: w, connect: 0.59 }).label).toBe("안정");
     expect(decideFit({ graded: below, weights: w, connect: 0.6 }).label).toBe("도전");
