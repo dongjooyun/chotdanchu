@@ -155,12 +155,31 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .cc-foot { display: flex; gap: var(--s-3); justify-content: flex-end; padding: var(--s-5); }
 
 /* ===== 맞대결 ===== */
-.mp-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-4); }
+.mp-top { display: flex; flex-direction: column; align-items: center; gap: var(--s-2); text-align: center; margin-bottom: var(--s-5); }
+.mp-title { font-size: 17px; font-weight: 700; }
+.mp-prog { display: flex; align-items: center; gap: var(--s-3); }
 .bar { display: flex; gap: var(--s-1); }
 .bar i { width: 28px; height: 6px; background: var(--line); border-radius: 1px; }
 .bar i.on { background: var(--ink); }
 .mp { display: grid; grid-template-columns: 1fr 48px 1fr; align-items: stretch; }
-.mc { border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface); padding: var(--s-4); display: flex; flex-direction: column; gap: var(--s-3); }
+.mc { border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface); padding: var(--s-4); display: flex; flex-direction: column; gap: var(--s-3);  position: relative; cursor: pointer; }
+.mc:hover { border-color: var(--gray-4); }
+.mc:has(.pick:focus-visible) { outline: 2px solid var(--purple); outline-offset: 2px; }
+.mc.picked { background: var(--lilac); border-color: var(--purple); }
+.pick { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; background: none; border: 0; border-radius: var(--r-3); cursor: pointer; z-index: 1; }
+.pick:focus-visible { outline: none; }
+.mc .k { display: inline-flex; align-items: center; }
+.tip { position: relative; z-index: 2; margin-left: var(--s-2); cursor: help; }
+.tip-pop { display: none; position: absolute; left: -8px; bottom: calc(100% + 8px); width: 210px; padding: var(--s-2) var(--s-3); background: var(--ink); color: #fff; border-radius: var(--r-2); font-size: 12px; font-weight: 400; line-height: 1.5; text-align: left; white-space: normal; z-index: 5; }
+.tip-pop::after { content: ""; position: absolute; top: 100%; left: 14px; border: 5px solid transparent; border-top-color: var(--ink); }
+.tip:hover .tip-pop, .tip:focus .tip-pop { display: block; }
+.legend { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: var(--s-2) var(--s-4); margin-top: var(--s-4); font-size: 12px; color: var(--ink-2); }
+.legend b { color: var(--ink); font-weight: 600; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend .g { width: 22px; height: 22px; font-size: 11px; }
+.mp-foot { display: flex; justify-content: space-between; align-items: center; margin-top: var(--s-5); }
+.btn-link[disabled] { color: var(--gray-3); cursor: not-allowed; }
+.btn-link[disabled]::before { display: none; }
 .mc h3 { font-size: 16px; }
 .mc ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
 .mc li { display: flex; justify-content: space-between; align-items: center; padding: var(--s-2) 0; border-bottom: 1px solid var(--line-2); font-size: 14px; }
@@ -355,13 +374,17 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
   <h2 id="s4">4. 맞대결, 리포트 카드, 내 카드 모음</h2>
   <div class="grid2">
     <div>
-      <div class="mp-top"><b>더 끌리는 카드를 선택해 주세요</b><span class="small" data-el="진행 표시"><b>4 / 7</b> <span class="bar" style="display:inline-flex;vertical-align:middle;margin-left:8px"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></span></div>
-      <div class="mp">
-        <div class="mc" data-el="맞대결 카드"><h3>기업 A</h3><ul><li>재무 체력 <span class="g g-a">A</span></li><li>성장성 <span class="g g-c">C</span></li><li>고용 흐름 <span class="g g-b">B</span></li></ul><button class="btn" type="button">이쪽이 더 끌려요</button></div>
-        <span class="vs" aria-hidden="true">VS</span>
-        <div class="mc" data-el="맞대결 카드"><h3>기업 B</h3><ul><li>재무 체력 <span class="g g-c">C</span></li><li>성장성 <span class="g g-a">A</span></li><li>고용 흐름 <span class="g g-b">B</span></li></ul><button class="btn" type="button">이쪽이 더 끌려요</button></div>
+      <div class="mp-top">
+        <b class="mp-title">더 끌리는 카드를 선택해 주세요</b>
+        <div class="mp-prog" data-el="진행 표시"><b class="small">4 / 7</b><span class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
       </div>
-      <p style="margin-top:16px"><button class="btn btn-link small" type="button">건너뛰고 기본 기준으로</button></p>
+      <div class="mp">
+        <div class="mc" data-el="맞대결 카드"><button class="pick" type="button" aria-label="기업 A 선택"></button><h3>기업 A</h3><ul><li><span class="k">재무 체력<span class="info tip" tabindex="0" aria-describedby="tipA-fin">i<span class="tip-pop" id="tipA-fin" role="tooltip">빚 부담과 버틸 힘이에요. 일반 기업은 부채비율, 스타트업은 현금으로 몇 개월 버티는지로 봐요.</span></span></span><span class="g g-a">A</span></li><li><span class="k">성장성<span class="info tip" tabindex="0" aria-describedby="tipA-gro">i<span class="tip-pop" id="tipA-gro" role="tooltip">매출이 1년 전보다 얼마나 늘었는지예요.</span></span></span><span class="g g-c">C</span></li><li><span class="k">고용 흐름<span class="info tip" tabindex="0" aria-describedby="tipA-hir">i<span class="tip-pop" id="tipA-hir" role="tooltip">1년 전보다 직원이 늘었는지, 얼마나 많이 퇴사하는지예요.</span></span></span><span class="g g-b">B</span></li></ul></div>
+        <span class="vs" aria-hidden="true">VS</span>
+        <div class="mc" data-el="맞대결 카드"><button class="pick" type="button" aria-label="기업 B 선택"></button><h3>기업 B</h3><ul><li><span class="k">재무 체력<span class="info tip" tabindex="0" aria-describedby="tipB-fin">i<span class="tip-pop" id="tipB-fin" role="tooltip">빚 부담과 버틸 힘이에요. 일반 기업은 부채비율, 스타트업은 현금으로 몇 개월 버티는지로 봐요.</span></span></span><span class="g g-c">C</span></li><li><span class="k">성장성<span class="info tip" tabindex="0" aria-describedby="tipB-gro">i<span class="tip-pop" id="tipB-gro" role="tooltip">매출이 1년 전보다 얼마나 늘었는지예요.</span></span></span><span class="g g-a">A</span></li><li><span class="k">고용 흐름<span class="info tip" tabindex="0" aria-describedby="tipB-hir">i<span class="tip-pop" id="tipB-hir" role="tooltip">1년 전보다 직원이 늘었는지, 얼마나 많이 퇴사하는지예요.</span></span></span><span class="g g-b">B</span></li></ul></div>
+      </div>
+      <p class="legend"><b>A, B, C는 지표별 등급이에요</b><span><span class="g g-a">A</span> 좋음</span><span><span class="g g-b">B</span> 보통</span><span><span class="g g-c">C</span> 미흡</span><span><span class="g g-n">?</span> 확인 불가</span></p>
+      <div class="mp-foot"><button class="btn btn-link small" type="button">이전 판으로 돌아가기</button><button class="btn btn-link small" type="button">건너뛰고 기본 기준으로</button></div>
     </div>
     <div style="display:flex;gap:24px;flex-wrap:wrap">
       <div class="rc" data-el="리포트 카드" style="max-width:300px">
@@ -415,6 +438,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <tr><td>연보라 색</td><td>연보라 여러 값 (배경, 선택, 강조 면이 서로 다름)</td><td>연보라 한 값(#E1D8F6)만 사용, hover는 칠 높이로 구분</td><td>동주 결정. 같은 색이 여러 농도면 일관성이 떨어져 보임</td></tr>
         <tr><td>링크형 버튼, 고정 정보줄 문구</td><td>밑줄만 있는 글자, "바꾸기"와 "다른 회사"</td><td>연보라 형광펜 칠(살짝 둥근 직사각형, 밑줄 없음), 문구는 둘 다 "변경하기"</td><td>동주 결정. 밑줄만으로는 버튼인지 알기 어려움. 같은 동작은 같은 말로 통일 (직무와 회사는 보조 설명으로 구분)</td></tr>
         <tr><td>맞대결 카드 제목</td><td>"카드 A", "카드 B"</td><td>"기업 A", "기업 B"</td><td>동주 결정. 회사 이름만 가린 실제 기업을 고르는 게임이라는 것이 제목에서 바로 보이게</td></tr>
+        <tr><td>맞대결 카드 고르기</td><td>카드마다 "이쪽이 더 끌려요" 버튼</td><td>카드 전체를 누르면 선택됨. 마우스를 올리면 테두리가 진해지고 키보드로도 선택 가능. 이전 판으로 돌아가기 추가. 지표 이름 옆 (i)에 마우스를 올리면 뜻 설명. A, B, C가 등급이라는 안내 줄 추가. 진행 표시는 안내 문구 아래 가운데</td><td>동주 결정. 버튼을 또 누를 필요가 없고, 잘못 골랐을 때 되돌릴 수 있으며, 지표와 등급이 처음 보는 사람에게도 설명되게 함</td></tr>
         <tr><td>진행 기록 (말풍선 안)</td><td>항상 펼쳐져 있음</td><td>기본은 접고 "어떻게 도출했나요?" 토글로 보게 함</td><td>동주 결정. 도출 근거는 사용자보다 개발자와 심사위원이 보는 정보. 눌러 보게 유도하되 오른쪽 판단 로그 패널은 전체 기록으로 유지</td></tr>
         <tr><td>판단 로그 패널</td><td>오른쪽에 항상 펼쳐져 있음</td><td>기본은 숨김. "에이전트 사고 과정 보기"를 누르면 오른쪽에 단계 흐름(번호와 연결선)으로 열림</td><td>동주 결정. 평소에는 대화에 집중하게 하고 궁금한 사람만 AI가 어떻게 판단했는지 보게 함. 시연과 심사에서는 열어 둔 상태로 보여 주면 AI 활용의 증거가 됨</td></tr>
         <tr><td>맞대결 시작 버튼</td><td>"내 기준 맞추기"</td><td>"카드 7판으로 내 성향 맞춤 판정 받기"</td><td>동주 결정. 무엇을 하는지(카드 고르기), 얼마나 걸리는지(7판), 무엇을 얻는지(맞춤 판정)가 문구에서 바로 보이게. "추천" 대신 "판정"을 쓴 것은 첫단추가 회사를 골라 주는 서비스가 아니라 입력한 회사가 나와 맞는지 판정하는 서비스라서</td></tr>
@@ -437,6 +461,15 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
   }
   tg.addEventListener("click", function () { set(app.getAttribute("data-think") !== "open"); });
   document.querySelector(".think-close").addEventListener("click", function () { set(false); tg.focus(); });
+})();
+(function () {
+  var cards = document.querySelectorAll(".mc");
+  cards.forEach(function (c) {
+    c.querySelector(".pick").addEventListener("click", function () {
+      cards.forEach(function (o) { o.classList.remove("picked"); });
+      c.classList.add("picked");
+    });
+  });
 })();
 </script>
 </body>
