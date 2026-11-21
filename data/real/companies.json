@@ -6,7 +6,7 @@
     "bizRegNoSource": {
       "name": "OpenDART 기업개황",
       "url": "https://opendart.fss.or.kr",
-      "checkedAt": "2026-11-20"
+      "checkedAt": "2026-11-21"
     },
     "name": "(주)카카오",
     "ceoName": "정신아",
@@ -29,7 +29,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -42,7 +42,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -55,7 +55,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -73,7 +73,7 @@
         "source": {
           "name": "국민연금 가입 사업장 내역 (2026-09분)",
           "url": "https://www.data.go.kr/data/15083277/fileData.do",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -91,7 +91,7 @@
         "source": {
           "name": "국민연금 가입 사업장 내역 (2026-09분)",
           "url": "https://www.data.go.kr/data/15083277/fileData.do",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -107,7 +107,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (직원 현황)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -147,7 +147,7 @@
         "source": {
           "name": "OpenDART 2025 감사의견",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       }
     ],
@@ -161,7 +161,7 @@
     "bizRegNoSource": {
       "name": "OpenDART 기업개황",
       "url": "https://opendart.fss.or.kr",
-      "checkedAt": "2026-11-20"
+      "checkedAt": "2026-11-21"
     },
     "name": "(주)카카오",
     "ceoName": "이제범,이석우",
@@ -268,7 +268,7 @@
         "source": {
           "name": "국세청 사업자등록 상태조회",
           "url": "https://www.data.go.kr/data/15081808/openapi.do",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       }
     ],
@@ -282,9 +282,9 @@
     "bizRegNoSource": {
       "name": "OpenDART 기업개황",
       "url": "https://opendart.fss.or.kr",
-      "checkedAt": "2026-11-20"
+      "checkedAt": "2026-11-21"
     },
-    "name": "(주)무신사",
+    "name": "주식회사 무신사",
     "ceoName": "조만호, 조남성",
     "address": "서울 성동구",
     "industry": "응용 소프트웨어 개발 및 공급업",
@@ -308,7 +308,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003116",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -321,7 +321,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003116",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -337,7 +337,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003116",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -355,7 +355,7 @@
         "source": {
           "name": "국민연금 가입 사업장 내역 (2026-09분)",
           "url": "https://www.data.go.kr/data/15083277/fileData.do",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -372,7 +372,7 @@
         "source": {
           "name": "국민연금 가입 사업장 내역 (2026-09분)",
           "url": "https://www.data.go.kr/data/15083277/fileData.do",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -388,7 +388,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (직원 현황)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003116",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -429,7 +429,7 @@
         "source": {
           "name": "OpenDART 2025 감사의견",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260331003116",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       }
     ],
@@ -443,9 +443,9 @@
     "bizRegNoSource": {
       "name": "OpenDART 기업개황",
       "url": "https://opendart.fss.or.kr",
-      "checkedAt": "2026-11-20"
+      "checkedAt": "2026-11-21"
     },
-    "name": "(주)컬리",
+    "name": "주식회사 컬리",
     "ceoName": "김슬아",
     "address": "서울 강남구",
     "industry": "과실류 도매업",
@@ -469,7 +469,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000997",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -482,7 +482,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000997",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -498,7 +498,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (별도 재무제표)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000997",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -516,7 +516,7 @@
         "source": {
           "name": "국민연금 가입 사업장 내역 (2026-09분)",
           "url": "https://www.data.go.kr/data/15083277/fileData.do",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -533,7 +533,7 @@
         "source": {
           "name": "국민연금 가입 사업장 내역 (2026-09분)",
           "url": "https://www.data.go.kr/data/15083277/fileData.do",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -549,7 +549,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (직원 현황)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000997",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -589,7 +589,7 @@
         "source": {
           "name": "OpenDART 2025 감사의견",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000997",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       }
     ],
@@ -606,9 +606,9 @@
     "bizRegNoSource": {
       "name": "OpenDART 기업개황",
       "url": "https://opendart.fss.or.kr",
-      "checkedAt": "2026-11-20"
+      "checkedAt": "2026-11-21"
     },
-    "name": "(주)당근마켓",
+    "name": "주식회사 당근마켓",
     "ceoName": "김용현, 황도연",
     "address": "서울 서초구",
     "industry": "응용 소프트웨어 개발 및 공급업",
@@ -679,7 +679,7 @@
         "source": {
           "name": "국민연금 가입 사업장 내역 (2026-09분)",
           "url": "https://www.data.go.kr/data/15083277/fileData.do",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -696,7 +696,7 @@
         "source": {
           "name": "국민연금 가입 사업장 내역 (2026-09분)",
           "url": "https://www.data.go.kr/data/15083277/fileData.do",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -712,7 +712,7 @@
         "source": {
           "name": "OpenDART 2025 사업보고서 (직원 현황)",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000262",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       },
       {
@@ -752,7 +752,7 @@
         "source": {
           "name": "OpenDART 2025 감사의견",
           "url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260327000262",
-          "checkedAt": "2026-11-20"
+          "checkedAt": "2026-11-21"
         }
       }
     ],

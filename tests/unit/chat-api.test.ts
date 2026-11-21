@@ -117,7 +117,7 @@ describe("POST /api/chat (실데이터 모드, 사전 계산한 시연 기업)",
   test("API-18 법인명과 다른 부르는 이름(당근 -> 주식회사 당근마켓)으로도 찾는다", async () => {
     live();
     const { json } = await post({ message: "당근" });
-    expect(json.widget?.type === "company" && json.widget.company.name).toBe("(주)당근마켓");
+    expect(json.widget?.type === "company" && json.widget.company.name).toBe("주식회사 당근마켓");
   });
 
   test("API-19 폐업한 동명 법인의 리포트에는 면접 질문 대신 안내만 나온다", async () => {
