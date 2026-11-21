@@ -22,6 +22,8 @@
   --ink-2: #55555e;
   --line: #d8d8de;
   --line-2: #eaeaee;
+  /* 테두리는 검정 금지. 연한 회색에서 진한 회색 순으로 강조한다: 기본 선 --line, 호버 --gray-2, 입력창 --gray-3, 가장 강한 선 --gray-4 */
+  --gray-2: #b4b4bc; --gray-3: #8a8a93; --gray-4: #55555e;
   --canvas: #f5f5f7;
   --surface: #ffffff;
 
@@ -50,7 +52,7 @@ a { color: inherit; }
 /* ===== 타일 페이지 자체 ===== */
 .tile-title { font-size: 28px; font-weight: 700; }
 .tile-sec { margin-top: var(--s-7); }
-.tile-sec > h2 { font-size: 18px; font-weight: 700; padding-bottom: var(--s-2); border-bottom: 1px solid var(--ink); margin-bottom: var(--s-5); }
+.tile-sec > h2 { font-size: 18px; font-weight: 700; padding-bottom: var(--s-2); border-bottom: 1px solid var(--gray-4); margin-bottom: var(--s-5); }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); }
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); }
 .box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-3); padding: var(--s-5); }
@@ -63,15 +65,15 @@ th, td { text-align: left; vertical-align: top; padding: var(--s-3) var(--s-3); 
 th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px solid var(--line); background: var(--canvas); }
 
 /* ===== 부품 ===== */
-.btn { flex: none; white-space: nowrap; min-width: 88px; font: inherit; font-weight: 600; height: 44px; padding: 0 var(--s-5); border-radius: var(--r-2); cursor: pointer; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); }
+.btn { flex: none; white-space: nowrap; min-width: 88px; font: inherit; font-weight: 600; height: 44px; padding: 0 var(--s-5); border-radius: var(--r-2); cursor: pointer; border: 1px solid var(--gray-4); background: var(--surface); color: var(--ink); }
 .btn:hover { background: var(--canvas); }
 .btn-primary { background: var(--purple); border-color: var(--purple); color: #fff; }
 .btn-primary:hover { background: var(--purple-ink); }
-.btn-ink { background: var(--ink); color: #fff; }
+.btn-ink { background: var(--ink); border-color: transparent; color: #fff; }
 .btn-ink:hover { background: #33333a; }
 .btn-link { min-width: 0; border: 0; background: none; height: auto; padding: 0; text-decoration: underline; text-underline-offset: 3px; font-weight: 500; }
 .chip-btn { font: inherit; font-size: 14px; height: 40px; padding: 0 var(--s-4); border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); cursor: pointer; }
-.chip-btn:hover { border-color: var(--ink); }
+.chip-btn:hover { border-color: var(--gray-3); }
 .chip-btn[aria-pressed="true"] { background: var(--purple-tint); border-color: var(--purple); color: var(--purple-ink); font-weight: 600; }
 .tag { display: inline-block; font-size: 12px; line-height: 1; padding: 5px var(--s-2); border: 1px solid var(--line); border-radius: var(--r-1); background: var(--surface); color: var(--ink-2); white-space: nowrap; }
 .tag-ai { background: var(--yellow); border-color: var(--yellow); color: var(--on-yellow); font-weight: 700; }
@@ -84,7 +86,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .g-n { background: var(--surface); color: var(--ink-2); border: 1px dashed var(--ink-2); font-weight: 600; font-size: 12px; }
 .g-0 { background: var(--canvas); color: var(--ink-2); border: 1px solid var(--line); font-weight: 600; }
 .info { display: inline-flex; width: 18px; height: 18px; align-items: center; justify-content: center; border: 1px solid var(--ink-2); border-radius: 50%; font-size: 11px; font-weight: 700; color: var(--ink-2); vertical-align: middle; }
-.field { flex: 1 1 0; min-width: 0; width: 100%; height: 44px; padding: 0 var(--s-4); font: inherit; border: 1px solid var(--ink-2); border-radius: var(--r-2); background: var(--surface); }
+.field { flex: 1 1 0; min-width: 0; width: 100%; height: 44px; padding: 0 var(--s-4); font: inherit; border: 1px solid var(--gray-3); border-radius: var(--r-2); background: var(--surface); }
 .field::placeholder { color: #8a8a93; }
 .wait { display: inline-flex; gap: 4px; vertical-align: middle; }
 .wait i { width: 6px; height: 6px; background: var(--ink-2); border-radius: 50%; animation: blink 1.2s infinite both; }
@@ -123,7 +125,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .dist { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: center; margin-top: var(--s-3); font-size: 14px; }
 .dist span { display: inline-flex; align-items: center; gap: var(--s-2); }
 .cc-hl { margin-top: var(--s-3); font-size: 13px; display: flex; flex-direction: column; gap: var(--s-1); }
-.imetrics { margin: var(--s-4) var(--s-5) 0; border-top: 1px solid var(--ink); }
+.imetrics { margin: var(--s-4) var(--s-5) 0; border-top: 1px solid var(--gray-4); }
 .im { display: grid; grid-template-columns: 96px 1fr 28px; gap: var(--s-3); align-items: center; padding: var(--s-3) 0; border-bottom: 1px solid var(--line-2); }
 .im .k { font-weight: 600; font-size: 14px; }
 .im .v { font-size: 14px; }
@@ -143,11 +145,11 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .vs { align-self: center; justify-self: center; font-weight: 800; font-size: 13px; letter-spacing: .08em; color: var(--ink-2); }
 
 /* ===== 리포트 카드: 그라데이션 없이 인쇄물처럼 ===== */
-.rc { width: 100%; max-width: 340px; border: 1px solid var(--ink); border-radius: var(--r-3); background: var(--surface); overflow: hidden; }
+.rc { width: 100%; max-width: 340px; border: 1px solid var(--gray-4); border-radius: var(--r-3); background: var(--surface); overflow: hidden; }
 .rc-top { background: var(--purple); color: #fff; padding: var(--s-3) var(--s-4); display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
 .rc-body { padding: var(--s-5) var(--s-4); display: flex; flex-direction: column; gap: var(--s-4); }
 .rc-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
-.rc-fit { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); padding: var(--s-4) 0; }
+.rc-fit { border-top: 1px solid var(--gray-4); border-bottom: 1px solid var(--gray-4); padding: var(--s-4) 0; }
 .rc-fit b { font-size: 24px; }
 .rc-foot { padding: var(--s-3) var(--s-4); border-top: 1px solid var(--line-2); font-size: 12px; color: var(--ink-2); background: var(--purple-wash); }
 .rc-back .rc-body { gap: var(--s-3); }
@@ -192,6 +194,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
       <div class="sw"><span class="chipc" style="border-radius:4px"></span><div><b>4px</b> 버튼, 입력창, 빠른 응답 칩</div></div>
       <div class="sw"><span class="chipc" style="border-radius:6px"></span><div><b>6px</b> 카드, 말풍선 (가장 큰 값)</div></div>
       <div class="sw"><span class="chipc" style="background:var(--canvas)"></span><div><b>16px</b> 요소 안 여백, <b>24px</b> 카드 사이, <b>40px</b> 구역 사이<br><span class="muted">그림자는 쓰지 않고 1px 선으로 구분</span></div></div>
+      <div class="sw"><span style="display:flex;gap:4px;flex:none"><span class="chipc" style="width:24px;background:#fff;border-color:var(--line)"></span><span class="chipc" style="width:24px;background:#fff;border-color:var(--gray-2)"></span><span class="chipc" style="width:24px;background:#fff;border-color:var(--gray-3)"></span><span class="chipc" style="width:24px;background:#fff;border-color:var(--gray-4)"></span></span><div><b>테두리 회색 4단계</b> 기본, 호버, 입력창, 가장 강한 선 순서<br><span class="muted">중요할수록 진한 회색으로 강조하고 검정 테두리는 쓰지 않음</span></div></div>
       <div class="sw"><span class="chipc" style="background:#fff;font-weight:700;display:flex;align-items:center;justify-content:center">Aa</span><div><b>Pretendard</b> 본문 15px, 줄 간격 1.65, 숫자는 등폭</div></div>
     </div>
   </div>
@@ -368,6 +371,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <tr><td>지표 칸</td><td>카드 칸을 격자로 나열</td><td>표 행 (라벨, 값, 배지, 출처 한 줄)</td><td>공시 사이트처럼 숫자 비교가 쉬움. 요소 이름 "지표 칸"은 그대로</td></tr>
         <tr><td>노랑</td><td>판단 배지에만, 문구는 "판단"</td><td>AI 판단 배지에만, 문구를 "AI 판단"으로</td><td>동주 결정. AI가 한 판단이라는 것이 글자로 바로 보이게. 도구 호출 배지는 먹색 테두리로 구분</td></tr>
         <tr><td>카드 뒤집기 버튼</td><td>"뒷면 보기"</td><td>"근거 보기"</td><td>동주 결정. 뒷면이라는 말은 눌러야 할 이유가 안 보이고, 근거라고 써야 사람들이 누름. 앞면으로 돌아오는 버튼 문구는 앱에 넣을 때 정함</td></tr>
+        <tr><td>테두리 색</td><td>연한 선과 그림자로 구분</td><td>연한 회색 4단계, 중요할수록 진한 회색, 검정 금지</td><td>동주 결정. 강조해도 검정 선은 무거워 보임. 연한 회색 선은 그대로 유지</td></tr>
         <tr><td>유지한 것</td><td colspan="3">요소 이름표 17개, 화면 6개 구성, 문구, 주 버튼 화면당 1개, 판단 로그 패널 위치(PC 오른쪽), 하단 면책 문구, 긴 문장은 (i) 안내로, 진보라 #6B4BC8 주색, 맞대결 진행 "4 / 7"</td></tr>
       </tbody>
     </table>
