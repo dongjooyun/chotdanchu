@@ -24,6 +24,7 @@
   /* 테두리는 검정 금지. 연한 회색에서 진한 회색 순으로 강조한다: 기본 선 --line, 호버 --gray-2, 입력창 --gray-3, 가장 강한 선 --gray-4 */
   --gray-2: #b4b4bc; --gray-3: #8a8a93; --gray-4: #55555e;
   --canvas: #f5f5f7;
+  --fill: #ececf0;  /* 눌러 고르는 칩의 바탕 (무채색 면) */
   --surface: #ffffff;
 
   /* 모서리: 알약과 큰 곡선을 쓰지 않는다 */
@@ -74,8 +75,10 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .btn-link::before { content: ""; position: absolute; left: 0; right: 0; bottom: 3px; height: 28%; background: var(--lilac); border-radius: 2px; z-index: -1; }
 .btn-link:hover { background: none; }
 .btn-link:hover::before { height: 48%; }
-.chip-btn { font: inherit; font-size: 14px; min-height: 40px; padding: var(--s-2) var(--s-4); line-height: 1.4; text-align: left; border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); cursor: pointer; }
+.chip-btn { font: inherit; font-size: 14px; min-height: 40px; padding: var(--s-2) var(--s-4); line-height: 1.4; text-align: left; border: 1px solid var(--line); border-radius: var(--r-2); background: var(--fill); cursor: pointer; }
 .chip-btn:hover { border-color: var(--gray-3); }
+.chip-main { background: var(--lilac); border-color: var(--purple); color: var(--purple-ink); font-weight: 600; }
+.chip-main:hover { border-color: var(--purple-ink); }
 .chip-btn[aria-pressed="true"] { background: var(--lilac); border-color: var(--purple); color: var(--purple-ink); font-weight: 600; }
 .tag { display: inline-block; font-size: 12px; line-height: 1; padding: 5px var(--s-2); border: 1px solid var(--line); border-radius: var(--r-1); background: var(--surface); color: var(--ink-2); white-space: nowrap; }
 .tag-ai { background: var(--yellow); border-color: var(--yellow); color: var(--on-yellow); font-weight: 700; }
@@ -186,9 +189,9 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .vs { align-self: center; justify-self: center; font-weight: 800; font-size: 13px; letter-spacing: .08em; color: var(--ink-2); }
 
 /* ===== 리포트 카드: 그라데이션 없이 인쇄물처럼 ===== */
-.rc { width: 100%; max-width: 340px; border: 1px solid var(--gray-4); border-radius: var(--r-3); background: var(--surface); overflow: hidden; }
+.rc { display: flex; flex-direction: column; width: 100%; max-width: 340px; border: 1px solid var(--gray-4); border-radius: var(--r-3); background: var(--surface); overflow: hidden; }
 .rc-top { background: var(--purple); color: #fff; padding: var(--s-3) var(--s-4); display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
-.rc-body { padding: var(--s-5) var(--s-4); display: flex; flex-direction: column; gap: var(--s-4); }
+.rc-body { flex: 1; padding: var(--s-5) var(--s-4); display: flex; flex-direction: column; gap: var(--s-4); }
 .rc-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
 .rc-fit { border-top: 1px solid var(--gray-4); border-bottom: 1px solid var(--gray-4); padding: var(--s-4) 0; }
 .rc-fit b { font-size: 24px; }
@@ -219,6 +222,38 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .dlg { border: 1px solid var(--gray-4); border-radius: var(--r-3); padding: var(--s-5); width: min(420px, calc(100vw - 32px)); background: var(--surface); }
 .dlg::backdrop { background: rgba(27, 27, 31, .45); }
 .dlg-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s-4); }
+.art { display: flex; align-items: center; justify-content: center; height: 112px; border: 1px solid var(--line); border-radius: var(--r-2); background-color: #f1f1f4; }
+.mono-mark { display: flex; align-items: center; justify-content: center; width: 72px; height: 72px; background: var(--surface); border: 1px solid var(--gray-3); border-radius: var(--r-2); font-weight: 800; font-size: 28px; letter-spacing: -0.04em; color: var(--ink); }
+.art-p0 { background-image: repeating-linear-gradient(45deg, transparent 0 8px, #e2e2e8 8px 9px); }
+.art-p1 { background-image: radial-gradient(#d0d0d8 1.2px, transparent 1.5px); background-size: 12px 12px; }
+.art-p2 { background-image: linear-gradient(#e2e2e8 1px, transparent 1px), linear-gradient(90deg, #e2e2e8 1px, transparent 1px); background-size: 14px 14px; }
+.art-p3 { background-image: repeating-linear-gradient(0deg, transparent 0 7px, #e2e2e8 7px 8px); }
+.rc-q { margin: auto calc(-1 * var(--s-4)) calc(-1 * var(--s-5)); padding: var(--s-4); border-top: 1px solid var(--line); background: var(--canvas); }
+.rc-q h4 { margin: 0 0 var(--s-2); font-size: 13px; font-weight: 700; }
+.rc-q p { margin: 0; font-size: 15px; line-height: 1.6; }
+.tag-lilac { background: var(--lilac); border-color: var(--lilac); color: var(--purple-ink); font-weight: 600; }
+.view-toggle { display: inline-flex; border: 1px solid var(--gray-3); border-radius: var(--r-2); overflow: hidden; }
+.view-toggle button { font: inherit; font-size: 12px; font-weight: 600; padding: 6px 12px; background: var(--surface); border: 0; color: var(--ink-2); cursor: pointer; }
+.view-toggle button + button { border-left: 1px solid var(--gray-3); }
+.view-toggle button[aria-pressed="true"] { background: var(--lilac); color: var(--purple-ink); }
+.coll-h .tools { display: flex; align-items: center; gap: var(--s-4); }
+.coll[data-view="list"] .coll-gallery { display: none; }
+.coll[data-view="gallery"] .coll-list { display: none; }
+.coll-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: var(--s-4); padding: var(--s-5); }
+.gc { display: flex; flex-direction: column; padding: 0; overflow: hidden; text-align: left; font: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-3); cursor: pointer; }
+.gc:hover { border-color: var(--gray-4); }
+.gc:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.gc-top { display: flex; justify-content: space-between; padding: 6px 10px; background: var(--purple); color: #fff; font-size: 11px; font-weight: 600; }
+.gc-body { display: flex; flex-direction: column; gap: var(--s-2); padding: var(--s-3); }
+.gc .art { height: 84px; }
+.gc .mono-mark { width: 52px; height: 52px; font-size: 20px; }
+.gc-name { font-size: 14px; font-weight: 700; }
+.gc-role { font-size: 12px; color: var(--ink-2); }
+.gc-body .tag { align-self: flex-start; }
+.gc-cta { align-self: flex-start; padding: 0 3px; font-size: 12px; font-weight: 600; color: var(--purple-ink); background-image: linear-gradient(var(--lilac), var(--lilac)); background-repeat: no-repeat; background-size: 100% 30%; background-position: 0 88%; }
+.gc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-2); min-height: 236px; border: 1px dashed var(--gray-2); border-radius: var(--r-3); color: var(--ink-2); font-size: 12px; }
+.coll-sub { display: flex; align-items: center; gap: var(--s-2); }
+.coll-r .go { justify-self: end; }
 .coll-no { font-size: 12px; color: var(--ink-2); }
 
 @media (max-width: 820px) {
@@ -270,7 +305,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
     <div class="box">
       <span class="label">버튼 (주 / 보조 / 링크)</span>
       <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
-        <button class="btn btn-primary" type="button">기업 카드로 저장하기</button>
+        <button class="btn btn-primary" type="button">기업 카드 저장하기</button>
         <button class="btn" type="button">근거 보기</button>
         <button class="btn btn-link" type="button">건너뛰고 기본 기준으로</button>
       </div>
@@ -367,9 +402,9 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
             <div class="im" data-el="지표 칸"><span class="k">고용 흐름</span><span class="v">12개월 인원 증감 -2.5% (추정)</span><span class="g g-b">B</span><span class="src">국민연금 가입 사업장 내역 (2026-09분) · 2026-11-20</span></div>
             <div class="im" data-el="확인 불가 칸"><span class="k">기술 투자</span><span class="v muted">확인 불가 <span class="info" aria-label="이유 안내">i</span></span><span class="g g-n">?</span><span class="src">이유: 가져올 공식 출처가 없음</span></div>
           </div>
-          <div class="cc-foot"><button class="btn btn-primary" type="button" data-el="기업 카드로 저장하기">기업 카드로 저장하기</button></div>
+          <div class="cc-foot"><button class="btn btn-primary" type="button" data-el="기업 카드 저장하기">기업 카드 저장하기</button></div>
         </div>
-        <div class="quick"><button class="chip-btn" type="button">카드 7판으로 내 성향 맞춤 판정 받기</button><button class="chip-btn" type="button">건너뛰고 기본 기준으로</button></div>
+        <div class="quick"><button class="chip-btn chip-main" type="button">기업 맞대결로 내 성향 맞춤 판정 받기</button><button class="chip-btn" type="button">건너뛰고 기본 기준으로</button></div>
       </main>
       <div class="inputbar"><input class="field" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력"><button class="btn btn-ink" type="button">보내기</button></div>
       </div>
@@ -411,6 +446,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
           <div class="rc rc-face rc-front">
             <div class="rc-top"><span>최종 판단 리포트</span><span>No. 00258801</span></div>
             <div class="rc-body">
+              <div class="art art-p0" aria-hidden="true"><span class="mono-mark">카카</span></div>
               <div><div class="rc-name">(주)카카오</div><p class="small muted">마케팅 직무 · 2026-11-21 기준</p></div>
               <div class="rc-fit" data-el="판정 라벨"><span class="small muted">판정 결과</span><br><b>판정 준비 중</b></div>
               <dl class="rc-facts"><div><dt>내 성향</dt><dd>자율·개척 지향</dd></div><div><dt>3년 뒤 역량 갭</dt><dd>이어짐 4 · 일부 2 · 공백 1</dd></div></dl>
@@ -423,7 +459,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
               <div class="im" style="grid-template-columns:1fr 28px;padding-top:0"><span class="k">재무 체력</span><span class="g g-a">A</span></div>
               <div class="im" style="grid-template-columns:1fr 28px"><span class="k">성장성</span><span class="g g-b">B</span></div>
               <div class="im" style="grid-template-columns:1fr 28px;border-bottom:0"><span class="k">기술 투자</span><span class="g g-n">?</span></div>
-              <p class="small muted">면접에서 물어볼 것: 기술 투자 정보를 확인하지 못했어요. 어떻게 알 수 있나요?</p>
+              <section class="rc-q"><h4>면접에서 물어볼 것</h4><p>기술 투자 정보를 확인하지 못했어요. 입사하면 이 정보를 어떻게 알 수 있나요?</p></section>
             </div>
             <div class="rc-foot">수치 기반 등급은 공개 데이터로 계산했어요</div>
           </div>
@@ -433,11 +469,24 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
       <button class="btn" type="button" data-flip>근거 보기</button>
     </div>
   </div>
-  <div style="margin-top:24px" class="coll" data-el="내 카드 모음">
-    <div class="coll-h"><span><b>기업 카드 컬렉션</b> <span class="small muted" style="font-weight:400">총 3장</span></span><span class="muted small">최근 순</span></div>
-    <div class="coll-r"><span class="coll-no">No. 00258801</span><span><button class="btn btn-link coll-title" type="button" data-co="(주)카카오" data-no="No. 00258801" data-role="마케팅 직무 · 2026-11-21 기준">(주)카카오</button><br><span class="small muted">마케팅 직무 · 2026-11-21</span></span><span class="tag" data-el="판정 라벨">판정 준비 중</span></div>
-    <div class="coll-r"><span class="coll-no">No. 01137727</span><span><button class="btn btn-link coll-title" type="button" data-co="(주)무신사" data-no="No. 01137727" data-role="서비스기획 직무 · 2026-11-21 기준">(주)무신사</button><br><span class="small muted">서비스기획 직무 · 2026-11-21</span></span><span class="tag">판정 준비 중</span></div>
-    <div class="coll-r"><span class="coll-no">No. 01153956</span><span><button class="btn btn-link coll-title" type="button" data-co="(주)컬리" data-no="No. 01153956" data-role="운영 직무 · 2026-11-21 기준">(주)컬리</button><br><span class="small muted">운영 직무 · 2026-11-21</span></span><span class="tag">판정 준비 중</span></div>
+  <div style="margin-top:24px" class="coll" data-el="내 카드 모음" data-view="list">
+    <div class="coll-h"><span><b>기업 카드 컬렉션</b> <span class="small muted" style="font-weight:400">총 3장</span></span><span class="tools"><span class="muted small">최근 순</span><span class="view-toggle" role="group" aria-label="보기 방식"><button type="button" data-view="list" aria-pressed="true">목록으로 보기</button><button type="button" data-view="gallery" aria-pressed="false">카드로 보기</button></span></span></div>
+    <div class="coll-list">
+      <div class="coll-r"><span class="coll-no">No. 00258801</span><span><button class="btn btn-link coll-title" type="button" data-co="(주)카카오" data-no="No. 00258801" data-role="마케팅 직무 · 2026-11-21 기준" data-mono="카카" data-p="0" data-state="custom">(주)카카오</button><br><span class="coll-sub"><span class="tag tag-lilac">맞춤 판정</span><span class="small muted">마케팅 직무 · 2026-11-21</span></span></span><span class="tag" data-el="판정 라벨">판정 준비 중</span></div>
+      <div class="coll-r"><span class="coll-no">No. 01137727</span><span><button class="btn btn-link coll-title" type="button" data-co="(주)무신사" data-no="No. 01137727" data-role="서비스기획 직무 · 2026-11-21 기준" data-mono="무신" data-p="1" data-state="base">(주)무신사</button><br><span class="coll-sub"><span class="tag">기본 기준</span><span class="small muted">서비스기획 직무 · 2026-11-21</span></span></span><button class="btn btn-link small go" type="button">맞춤 판정 받기</button></div>
+      <div class="coll-r"><span class="coll-no">No. 01153956</span><span><button class="btn btn-link coll-title" type="button" data-co="(주)컬리" data-no="No. 01153956" data-role="운영 직무 · 2026-11-21 기준" data-mono="컬리" data-p="2" data-state="base">(주)컬리</button><br><span class="coll-sub"><span class="tag">기본 기준</span><span class="small muted">운영 직무 · 2026-11-21</span></span></span><button class="btn btn-link small go" type="button">맞춤 판정 받기</button></div>
+    </div>
+    <div class="coll-gallery">
+      <button class="gc" type="button" data-co="(주)카카오" data-no="No. 00258801" data-role="마케팅 직무 · 2026-11-21 기준" data-mono="카카" data-p="0" data-state="custom" aria-label="(주)카카오 카드 열기"><span class="gc-top"><span>최종 판단 리포트</span><span>No. 00258801</span></span><span class="gc-body"><span class="art art-p0" aria-hidden="true"><span class="mono-mark">카카</span></span><span class="gc-name">(주)카카오</span><span class="gc-role">마케팅 직무 · 2026-11-21</span><span class="tag tag-lilac">맞춤 판정</span></span></button>
+      <button class="gc" type="button" data-co="(주)무신사" data-no="No. 01137727" data-role="서비스기획 직무 · 2026-11-21 기준" data-mono="무신" data-p="1" data-state="base" aria-label="(주)무신사 카드 열기"><span class="gc-top"><span>최종 판단 리포트</span><span>No. 01137727</span></span><span class="gc-body"><span class="art art-p1" aria-hidden="true"><span class="mono-mark">무신</span></span><span class="gc-name">(주)무신사</span><span class="gc-role">서비스기획 직무 · 2026-11-21</span><span class="gc-cta">맞춤 판정 받기</span></span></button>
+      <button class="gc" type="button" data-co="(주)컬리" data-no="No. 01153956" data-role="운영 직무 · 2026-11-21 기준" data-mono="컬리" data-p="2" data-state="base" aria-label="(주)컬리 카드 열기"><span class="gc-top"><span>최종 판단 리포트</span><span>No. 01153956</span></span><span class="gc-body"><span class="art art-p2" aria-hidden="true"><span class="mono-mark">컬리</span></span><span class="gc-name">(주)컬리</span><span class="gc-role">운영 직무 · 2026-11-21</span><span class="gc-cta">맞춤 판정 받기</span></span></button>
+      <div class="gc-empty" aria-hidden="true"><b>No. ????????</b><span>아직 비어 있어요</span></div>
+      <div class="gc-empty" aria-hidden="true"><b>No. ????????</b><span>아직 비어 있어요</span></div>
+      <div class="gc-empty" aria-hidden="true"><b>No. ????????</b><span>아직 비어 있어요</span></div>
+      <div class="gc-empty" aria-hidden="true"><b>No. ????????</b><span>아직 비어 있어요</span></div>
+      <div class="gc-empty" aria-hidden="true"><b>No. ????????</b><span>아직 비어 있어요</span></div>
+      <div class="gc-empty" aria-hidden="true"><b>No. ????????</b><span>아직 비어 있어요</span></div>
+    </div>
   </div>
   <dialog class="dlg" id="card-dialog" aria-label="기업 카드 보기">
     <div class="dlg-bar"><b>기업 카드</b><button class="btn btn-link small dlg-close" type="button">닫기</button></div>
@@ -472,9 +521,15 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <tr><td>카드 뒤집기 효과</td><td>뒤집을 때 광택이 훑고 지나감</td><td>그대로 유지. 근거 보기를 누르면 카드가 돌고 광택이 한 번 지나감</td><td>v3와 앱의 효과를 유지. 동작을 줄이도록 설정한 사람에게는 효과를 끔</td></tr>
         <tr><td>내 카드 모음 이름</td><td>"내 카드 3장"</td><td>"기업 카드 컬렉션" 옆에 "총 3장"을 작게. 카드 이름을 누르면 그 카드가 창으로 열리고 거기서도 근거 보기로 뒤집음</td><td>동주 결정. 요소 이름표는 "내 카드 모음" 그대로</td></tr>
         <tr><td>회사명 표기</td><td>주식회사 OO</td><td>(주)OO, 공시에 나온 순서(앞 또는 뒤)를 따름</td><td>동주 결정. 공식 공시 표기를 따르고 짧게</td></tr>
+        <tr><td>리포트 카드 하단 띠, 질문 칸</td><td>하단 띠가 본문 바로 아래, 질문이 한 줄 글 "면접에서 물어볼 것: …"</td><td>하단 띠는 카드 맨 아래에 붙음. "면접에서 물어볼 것"은 제목과 질문을 나눈 별도 칸이고 질문 글자가 15px로 커짐</td><td>동주 결정. 읽기 쉽게</td></tr>
+        <tr><td>기업 로고 자리</td><td>없음</td><td>카드 가운데에 이니셜 로고(두 글자와 회사마다 다른 무늬)</td><td>실제 로고는 상표라 사용 허가와 출처 표기를 확인하기 전에는 쓰지 않음. 같은 자리에 공식 로고를 넣을 수 있게 비워 둠</td></tr>
+        <tr><td>기업 카드 컬렉션 보기 방식</td><td>목록 하나</td><td>"목록으로 보기"와 "카드로 보기" 두 가지. 카드로 보기는 갤러리 격자이고 빈 칸을 보여 줘 모으는 재미를 줌</td><td>동주 결정. 화면 폭에 따라 열 수가 바뀜</td></tr>
+        <tr><td>개인화 전과 후 구분</td><td>구분 없음</td><td>"맞춤 판정"(연보라 태그)과 "기본 기준"(회색 태그)로 구분하고, 기본 기준 카드에는 "맞춤 판정 받기"를 붙임</td><td>저장을 막지 않고 카드 안에서 맞춤 판정으로 이어지게 함</td></tr>
+        <tr><td>후속 조치 칩</td><td>흰 바탕</td><td>회색 바탕, 권하는 행동(기업 맞대결)은 연보라 바탕</td><td>동주 결정. 존재감을 주고 가장 권하는 행동을 알림</td></tr>
+        <tr><td>버튼 문구</td><td>"기업 카드로 저장하기", "카드 7판으로 …"</td><td>"기업 카드 저장하기", "기업 맞대결로 …"</td><td>동주 결정</td></tr>
         <tr><td>진행 기록 (말풍선 안)</td><td>항상 펼쳐져 있음</td><td>기본은 접고 "어떻게 도출했나요?" 토글로 보게 함</td><td>동주 결정. 도출 근거는 사용자보다 개발자와 심사위원이 보는 정보. 눌러 보게 유도하되 오른쪽 판단 로그 패널은 전체 기록으로 유지</td></tr>
         <tr><td>판단 로그 패널</td><td>오른쪽에 항상 펼쳐져 있음</td><td>기본은 숨김. "에이전트 사고 과정 보기"를 누르면 오른쪽에 단계 흐름(번호와 연결선)으로 열림</td><td>동주 결정. 평소에는 대화에 집중하게 하고 궁금한 사람만 AI가 어떻게 판단했는지 보게 함. 시연과 심사에서는 열어 둔 상태로 보여 주면 AI 활용의 증거가 됨</td></tr>
-        <tr><td>맞대결 시작 버튼</td><td>"내 기준 맞추기"</td><td>"카드 7판으로 내 성향 맞춤 판정 받기"</td><td>동주 결정. 무엇을 하는지(카드 고르기), 얼마나 걸리는지(7판), 무엇을 얻는지(맞춤 판정)가 문구에서 바로 보이게. "추천" 대신 "판정"을 쓴 것은 첫단추가 회사를 골라 주는 서비스가 아니라 입력한 회사가 나와 맞는지 판정하는 서비스라서</td></tr>
+        <tr><td>맞대결 시작 버튼</td><td>"내 기준 맞추기"</td><td>"기업 맞대결로 내 성향 맞춤 판정 받기"</td><td>동주 결정. 무엇을 하는지(기업 맞대결)와 무엇을 얻는지(맞춤 판정)가 문구에서 바로 보이게. 7판 1분이라는 안내는 위 말풍선 문장이 맡음. "추천" 대신 "판정"을 쓴 것은 첫단추가 회사를 골라 주는 서비스가 아니라 입력한 회사가 나와 맞는지 판정하는 서비스라서</td></tr>
         <tr><td>카드 번호 (No.)</td><td>수집 순서 (No. 003)</td><td>실데이터의 OpenDART 고유번호 (앞의 0을 뺀 숫자, 예: No. 00258801)</td><td>동주 요청, 제안 단계. 같은 회사는 누구에게나 같은 번호이고 도감 번호처럼 보이며, 카카오 동명 두 법인도 번호가 달라 구별됨. 전체 8자리는 카드 뒷면에 "DART 고유번호 00258801"로 적어 확인 가능</td></tr>
         <tr><td>유지한 것</td><td colspan="3">요소 이름표 17개, 화면 6개 구성, 문구, 주 버튼 화면당 1개, 판단 로그 패널(PC 오른쪽), 하단 면책 문구, 긴 문장은 (i) 안내로, 진보라 #6B4BC8 주색, 맞대결 진행 "4 / 7"</td></tr>
       </tbody>
@@ -520,18 +575,32 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
   var sample = document.querySelector(".flip-wrap");
   bindFlip(sample);
   var dlg = document.getElementById("card-dialog");
-  document.querySelectorAll(".coll-title").forEach(function (t) {
-    t.addEventListener("click", function () {
-      var c = sample.cloneNode(true);
-      c.querySelector(".flip").classList.remove("is-back", "flipping");
-      c.querySelectorAll(".rc-top span:last-child").forEach(function (x) { x.textContent = t.dataset.no; });
-      c.querySelector(".rc-name").textContent = t.dataset.co;
-      c.querySelector(".rc-front .small.muted").textContent = t.dataset.role;
-      var body = dlg.querySelector(".dlg-body");
-      body.innerHTML = "";
-      body.appendChild(c);
-      bindFlip(c);
-      dlg.showModal();
+  function openCard(t) {
+    var c = sample.cloneNode(true);
+    c.querySelector(".flip").classList.remove("is-back", "flipping");
+    c.querySelector("[data-flip]").textContent = "근거 보기";
+    c.querySelector(".rc-front").setAttribute("aria-hidden", "false");
+    c.querySelector(".rc-back").setAttribute("aria-hidden", "true");
+    c.querySelectorAll(".rc-top span:last-child").forEach(function (x) { x.textContent = t.dataset.no; });
+    c.querySelector(".rc-name").textContent = t.dataset.co;
+    c.querySelector(".rc-front .small.muted").textContent = t.dataset.role;
+    c.querySelector(".mono-mark").textContent = t.dataset.mono;
+    c.querySelector(".art").className = "art art-p" + t.dataset.p;
+    if (t.dataset.state === "base") { c.querySelector(".rc-facts dd").textContent = "기본 기준 (건너뜀)"; }
+    var body = dlg.querySelector(".dlg-body");
+    body.innerHTML = "";
+    body.appendChild(c);
+    bindFlip(c);
+    dlg.showModal();
+  }
+  document.querySelectorAll(".coll-title, .gc").forEach(function (t) {
+    t.addEventListener("click", function () { openCard(t); });
+  });
+  var coll = document.querySelector(".coll");
+  coll.querySelectorAll(".view-toggle button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      coll.setAttribute("data-view", b.dataset.view);
+      coll.querySelectorAll(".view-toggle button").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
     });
   });
   dlg.querySelector(".dlg-close").addEventListener("click", function () { dlg.close(); });
