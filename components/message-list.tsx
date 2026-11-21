@@ -60,9 +60,7 @@ function Widget({ widget, active, h }: { widget: MessageWidget; active: boolean;
     case "candidates":
       return <CandidateChips candidates={widget.candidates} onPick={h.onPickCompany} disabled={!active} />;
     case "company":
-      return (
-<CompanyCard company={widget.company} graded={widget.graded} />
-      );
+      return <CompanyCard company={widget.company} graded={widget.graded} summary={widget.summary} />;
     case "matchup":
       return active ? (
         <MatchupGame onDone={h.onMatchupDone} onSkip={h.onMatchupSkip} />

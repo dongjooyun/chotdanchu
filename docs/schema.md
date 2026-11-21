@@ -41,10 +41,26 @@
 | `nature` | `startup` \| `general` | 기업 성격 | `startup` |
 | `natureBasis` | string | 유형 판정 근거 한 줄 | `설립 4년, 2025년 시리즈 A 공식 발표` |
 | `certifications` | string[] | 공공 인증(보조 신호): 이노비즈, 메인비즈, 워크넷 강소기업 | `["이노비즈"]` |
+| `businessOverview` | BusinessOverview (선택) | 사업보고서 "사업의 개요" 문단 하나와 원문 링크. 목업 전용 샘플이고, 사업보고서가 없는 기업은 이 필드가 없다 ("공시 없음", 아래 3-1) | |
 | `indicators` | IndicatorValue[] | 아래 9개 지표 (정보 투명도 제외) | |
 | `aliases` | string[] (선택) | 사람들이 부르는 다른 이름. 검색에 쓴다 | `["당근"]` |
 | `externalLinks` | {name, url}[] | "원문 보기" 링크 (theVC, 혁신의숲 등). 데이터는 가져오지 않는다 | |
 | `isMock` | boolean | 목업이면 true | `true` |
+
+### 3-1. 하는 일 세 줄 요약 (`BusinessSummary`, CDC-26)
+
+기업 카드에 보이는 요약의 상태 세 가지. 계산하는 곳은 `lib/business-summary.ts`이고 데이터 파일에는 저장하지 않는다 (실데이터의 사전 계산 결과 파일은 `data/real/business-summaries.json`).
+
+| 상태 | 뜻 | 화면 |
+|---|---|---|
+| `ok` | 요약 3줄과 원문 링크가 있다. `method`는 `rule`(코드가 문장을 뽑음) 또는 `llm`(작은 모델이 요약하고 코드가 검증함) | 3줄 + 원문 링크 (목업은 "가상 링크") |
+| `no_report` | 사업보고서가 없는 기업. 확인한 결과다 | "공시 없음". 요약은 보여주지 않는다 |
+| `unavailable` | 아직 계산하지 않았거나(`not_computed`) 조회에 실패했다(`fetch_failed`). 결과를 모르는 상태다 | "확인 불가"와 이유 |
+
+- 요약은 수치 없이 문장으로만 쓴다. 숫자가 든 문장은 코드가 걸러 낸다 (CLAUDE.md 3번)
+- "공시 없음"과 "확인 불가"는 다르게 보인다. 앞은 "사업보고서를 확인했더니 없음", 뒤는 "아직 모름"이다
+- 목업: `businessOverview` 필드가 있으면 `ok`, 없으면 `no_report`
+- 실데이터: 사전 계산 파일에 기업이 있으면 그 상태를 그대로 쓰고, 파일에 없으면 `unavailable`(`not_computed`)
 
 ## 4. 지표 값 (`IndicatorValue`)
 
@@ -143,6 +159,7 @@
 - 비공시 기업은 재무·성장·수익·근속을 `unavailable`(`not_disclosed`)로 둔다
 - 투자 단계는 스타트업만 값이 있을 수 있고, 목업에서는 `manual` 대신 `ok`로 둔다 (가상 값)
 - 기업명, 대표자는 전부 가상이다. 실존 기업과 겹치지 않게 한다
+- 상장 5곳(`mock-026`~`mock-030`)에는 가상 "사업의 개요" 문단(`businessOverview`)이 있다. 나머지 25곳은 사업보고서가 없는 경우라 이 필드가 없고, 카드에 "공시 없음"이 보인다 (CDC-26)
 
 ## 8. 3년차 공고 (`data/real/postings.json`, `data/mock/postings.json`)
 

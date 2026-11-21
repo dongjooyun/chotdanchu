@@ -3,6 +3,8 @@
 // 실데이터는 scripts/build-real-companies.mts가 공공 출처에서 미리 계산해 둔 파일이다. 실행 중에는 외부 API를 부르지 않는다.
 import companiesJson from "@/data/mock/companies.json";
 import realCompaniesJson from "@/data/real/companies.json";
+import realBusinessSummariesJson from "@/data/real/business-summaries.json";
+import type { SummaryStore } from "@/lib/business-summary";
 import competenciesJson from "@/data/competencies/competencies.json";
 import type { AppMode, CandidateSummary } from "@/lib/chat";
 import type { Company, Role } from "@/lib/types";
@@ -23,6 +25,8 @@ interface CompetencyDictionary {
 // 형식 검증은 데이터를 만들 때 tsc로 했다 (PR #8).
 export const mockCompanies = companiesJson as unknown as Company[];
 export const realCompanies = realCompaniesJson as unknown as Company[];
+/** 사전 계산한 "하는 일 세 줄 요약" (scripts/build-business-summaries.mts). 키는 OpenDART 고유번호. 아직 안 만든 기업은 없다 */
+export const realBusinessSummaries = realBusinessSummariesJson as unknown as SummaryStore;
 export const competencyDictionary = competenciesJson as unknown as CompetencyDictionary;
 
 /** 모드에 맞는 기업 목록. 목업 모드 30곳, 실데이터 모드는 사전 계산한 시연 기업 */
