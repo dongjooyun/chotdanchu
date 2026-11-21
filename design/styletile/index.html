@@ -12,10 +12,7 @@
   /* 주색: 보라는 아래 "보라를 쓰는 곳"에만 쓴다 */
   --purple: #6b4bc8;
   --purple-ink: #4f349e;      /* 눌림, 보라 글자 */
-  --purple-tint: #eee9f9;     /* 선택됨, 강조 면 (연보라) */
-  --purple-wash: #f8f6fc;     /* 연보라 배경: 리포트 카드 뒷면, 강조 영역에만 */
-  --marker: #e1d8f6;         /* 링크형 버튼의 형광펜 칠 */
-  --marker-hover: #d2c5ef;
+  --lilac: #e1d8f6;          /* 연보라는 이 한 색만 쓴다: 선택된 칩, 링크형 버튼의 형광펜, B 등급 배지, 리포트 카드 하단 띠 */
   /* 노랑: AI가 판단하거나 도구를 부른 표시에만 */
   --yellow: #ffd54a;
   --on-yellow: #3b2f00;
@@ -74,19 +71,19 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .btn-ink { background: var(--ink); border-color: transparent; color: #fff; }
 .btn-ink:hover { background: #33333a; }
 .btn-link { position: relative; isolation: isolate; min-width: 0; border: 0; border-radius: 0; height: auto; padding: 0 4px; background: none; color: var(--purple-ink); font-weight: 600; text-decoration: none; }
-.btn-link::before { content: ""; position: absolute; left: 0; right: 0; bottom: 3px; height: 28%; background: var(--marker); border-radius: 2px; z-index: -1; }
+.btn-link::before { content: ""; position: absolute; left: 0; right: 0; bottom: 3px; height: 28%; background: var(--lilac); border-radius: 2px; z-index: -1; }
 .btn-link:hover { background: none; }
-.btn-link:hover::before { background: var(--marker-hover); }
+.btn-link:hover::before { height: 48%; }
 .chip-btn { font: inherit; font-size: 14px; min-height: 40px; padding: var(--s-2) var(--s-4); line-height: 1.4; text-align: left; border: 1px solid var(--line); border-radius: var(--r-2); background: var(--surface); cursor: pointer; }
 .chip-btn:hover { border-color: var(--gray-3); }
-.chip-btn[aria-pressed="true"] { background: var(--purple-tint); border-color: var(--purple); color: var(--purple-ink); font-weight: 600; }
+.chip-btn[aria-pressed="true"] { background: var(--lilac); border-color: var(--purple); color: var(--purple-ink); font-weight: 600; }
 .tag { display: inline-block; font-size: 12px; line-height: 1; padding: 5px var(--s-2); border: 1px solid var(--line); border-radius: var(--r-1); background: var(--surface); color: var(--ink-2); white-space: nowrap; }
 .tag-ai { background: var(--yellow); border-color: var(--yellow); color: var(--on-yellow); font-weight: 700; }
 .tag-tool { border-color: var(--ink-2); color: var(--ink); }
 /* 등급 배지: 보라 한 색의 채움 정도로 구분 (A 꽉 참, B 연함, C 테두리만) */
 .g { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; font-weight: 700; font-size: 14px; border-radius: var(--r-2); flex: none; }
 .g-a { background: var(--purple); color: #fff; }
-.g-b { background: #d9cff3; color: var(--purple-ink); }
+.g-b { background: var(--lilac); color: var(--purple-ink); }
 .g-c { background: var(--surface); color: var(--purple-ink); border: 1px solid var(--purple); }
 .g-n { background: var(--surface); color: var(--ink-2); border: 1px dashed var(--ink-2); font-weight: 600; font-size: 12px; }
 .g-0 { background: var(--canvas); color: var(--ink-2); border: 1px solid var(--line); font-weight: 600; }
@@ -130,8 +127,8 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .ilog-t summary::-webkit-details-marker { display: none; }
 .ilog-t summary::before { content: ""; width: 6px; height: 6px; border-right: 2px solid var(--purple-ink); border-bottom: 2px solid var(--purple-ink); transform: rotate(-45deg); }
 .ilog-t[open] summary::before { transform: rotate(45deg); }
-.ilog-t summary::after { content: ""; position: absolute; left: 0; right: 0; bottom: 3px; height: 28%; background: var(--marker); border-radius: 2px; z-index: -1; }
-.ilog-t summary:hover::after { background: var(--marker-hover); }
+.ilog-t summary::after { content: ""; position: absolute; left: 0; right: 0; bottom: 3px; height: 28%; background: var(--lilac); border-radius: 2px; z-index: -1; }
+.ilog-t summary:hover::after { height: 48%; }
 .ilog-t .ilog { margin-top: var(--s-3); }
 .ilog { padding-top: var(--s-3); border-top: 1px solid var(--line-2); display: flex; flex-direction: column; gap: var(--s-2); font-size: 13px; }
 .ilog .row { display: flex; gap: var(--s-2); align-items: baseline; }
@@ -176,7 +173,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .rc-name { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
 .rc-fit { border-top: 1px solid var(--gray-4); border-bottom: 1px solid var(--gray-4); padding: var(--s-4) 0; }
 .rc-fit b { font-size: 24px; }
-.rc-foot { padding: var(--s-3) var(--s-4); border-top: 1px solid var(--line-2); font-size: 12px; color: var(--ink-2); background: var(--purple-wash); }
+.rc-foot { padding: var(--s-3) var(--s-4); border-top: 1px solid var(--line-2); font-size: 12px; color: var(--ink-2); background: var(--lilac); }
 .rc-back .rc-body { gap: var(--s-3); }
 
 /* ===== 내 카드 모음 (목록형) ===== */
@@ -212,7 +209,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
     <div class="box">
       <span class="label">색</span>
       <div class="sw"><span class="chipc" style="background:var(--purple)"></span><div><b>보라 #6B4BC8</b><br><span class="muted">주 버튼(화면당 1개), 로고, 등급 배지, 선택된 칩의 테두리, 리포트 카드 윗띠</span></div></div>
-      <div class="sw"><span class="chipc" style="background:var(--purple-tint)"></span><div><b>연보라 #EEE9F9, #F8F6FC</b><br><span class="muted">선택됨 표시, 리포트 카드 하단 띠, 강조 영역 배경에만. 링크형 버튼의 형광펜 칠에도 씀. 화면 전체 배경에는 쓰지 않음</span></div></div>
+      <div class="sw"><span class="chipc" style="background:var(--lilac)"></span><div><b>연보라 #E1D8F6 (이 한 색만)</b><br><span class="muted">선택된 칩, 링크형 버튼의 형광펜, B 등급 배지, 리포트 카드 하단 띠에 같은 한 색만 씀. hover는 색이 아니라 칠 높이로 알림. 화면 전체 배경에는 쓰지 않음</span></div></div>
       <div class="sw"><span class="chipc" style="background:var(--yellow)"></span><div><b>노랑 #FFD54A</b><br><span class="muted">AI가 판단한 곳을 알리는 "AI 판단" 배지에만</span></div></div>
       <div class="sw"><span class="chipc" style="background:var(--ink)"></span><div><b>무채색 (#1B1B1F, #55555E, #D8D8DE, #F5F5F7)</b><br><span class="muted">나머지 전부: 글자, 선, 배경, 말풍선, 보조 버튼, 보내기 버튼</span></div></div>
     </div>
@@ -299,7 +296,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
     <div class="infobar" data-el="고정 정보줄">
       <span><span class="muted">직무</span> <b>마케팅</b> <button class="btn btn-link small" type="button" aria-label="직무 변경하기">변경하기</button></span>
       <span><span class="muted">회사</span> <b>주식회사 카카오</b> <button class="btn btn-link small" type="button" aria-label="회사 변경하기">변경하기</button></span>
-      <button class="btn btn-link small think-toggle" type="button" aria-expanded="false" aria-controls="think-panel">AI 사고 과정 보기 (3단계)</button>
+      <button class="btn btn-link small think-toggle" type="button" aria-expanded="false" aria-controls="think-panel">에이전트 사고 과정 보기 (3단계)</button>
     </div>
     <div class="cols">
       <div class="chat-col">
@@ -415,10 +412,11 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <tr><td>노랑</td><td>판단 배지에만, 문구는 "판단"</td><td>AI 판단 배지에만, 문구를 "AI 판단"으로</td><td>동주 결정. AI가 한 판단이라는 것이 글자로 바로 보이게. 도구 호출 배지는 먹색 테두리로 구분</td></tr>
         <tr><td>카드 뒤집기 버튼</td><td>"뒷면 보기"</td><td>"근거 보기"</td><td>동주 결정. 뒷면이라는 말은 눌러야 할 이유가 안 보이고, 근거라고 써야 사람들이 누름. 앞면으로 돌아오는 버튼 문구는 앱에 넣을 때 정함</td></tr>
         <tr><td>테두리 색</td><td>연한 선과 그림자로 구분</td><td>연한 회색 4단계, 중요할수록 진한 회색, 검정 금지</td><td>동주 결정. 강조해도 검정 선은 무거워 보임. 연한 회색 선은 그대로 유지</td></tr>
+        <tr><td>연보라 색</td><td>연보라 여러 값 (배경, 선택, 강조 면이 서로 다름)</td><td>연보라 한 값(#E1D8F6)만 사용, hover는 칠 높이로 구분</td><td>동주 결정. 같은 색이 여러 농도면 일관성이 떨어져 보임</td></tr>
         <tr><td>링크형 버튼, 고정 정보줄 문구</td><td>밑줄만 있는 글자, "바꾸기"와 "다른 회사"</td><td>연보라 형광펜 칠(살짝 둥근 직사각형, 밑줄 없음), 문구는 둘 다 "변경하기"</td><td>동주 결정. 밑줄만으로는 버튼인지 알기 어려움. 같은 동작은 같은 말로 통일 (직무와 회사는 보조 설명으로 구분)</td></tr>
         <tr><td>맞대결 카드 제목</td><td>"카드 A", "카드 B"</td><td>"기업 A", "기업 B"</td><td>동주 결정. 회사 이름만 가린 실제 기업을 고르는 게임이라는 것이 제목에서 바로 보이게</td></tr>
         <tr><td>진행 기록 (말풍선 안)</td><td>항상 펼쳐져 있음</td><td>기본은 접고 "어떻게 도출했나요?" 토글로 보게 함</td><td>동주 결정. 도출 근거는 사용자보다 개발자와 심사위원이 보는 정보. 눌러 보게 유도하되 오른쪽 판단 로그 패널은 전체 기록으로 유지</td></tr>
-        <tr><td>판단 로그 패널</td><td>오른쪽에 항상 펼쳐져 있음</td><td>기본은 숨김. "AI 사고 과정 보기"를 누르면 오른쪽에 단계 흐름(번호와 연결선)으로 열림</td><td>동주 결정. 평소에는 대화에 집중하게 하고 궁금한 사람만 AI가 어떻게 판단했는지 보게 함. 시연과 심사에서는 열어 둔 상태로 보여 주면 AI 활용의 증거가 됨</td></tr>
+        <tr><td>판단 로그 패널</td><td>오른쪽에 항상 펼쳐져 있음</td><td>기본은 숨김. "에이전트 사고 과정 보기"를 누르면 오른쪽에 단계 흐름(번호와 연결선)으로 열림</td><td>동주 결정. 평소에는 대화에 집중하게 하고 궁금한 사람만 AI가 어떻게 판단했는지 보게 함. 시연과 심사에서는 열어 둔 상태로 보여 주면 AI 활용의 증거가 됨</td></tr>
         <tr><td>맞대결 시작 버튼</td><td>"내 기준 맞추기"</td><td>"카드 7판으로 내 성향 맞춤 판정 받기"</td><td>동주 결정. 무엇을 하는지(카드 고르기), 얼마나 걸리는지(7판), 무엇을 얻는지(맞춤 판정)가 문구에서 바로 보이게. "추천" 대신 "판정"을 쓴 것은 첫단추가 회사를 골라 주는 서비스가 아니라 입력한 회사가 나와 맞는지 판정하는 서비스라서</td></tr>
         <tr><td>카드 번호 (No.)</td><td>수집 순서 (No. 003)</td><td>실데이터의 OpenDART 고유번호 (앞의 0을 뺀 숫자, 예: No. 00258801)</td><td>동주 요청, 제안 단계. 같은 회사는 누구에게나 같은 번호이고 도감 번호처럼 보이며, 카카오 동명 두 법인도 번호가 달라 구별됨. 전체 8자리는 카드 뒷면에 "DART 고유번호 00258801"로 적어 확인 가능</td></tr>
         <tr><td>유지한 것</td><td colspan="3">요소 이름표 17개, 화면 6개 구성, 문구, 주 버튼 화면당 1개, 판단 로그 패널(PC 오른쪽), 하단 면책 문구, 긴 문장은 (i) 안내로, 진보라 #6B4BC8 주색, 맞대결 진행 "4 / 7"</td></tr>
@@ -435,7 +433,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
   function set(open) {
     app.setAttribute("data-think", open ? "open" : "closed");
     tg.setAttribute("aria-expanded", open ? "true" : "false");
-    tg.textContent = open ? "AI 사고 과정 닫기" : "AI 사고 과정 보기 (3단계)";
+    tg.textContent = open ? "에이전트 사고 과정 닫기" : "에이전트 사고 과정 보기 (3단계)";
   }
   tg.addEventListener("click", function () { set(app.getAttribute("data-think") !== "open"); });
   document.querySelector(".think-close").addEventListener("click", function () { set(false); tg.focus(); });
