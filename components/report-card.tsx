@@ -1,14 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { toBlob } from "html-to-image";
+import { QRCodeSVG } from "qrcode.react";
 import { CompanyMark } from "@/components/company-mark";
 import { GradeBadge } from "@/components/grade-badge";
+import { shareHref } from "@/lib/share";
 import { FIT_DESCRIPTIONS, type FitLabel } from "@/lib/fit-label";
 import type { ReportCardData } from "@/lib/report-card";
 import { SAMPLE_REPORT_CARD } from "@/lib/samples";
 import { INDICATOR_LABELS, type Role, type SavedReport } from "@/lib/types";
 
 const ROLES: Role[] = ["서비스기획", "마케팅", "운영"];
+
+const noopSubscribe = () => () => {};
+/** 지금 사이트 주소. 서버에서 그릴 때는 빈 문자열이라 QR은 브라우저에서만 나온다 */
+const useOrigin = () => useSyncExternalStore(noopSubscribe, () => window.location.origin, () => "");
 
 const isFitLabel = (s: string): s is FitLabel => s in FIT_DESCRIPTIONS;
 
@@ -25,6 +32,7 @@ function Front({
   hidden: boolean;
 }) {
   const top = d.topIndicators.map((t) => INDICATOR_LABELS[t.id]).join(", ");
+  const origin = useOrigin();
   return (
     <div className="rc rc-face rc-front" aria-hidden={hidden}>
       <div className="rc-top">
@@ -71,14 +79,25 @@ function Front({
                 </div>
               )}
               <div>
-                <dt>3년 뒤 역량 갭</dt>
+                <dt>3년차 공고 요구 역량</dt>
                 <dd>{d.gap ? `이어짐 ${d.gap.connected} · 일부 ${d.gap.partial} · 공백 ${d.gap.missing}` : "확인 불가"}</dd>
               </div>
             </dl>
+            {d.gap && (
+              <p className="tiny muted" data-el="역량 갭 설명">
+                신입 때 이 직무에서 쌓는 역량과 견준 결과예요. 이어짐: 이 직무에서 쌓임, 일부: 다른 직무와 겹침, 공백: 따로 채워야 함
+              </p>
+            )}
             {d.substituteNote && (
               <p className="small muted" data-el="대체 공고 안내">
                 <span className="tag">유사 기업 공고로 비교</span> {d.substituteNote}
               </p>
+            )}
+            {d.fitLabel && origin && (
+              <div className="rc-qr" data-el="카드 QR">
+                <QRCodeSVG value={`${origin}${shareHref(d.companyId, d.role, d.weightsParam)}`} size={64} level="M" marginSize={0} />
+                <span className="tiny muted">QR로 이 카드를 다시 열 수 있어요. 링크에는 기업, 직무, 내 기준만 담겨요</span>
+              </div>
             )}
           </>
         )}
@@ -165,6 +184,46 @@ export function ReportCard({
   const shown = reports?.[role]?.report ?? data;
   const missingRole = reports && !reports[role] ? role : undefined;
 
+  /** 이미지로 저장: 앞면만 사진으로 만든다. 돌아가 있어도 같은 결과가 나오게, 저장하는 동안만 화면 밖에 앞면을 따로 그린다 */
+  const [shot, setShot] = useState<"idle" | "making" | "failed">("idle");
+  const capRef = useRef<HTMLDivElement>(null);
+  const fileName = `첫단추-${data.companyName}-${role}.png`;
+  useEffect(() => {
+    if (shot !== "making") return;
+    (async () => {
+      try {
+        await document.fonts?.ready;
+        const blob = capRef.current ? await toBlob(capRef.current, { pixelRatio: 2, cacheBust: true, backgroundColor: "#ffffff" }) : null;
+        if (!blob) throw new Error("empty");
+        const file = new File([blob], fileName, { type: "image/png" });
+        // 휴대폰에서는 공유 창으로 갤러리에 저장하고, 안 되면 파일로 내려받는다
+        if (navigator.canShare?.({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file] });
+            setShot("idle");
+            return;
+          } catch (e) {
+            if ((e as Error).name === "AbortError") {
+              setShot("idle");
+              return;
+            }
+          }
+        }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = file.name;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setShot("idle");
+      } catch {
+        setShot("failed");
+      }
+    })();
+    // 저장을 누른 순간의 파일 이름이면 충분하다
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shot]);
+
   function flip() {
     setBack((b) => !b);
     setFlipping(true);
@@ -193,9 +252,30 @@ export function ReportCard({
         </div>
         <span className="sheen" aria-hidden="true" />
       </div>
-      <button type="button" className="btn" onClick={flip} disabled={Boolean(missingRole)}>
-        {back ? "요약 보기" : "근거 보기"}
-      </button>
+      <div className="rc-actions">
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => setShot("making")}
+          disabled={Boolean(missingRole) || shot === "making" || !shown.fitLabel}
+          data-el="이미지로 저장"
+        >
+          {shot === "making" ? "이미지 만드는 중" : "이미지로 저장하기"}
+        </button>
+        <button type="button" className="btn" onClick={flip} disabled={Boolean(missingRole)}>
+          {back ? "요약 보기" : "근거 보기"}
+        </button>
+      </div>
+      {shot === "failed" && (
+        <p className="small muted" role="status">
+          이미지를 만들지 못했어요. 화면을 캡처해서 저장해 주세요.
+        </p>
+      )}
+      {shot === "making" && (
+        <div className="cap-offscreen" ref={capRef} aria-hidden="true">
+          <Front d={shown} hidden />
+        </div>
+      )}
     </div>
   );
 }

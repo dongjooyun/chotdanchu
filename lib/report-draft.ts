@@ -5,6 +5,7 @@ import { cardNo, logoOf, monogram } from "@/lib/brand";
 import { computeCareerGap, connectRatio, type CareerGap } from "@/lib/career-gap";
 import type { AppMode, LogLine } from "@/lib/chat";
 import { decideFit, equalWeights, type FitResult } from "@/lib/fit-label";
+import { encodeWeights } from "@/lib/share";
 import { DISCLOSURE_LABELS, NATURE_LABELS } from "@/lib/format";
 import type { ReportCardData } from "@/lib/report-card";
 import {
@@ -68,6 +69,7 @@ export function buildReportDraft(input: ReportDraftInput): ReportCardData {
     careerSource: gap ? careerSourceText(gap) : null,
     ...(gap?.posting.url ? { careerUrl: gap.posting.url } : {}),
     ...(gap?.posting.substitute ? { substituteNote: gap.posting.substitute.reason } : {}),
+    ...(preference && !preference.skipped ? { weightsParam: encodeWeights(preference.weights) } : {}),
     grades: graded.map((g) => ({ id: g.id, grade: g.grade })),
     interviewQuestions: stopped ? [] : interviewQuestions(graded, role, gap),
     ...(stopped ? { notice: CLOSED_NOTICE[stopped] } : {}),
@@ -140,12 +142,14 @@ function interviewQuestions(graded: GradedIndicator[], role: Role, gap: CareerGa
 
 /**
  * 기업 카드 다음에 보일 3년차 공고 비교 안내 (채팅 말풍선). 숫자는 코드가 센 개수 그대로다.
- * 예: "3년차 공고((주)무신사 Growth Marketer)와 비교하면 이어짐 1, 일부 2, 공백 1이에요."
+ * 신입이 이 직무에서 쌓는 역량(직무 역량 사전)과 3년차 공고가 요구하는 역량을 견준 결과다. 사용자 정보는 쓰지 않는다.
+ * 예: "3년차 공고((주)무신사 Growth Marketer)가 요구하는 역량 4개를 신입 때 이 직무에서 쌓는 역량과 견주면, 이어지는 것 1개, 일부만 겹치는 것 2개, 따로 채워야 하는 것 1개예요."
  */
 export function careerMessage(gap: CareerGap | null, role: Role): string {
   if (!gap) return `${role} 직무의 3년차 공고를 찾지 못해 역량 비교는 확인 불가로 둘게요.`;
   const c = gap.counts;
+  const total = c.connected + c.partial + c.missing;
   const head = gap.posting.url ? `${gap.posting.postedBy} ${gap.posting.title}` : gap.posting.title;
   const sub = gap.posting.substitute ? ` ${gap.posting.substitute.reason}.` : "";
-  return `3년차 공고(${head})와 비교하면 요구 역량 중 이어짐 ${c.connected}, 일부 ${c.partial}, 공백 ${c.missing}이에요.${sub}`;
+  return `3년차 공고(${head})가 요구하는 역량 ${total}개를 신입 때 이 직무에서 쌓는 역량과 견주면, 이어지는 것 ${c.connected}개, 일부만 겹치는 것 ${c.partial}개, 따로 채워야 하는 것 ${c.missing}개예요.${sub}`;
 }

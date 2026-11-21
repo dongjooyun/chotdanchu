@@ -30,6 +30,8 @@ export interface ReportCardData {
   careerUrl?: string;
   /** 유사 기업 공고로 대체했을 때 화면에 보일 사유 한 줄 (PRD 05). 없으면 생략 */
   substituteNote?: string;
+  /** 맞대결로 판정했을 때 선호 가중치를 링크용으로 줄인 값 (lib/share.ts). QR 링크에 들어간다. 기본 기준이면 생략 */
+  weightsParam?: string;
   /** 뒷면: 지표 10개 등급 */
   grades: { id: IndicatorId; grade: Grade | null }[];
   /** 뒷면: 면접에서 물어볼 질문. 확인 불가 항목마다 하나 이상. 폐업·휴업 회사는 빈 배열 */

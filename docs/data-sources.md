@@ -27,6 +27,8 @@
 | 이미지 | 시연 기업 4곳 로고 (카카오, 컬리, 당근, 무신사) | 카카오 https://www.kakaocorp.com/page/detail/11340 , 컬리 https://newsroom.kurlycorp.com/medialibrary/logo/%ec%bb%ac%eb%a6%ac-%eb%a1%9c%ea%b3%a0-purple/ , 당근 https://bizschool.daangn.com/brand-resource , 무신사 https://prd-new.corp.musinsa.com/company | 기업 카드 가운데 영역 (`public/logos/{DART 고유번호}.확장자`) | 각 사가 공식 사이트에 공개한 브랜드 자료. 동주 확인: 상업적 목적이 아니면 사용 가능. 변형하지 않고 가로로 맞춰 표시만 함. 폐업한 동명 법인(카카오 00918444)에는 쓰지 않음. 서비스를 상업적으로 쓰게 되면 각 사 이용 조건을 다시 확인 | 11/21 사용 중 (스타일 타일, 앱의 기업 카드 모음과 리포트 카드) |
 | 라이브러리 | TypeScript 5 | https://www.typescriptlang.org | 타입 검사 | Apache-2.0 | 사용 중 |
 | 라이브러리 | ESLint 9, eslint-config-next | https://eslint.org | 코드 검사 | MIT | 사용 중 |
+| 라이브러리 | html-to-image 1.11.13 | https://github.com/bubkoo/html-to-image | 리포트 카드 앞면을 이미지(PNG)로 저장 | MIT | 사용 중 (11/22 팀 승인). 브라우저 안에서만 동작하고 외부로 보내지 않음 |
+| 라이브러리 | qrcode.react 4.2.0 | https://github.com/zpao/qrcode.react | 카드 QR (기업 ID, 직무, 선호 가중치가 든 링크) | ISC | 사용 중 (11/22 팀 승인). 브라우저 안에서만 동작하고 외부로 보내지 않음 |
 | 라이브러리 | Vitest | https://vitest.dev | 단위 테스트 (지표 등급, 역량 매칭 등) | MIT | 사용 중 (개발 전용) |
 | 라이브러리 | Playwright (@playwright/test) | https://playwright.dev | 화면 흐름 E2E 테스트 | Apache-2.0 | 사용 중 (개발 전용) |
 

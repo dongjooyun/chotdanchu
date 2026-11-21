@@ -316,3 +316,11 @@ body {
   .flip.flipping .sheen::before { animation: none; }
   .wait i { animation: none; opacity: .6; }
 }
+
+/* 카드 QR과 이미지 저장 (CDC-16) */
+.rc-qr { display: flex; align-items: center; gap: var(--s-3); margin-top: auto; }
+.rc-qr svg { flex: none; border: 1px solid var(--gray-4); padding: 4px; background: #fff; box-sizing: content-box; }
+.rc-actions { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+/* 이미지로 만들 앞면을 화면 밖에서 그린다 (display none이면 사진이 안 찍힌다) */
+.cap-offscreen { position: fixed; left: -9999px; top: 0; width: 340px; pointer-events: none; }
+.shared-card { max-width: 380px; margin: var(--s-6) auto; display: flex; flex-direction: column; gap: var(--s-4); }

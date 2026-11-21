@@ -8,6 +8,7 @@ import { computeIndicators } from "@/lib/indicators";
 import { preferenceFromPicks } from "@/lib/matchup";
 import { buildReportDraft, careerMessage, josa } from "@/lib/report-draft";
 import { skippedPreference } from "@/lib/session";
+import { decodeWeights, encodeWeights, parseRole, shareHref } from "@/lib/share";
 import type { GradedIndicator, Grade, IndicatorId, Role } from "@/lib/types";
 
 const ROLES: Role[] = ["서비스기획", "마케팅", "운영"];
@@ -94,7 +95,8 @@ describe("역량 갭 (3년차 공고 비교)", () => {
       for (const role of ROLES) {
         const gap = computeCareerGap(id, role, "live")!;
         expect(report(id, role).gap).toEqual(gap.counts);
-        expect(careerMessage(gap, role)).toContain(`이어짐 ${gap.counts.connected}, 일부 ${gap.counts.partial}, 공백 ${gap.counts.missing}`);
+        const msg = careerMessage(gap, role);
+        expect(msg).toContain(`이어지는 것 ${gap.counts.connected}개, 일부만 겹치는 것 ${gap.counts.partial}개, 따로 채워야 하는 것 ${gap.counts.missing}개`);
       }
   });
 });
@@ -171,5 +173,43 @@ describe("판정 라벨", () => {
     const d = report("00918444", "운영");
     expect(d.fitLabel).toBeNull();
     expect(d.notice).toContain("폐업");
+  });
+});
+
+describe("카드 공유 링크 (QR)", () => {
+  test("SHR-01 가중치를 링크용으로 줄였다가 되살려도 유형과 중시 지표 3개가 같다", () => {
+    for (const pref of [STABLE, AUTONOMY]) {
+      const back = decodeWeights(encodeWeights(pref.weights))!;
+      expect(back.type).toBe(pref.type);
+      expect(back.topIndicators).toEqual(pref.topIndicators);
+      expect(Object.values(back.weights).reduce((s, x) => s + x, 0)).toBeCloseTo(1, 10);
+    }
+  });
+
+  test("SHR-02 링크 값이 없거나 깨졌으면 기본 기준(null)이다", () => {
+    expect(decodeWeights(null)).toBeNull();
+    expect(decodeWeights("1_2_3")).toBeNull();
+    expect(decodeWeights("a_b_c_d_e_f_g_h_i_j")).toBeNull();
+    expect(decodeWeights("0_0_0_0_0_0_0_0_0_0")).toBeNull();
+  });
+
+  test("SHR-03 링크에는 기업 ID, 직무, 가중치만 담긴다 (이름, 회사명, 개인정보 없음)", () => {
+    const href = shareHref("00258801", "마케팅", encodeWeights(STABLE.weights));
+    const q = new URL(href, "http://x").searchParams;
+    expect([...q.keys()].sort()).toEqual(["c", "r", "w"]);
+    expect(q.get("c")).toBe("00258801");
+    expect(parseRole(q.get("r"))).toBe("마케팅");
+    expect(parseRole("개발자")).toBeNull();
+    expect(shareHref("00258801", "운영")).not.toContain("w=");
+  });
+
+  test("SHR-04 맞춤 판정 카드에만 가중치가 들어가고, 링크로 다시 만든 카드는 같다", () => {
+    const personal = report("01153956", "서비스기획", STABLE);
+    expect(personal.weightsParam).toBe(encodeWeights(STABLE.weights));
+    expect(report("01153956", "서비스기획").weightsParam).toBeUndefined();
+    const again = report("01153956", "서비스기획", decodeWeights(personal.weightsParam)!);
+    expect(again.fitLabel).toBe(personal.fitLabel);
+    expect(again.topIndicators).toEqual(personal.topIndicators);
+    expect(again.gap).toEqual(personal.gap);
   });
 });
