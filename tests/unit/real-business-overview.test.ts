@@ -260,7 +260,8 @@ describe("RBO-27~30 사전 계산 결과 만들기와 건너뛰기", () => {
   const ref = { rceptNo: "20260318001423", reportName: "사업보고서 (2025.12)", rceptDate: "20260318" };
 
   it("RBO-27 받은 개요는 3줄 요약과 공시 원문 링크로 저장한다 (원문 전체는 저장하지 않는다)", () => {
-    const s = toStoredSummary({ status: "ok", text: BODY + " 셋째 문장입니다.", ref }, summarizeOverview, "2026-11-22");
+    const text = BODY + " 셋째 문장입니다.";
+    const s = toStoredSummary({ status: "ok", text, ref }, { lines: summarizeOverview(text), method: "rule" }, "2026-11-22");
     expect(s).toMatchObject({ status: "ok", method: "rule" });
     if (s?.status !== "ok") return;
     expect(s.lines).toHaveLength(3);
@@ -270,12 +271,18 @@ describe("RBO-27~30 사전 계산 결과 만들기와 건너뛰기", () => {
   });
 
   it("RBO-28 사업보고서 없음은 '공시 없음'으로 확인 날짜와 함께 저장한다", () => {
-    expect(toStoredSummary({ status: "no_report" }, summarizeOverview, "2026-11-22")).toEqual({ status: "no_report", checkedAt: "2026-11-22" });
+    expect(toStoredSummary({ status: "no_report" }, null, "2026-11-22")).toEqual({ status: "no_report", checkedAt: "2026-11-22" });
   });
 
   it("RBO-29 실패와 쓸 문장이 없는 경우는 저장하지 않아서(null) 다음 실행에서 다시 시도한다", () => {
-    expect(toStoredSummary({ status: "failed", reason: "x" }, summarizeOverview, "2026-11-22")).toBeNull();
-    expect(toStoredSummary({ status: "ok", text: "숫자 1개만 있습니다.", ref }, summarizeOverview, "2026-11-22")).toBeNull();
+    expect(toStoredSummary({ status: "failed", reason: "x" }, null, "2026-11-22")).toBeNull();
+    expect(toStoredSummary({ status: "ok", text: "숫자 1개만 있습니다.", ref }, { lines: [], method: "rule" }, "2026-11-22")).toBeNull();
+    expect(toStoredSummary({ status: "ok", text: "가", ref }, null, "2026-11-22")).toBeNull();
+  });
+
+  it("RBO-27b 모델로 만든 요약은 method가 llm으로 저장된다", () => {
+    const s = toStoredSummary({ status: "ok", text: BODY, ref }, { lines: ["가입니다.", "나입니다.", "다입니다."], method: "llm" }, "2026-11-22");
+    expect(s).toMatchObject({ status: "ok", method: "llm" });
   });
 
   it("RBO-30 이미 저장된 기업(요약 있음, 공시 없음)은 건너뛰고, 저장되지 않은 기업만 받는다. force면 모두 다시 받는다 (캐시)", () => {

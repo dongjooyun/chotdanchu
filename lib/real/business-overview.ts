@@ -5,7 +5,7 @@
 // 키는 호출하는 쪽이 .env.local에서 읽어 넘긴다. 이 파일은 키를 로그나 오류 문구에 넣지 않는다.
 // 주의: 실제 DART 원문 구조로 실행해 본 적이 없다. 추출 규칙은 공시 문서의 SECTION/TITLE 구조를 가정한 것이라 키로 한 번 확인이 필요하다.
 import { inflateRawSync } from "node:zlib";
-import type { StoredSummary } from "../business-summary.ts";
+import type { StoredSummary, SummaryResult } from "../business-summary.ts";
 import { dartViewerUrl } from "./dart.ts";
 
 /** 개요 문단 최소 길이(글자). 이보다 짧으면 개요가 아니라 제목만 있는 것으로 본다 */
@@ -231,18 +231,16 @@ export async function fetchBusinessOverview(corpCode: string, deps: FetchDeps): 
  */
 export function toStoredSummary(
   result: OverviewResult,
-  summarize: (text: string) => string[],
+  summary: SummaryResult | null,
   checkedAt: string,
 ): StoredSummary | null {
   if (result.status === "no_report") return { status: "no_report", checkedAt };
-  if (result.status !== "ok") return null;
-  const lines = summarize(result.text);
-  if (lines.length === 0) return null;
+  if (result.status !== "ok" || !summary || summary.lines.length === 0) return null;
   return {
     status: "ok",
-    lines,
+    lines: summary.lines,
     source: { name: `OpenDART ${result.ref.reportName}`, url: dartViewerUrl(result.ref.rceptNo), checkedAt },
-    method: "rule",
+    method: summary.method,
   };
 }
 

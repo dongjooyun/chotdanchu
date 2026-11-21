@@ -10,6 +10,12 @@ import type { BusinessSummary, Company, Source, SummaryMethod } from "@/lib/type
 /** 요약 줄 수 상한 */
 export const SUMMARY_LINES = 3;
 
+/** 요약 결과: 줄과 만든 방법 */
+export interface SummaryResult {
+  lines: string[];
+  method: SummaryMethod;
+}
+
 /** 사전 계산 파일(data/real/business-summaries.json) 한 항목. 실패는 저장하지 않아서 다시 돌리면 다시 시도한다 */
 export type StoredSummary =
   | { status: "ok"; lines: string[]; source: Source; method: SummaryMethod }
