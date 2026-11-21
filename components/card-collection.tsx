@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { AppDialog } from "@/components/app-dialog";
 import { CompanyMark } from "@/components/company-mark";
 import { ReportCard } from "@/components/report-card";
 import { cardNo, logoOf, monogram } from "@/lib/brand";
@@ -41,16 +42,9 @@ export function CardCollection({
 }) {
   const [view, setView] = useState<"list" | "gallery">("list");
   const [open, setOpen] = useState<AnalysisRecord | null>(null);
-  const dlg = useRef<HTMLDialogElement>(null);
 
   function openCard(r: AnalysisRecord) {
     setOpen(r);
-    dlg.current?.showModal();
-  }
-
-  function close() {
-    dlg.current?.close();
-    setOpen(null);
   }
 
   const go = (r: AnalysisRecord) => (
@@ -132,13 +126,7 @@ export function CardCollection({
           ))}
         </div>
       )}
-      <dialog ref={dlg} className="dlg" aria-label="기업 카드 보기" onClose={() => setOpen(null)}>
-        <div className="dlg-bar">
-          <b>기업 카드</b>
-          <button type="button" className="btn btn-link small" onClick={close}>
-            닫기
-          </button>
-        </div>
+      <AppDialog open={open !== null} title="기업 카드 보기" onClose={() => setOpen(null)}>
         {open && summaryOf(open).saved && (
           <ReportCard
             key={open.companyId}
@@ -147,7 +135,7 @@ export function CardCollection({
             onRequestRole={
               onRequestRole
                 ? (role) => {
-                    close();
+                    setOpen(null);
                     onRequestRole(open, role);
                   }
                 : undefined
@@ -161,7 +149,7 @@ export function CardCollection({
               type="button"
               className="btn btn-sm"
               onClick={() => {
-                close();
+                setOpen(null);
                 onPersonalize(open);
               }}
             >
@@ -169,7 +157,7 @@ export function CardCollection({
             </button>
           </div>
         )}
-      </dialog>
+      </AppDialog>
     </section>
   );
 }

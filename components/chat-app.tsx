@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AgentLogPanel } from "@/components/agent-log-panel";
+import { AppDialog } from "@/components/app-dialog";
 import { AppHeader } from "@/components/app-header";
 import { CardCollection } from "@/components/card-collection";
 import { ChatInput } from "@/components/chat-input";
@@ -110,7 +111,6 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   const [think, setThink] = useState(false);
   /** 맞대결을 다시 해 성향이 바뀌었을 때 저장 카드를 어떻게 할지 묻는 창 */
   const [retype, setRetype] = useState<{ from: Preference; to: Preference; count: number } | null>(null);
-  const retypeRef = useRef<HTMLDialogElement>(null);
   const nextId = useRef(1);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -120,10 +120,6 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   useEffect(() => {
     if (messages.length > 0) bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages.length]);
-
-  useEffect(() => {
-    if (retype && !retypeRef.current?.open) retypeRef.current?.showModal();
-  }, [retype]);
 
   function push(...items: Omit<ChatMessage, "id">[]) {
     if (introRole === undefined) setIntroRole(session.role);
@@ -274,7 +270,6 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
 
   function closeRetype(rejudge: boolean) {
     if (rejudge && retype) rejudgeAll(retype.to);
-    retypeRef.current?.close();
     setRetype(null);
   }
 
@@ -401,11 +396,10 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
         <Disclaimer />
       </div>
       <CardCollection records={session.analyzed} onPersonalize={onPersonalize} onRequestRole={onRequestRole} busy={pending} />
-      <dialog ref={retypeRef} className="dlg" aria-labelledby="retype-t" data-el="성향 변경 확인" onClose={() => setRetype(null)}>
+      <AppDialog open={retype !== null} title="내 성향이 달라졌어요" choice onClose={() => closeRetype(false)}>
         {retype && (
-          <>
+          <div data-el="성향 변경 확인">
             <p className="dlg-text">
-              <b id="retype-t">내 성향이 달라졌어요</b>
               이번 맞대결에서는 &quot;{PREFERENCE_TYPE_LABELS[retype.to.type!]}&quot;으로 나왔어요(이전: {PREFERENCE_TYPE_LABELS[retype.from.type!]}). 저장한 카드
               중 맞춤 판정을 받은 {retype.count}장도 새 성향으로 다시 판정할까요?
             </p>
@@ -420,9 +414,9 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
             <p className="tiny muted" style={{ marginTop: 12 }}>
               그대로 두면 기존 카드에는 이전 성향이 계속 표시돼요.
             </p>
-          </>
+          </div>
         )}
-      </dialog>
+      </AppDialog>
     </>
   );
 }
