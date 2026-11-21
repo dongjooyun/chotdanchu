@@ -108,7 +108,9 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
 .infobar { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); align-items: center; padding: var(--s-3) var(--s-5); background: var(--canvas); border-bottom: 1px solid var(--line); font-size: 14px; }
 .infobar b { font-weight: 700; }
 .cols { display: grid; grid-template-columns: minmax(0, 1fr) 320px; }
-.chat { padding: var(--s-5); display: flex; flex-direction: column; gap: var(--s-5); min-width: 0; }
+.chat-col { display: flex; flex-direction: column; min-width: 0; }
+.chat-col .chat { flex: 1; }
+.chat {padding: var(--s-5); display: flex; flex-direction: column; gap: var(--s-5); min-width: 0; }
 .aside { border-left: 1px solid var(--line); padding: var(--s-5); background: var(--canvas); display: flex; flex-direction: column; gap: var(--s-4); }
 .bubble { max-width: 560px; padding: var(--s-4) var(--s-4); border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface); }
 .bubble-user { align-self: flex-end; background: #ececf0; border-color: #ececf0; }
@@ -247,6 +249,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
     <div class="box">
       <span class="label">입력창 (data-el 입력창)</span>
       <div style="display:flex;gap:8px"><input class="field" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력"><button class="btn btn-ink" type="button">보내기</button></div>
+      <p class="tiny muted" style="margin-top:12px">채팅 영역 맨 아래에 항상 붙어 있고, 직무를 고르기 전과 답을 기다리는 동안은 잠깁니다.</p>
     </div>
     <div class="box">
       <span class="label">응답 대기 표시, 안내 아이콘</span>
@@ -271,6 +274,7 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
       <span><span class="muted">회사</span> <b>주식회사 카카오</b> <button class="btn btn-link small" type="button" aria-label="회사 변경하기">변경하기</button></span>
     </div>
     <div class="cols">
+      <div class="chat-col">
       <main class="chat" data-el="채팅 영역">
         <div class="bubble bubble-user" data-el="사용자 말풍선">카카오</div>
         <div class="bubble" data-el="에이전트 말풍선">
@@ -303,6 +307,8 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         </div>
         <div class="quick"><button class="chip-btn" type="button">내 기준 맞추기</button><button class="chip-btn" type="button">건너뛰고 기본 기준으로</button></div>
       </main>
+      <div class="inputbar"><input class="field" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력"><button class="btn btn-ink" type="button">보내기</button></div>
+      </div>
       <aside class="aside" data-el="판단 로그 패널">
         <div class="panel-h">에이전트 판단 로그 <span class="info" aria-label="안내">i</span></div>
         <div class="logi"><span class="no">1</span><span><span class="tag tag-tool">도구 호출</span> <span class="mono">search_company</span></span><span class="muted">"카카오" 후보 2곳</span></div>
@@ -310,7 +316,6 @@ th { font-size: 12px; font-weight: 600; color: var(--ink-2); border-bottom: 1px 
         <div class="logi"><span class="no">3</span><span><span class="tag tag-tool">도구 호출</span> <span class="mono">compute_indicators</span></span><span class="muted">A 4 · B 3 · C 0, 확인 불가 1개</span></div>
       </aside>
     </div>
-    <div class="inputbar"><input class="field" placeholder="회사 이름을 입력해 주세요" aria-label="메시지 입력"><button class="btn btn-ink" type="button">보내기</button></div>
     <div class="disc" data-el="면책 문구">공개 데이터 기반 참고 정보이며 기업 평가가 아닙니다. 수치마다 출처와 기준 시점을 확인해 주세요.</div>
   </div>
 </section>
