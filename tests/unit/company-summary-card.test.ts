@@ -7,7 +7,7 @@ import { CompanyCard } from "@/components/company-card";
 import { computeIndicators } from "@/lib/indicators";
 import type { ChatResponse } from "@/lib/chat";
 import type { BusinessSummary } from "@/lib/types";
-import { mockCompanies } from "@/lib/data";
+import { mockCompanies, realBusinessSummaries } from "@/lib/data";
 
 async function post(body: unknown) {
   const { POST } = await import("@/app/api/chat/route");
@@ -20,6 +20,15 @@ afterEach(() => {
   vi.doUnmock("@/data/real/business-summaries.json");
   vi.resetModules();
 });
+
+/** data/real/business-summaries.json 대신 쓸 값을 넣고 실데이터 모드로 응답을 받는다 (실제 결과 파일이 바뀌어도 테스트가 흔들리지 않게) */
+async function liveWith(store: unknown, pickCompanyId: string) {
+  vi.stubEnv("USE_MOCK", "false");
+  vi.stubEnv("USE_AGENT", "false");
+  vi.resetModules();
+  vi.doMock("@/data/real/business-summaries.json", () => ({ default: store }));
+  return post({ pickCompanyId });
+}
 
 function companyWidget(json: ChatResponse) {
   if (json.widget?.type !== "company") throw new Error("카드가 없음");
@@ -75,10 +84,7 @@ describe("SUM-06~08 채팅 응답 경로와 실데이터 모드", () => {
   });
 
   test("SUM-07 실데이터 모드에서 아직 계산하지 않은 기업은 공시 없음이 아니라 확인 불가이고, 로그에 확인 불가 줄이 남는다", async () => {
-    vi.stubEnv("USE_MOCK", "false");
-    vi.stubEnv("USE_AGENT", "false");
-    vi.resetModules();
-    const json = await post({ pickCompanyId: "00258801" }); // 상장 카카오
+    const json = await liveWith({}, "00258801"); // 상장 카카오, 사전 계산 파일이 비어 있는 경우
     const w = companyWidget(json);
     expect(w.summary).toEqual({ status: "unavailable", reason: "not_computed" });
     const line = json.log.find((l) => l.title === "하는 일 요약: 확인 불가");
@@ -86,23 +92,12 @@ describe("SUM-06~08 채팅 응답 경로와 실데이터 모드", () => {
   });
 
   test("SUM-08 실데이터 모드는 목업 기업용 요약 문단을 쓰지 않는다 (실데이터 카드에는 businessOverview가 없다)", async () => {
-    vi.stubEnv("USE_MOCK", "false");
-    vi.stubEnv("USE_AGENT", "false");
-    vi.resetModules();
-    const w = companyWidget(await post({ pickCompanyId: "00258801" }));
+    const w = companyWidget(await liveWith({}, "00258801"));
     expect(w.company.businessOverview).toBeUndefined();
   });
 });
 
 describe("SUM-13~15 실데이터 모드: 사전 계산 파일의 값이 카드에 반영된다", () => {
-  /** data/real/business-summaries.json 대신 쓸 값을 넣고 실데이터 모드로 응답을 받는다 */
-  async function liveWith(store: unknown, pickCompanyId: string) {
-    vi.stubEnv("USE_MOCK", "false");
-    vi.stubEnv("USE_AGENT", "false");
-    vi.resetModules();
-    vi.doMock("@/data/real/business-summaries.json", () => ({ default: store }));
-    return post({ pickCompanyId });
-  }
   const src = { name: "OpenDART 사업보고서 (2025.12)", url: "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423", checkedAt: "2026-11-22" };
 
   test("SUM-13 저장된 요약은 그대로 카드에 실리고, 로그에 요약 줄이 남는다", async () => {
@@ -121,6 +116,41 @@ describe("SUM-13~15 실데이터 모드: 사전 계산 파일의 값이 카드�
   test("SUM-15 같은 파일에서 저장되지 않은 기업은 확인 불가다 (저장된 기업과 구분)", async () => {
     const json = await liveWith({ "00258801": { status: "no_report", checkedAt: "2026-11-22" } }, "01153956");
     expect(companyWidget(json).summary).toEqual({ status: "unavailable", reason: "not_computed" });
+  });
+});
+
+describe("SUM-16~19 실제 사전 계산 결과 파일 (data/real/business-summaries.json)", () => {
+  const demo = ["00258801", "01137727", "01153956", "01547845"]; // 카카오, 무신사, 컬리, 당근마켓
+  const text = JSON.stringify(realBusinessSummaries);
+
+  test("SUM-16 시연 기업 4곳이 모두 들어 있다", () => {
+    for (const code of demo) expect(realBusinessSummaries[code], code).toBeDefined();
+  });
+
+  test("SUM-17 요약 있음 항목은 3줄이고 숫자가 없으며, 원문 링크는 DART 공시 주소이고, 방식과 확인일 형식이 맞다", () => {
+    for (const code of demo) {
+      const e = realBusinessSummaries[code];
+      if (e.status !== "ok") continue;
+      expect(e.lines, code).toHaveLength(3);
+      for (const l of e.lines) expect(l, code).not.toMatch(/[0-9０-９]|퍼센트/);
+      expect(e.source.url, code).toMatch(/^https:\/\/dart\.fss\.or\.kr\/dsaf001\/main\.do\?rcpNo=\d{14}$/);
+      expect(["rule", "llm"], code).toContain(e.method);
+      expect(e.source.checkedAt, code).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+
+  test("SUM-18 사업의 개요 원문은 저장하지 않는다 (항목에는 상태, 요약, 출처, 방식만 있고 줄은 한 문장 길이)", () => {
+    for (const code of Object.keys(realBusinessSummaries)) {
+      const e = realBusinessSummaries[code];
+      expect(Object.keys(e).sort(), code).toEqual(e.status === "ok" ? ["lines", "method", "source", "status"] : ["checkedAt", "status"]);
+      if (e.status === "ok") for (const l of e.lines) expect(l.length, code).toBeLessThanOrEqual(200);
+    }
+  });
+
+  test("SUM-19 파일에 인증키 모양의 문자열이 없다 (40자리 16진수, sk-ant-, crtfc_key)", () => {
+    expect(text).not.toMatch(/[0-9a-fA-F]{40}/);
+    expect(text).not.toMatch(/sk-ant-/);
+    expect(text).not.toMatch(/crtfc_key/);
   });
 });
 
