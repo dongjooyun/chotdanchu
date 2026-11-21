@@ -178,7 +178,7 @@ test("E2E-11 직무와 회사를 바꾼 뒤 리포트 카드는 지금 직무와
   await expect(bar).toContainText("주식회사 청솔기계");
 });
 
-test("E2E-12 길어진 대화에서도 직무와 회사 줄은 화면 맨 위에 붙어 있다", async ({ page }) => {
+test("E2E-12 길어진 대화에서도 머리글은 맨 위에, 직무와 회사 줄은 그 바로 아래에 붙어 있다", async ({ page }) => {
   await chooseRole(page, "마케팅");
   await searchCompany(page, "별하늘랩스");
   await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
@@ -186,8 +186,13 @@ test("E2E-12 길어진 대화에서도 직무와 회사 줄은 화면 맨 위에
   const bar = page.locator('[data-el="고정 정보줄"]');
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   await expect(bar).toBeInViewport();
+  const header = page.locator('[data-el="헤더"]');
+  await expect(header).toBeInViewport();
+  const headerBox = (await header.boundingBox())!;
+  expect(Math.round(headerBox.y)).toBe(0);
   const top = await bar.evaluate((el) => Math.round(el.getBoundingClientRect().top));
-  expect(top).toBeLessThanOrEqual(1);
+  expect(Math.abs(top - Math.round(headerBox.height))).toBeLessThanOrEqual(1);
+  await expect(bar).toContainText("현재 분석 중인 직무 및 기업");
   await expect(bar).toContainText("마케팅");
   await expect(bar).toContainText("별하늘랩스(주)");
 });
@@ -287,7 +292,7 @@ test("E2E-16 리포트 카드: 보이는 면 하나를 이미지로 저장하고
   const flip = page.locator(".chat .flip").last();
   await flip.click({ position: { x: 20, y: 120 } });
   await expect(flip).toHaveClass(/is-back/);
-  await expect(page.locator('.chat [data-el="역량 비교 상세"]').last()).toContainText("마케팅 직무에서 신입 때 쌓을 수 있는 역량과 비교했어요");
+  await expect(page.locator('.chat [data-el="역량 비교 상세"]').last()).toContainText("팀이 자체 개발한 마케팅 직무 신입 역량 사전과 비교한 결과예요.");
   await save("근거");
   await expect(page.getByText("이미지를 만들지 못했어요")).toHaveCount(0);
   // QR이 여는 주소로 가면 같은 라벨의 카드가 다시 그려진다

@@ -86,7 +86,8 @@ export function buildReportDraft(input: ReportDraftInput): ReportCardData {
 export function careerSourceText(gap: CareerGap): string {
   const p = gap.posting;
   if (!p.url) return `${p.title}, 목업용 가상 공고`;
-  return `${p.postedBy} ${p.title}, ${p.years}, 수동 확인 ${p.checkedAt}`;
+  const years = p.title.includes(p.years) ? "" : `, ${p.years}`;
+  return `${p.postedBy} ${p.title}${years}, 수동 확인 ${p.checkedAt}`;
 }
 
 /**

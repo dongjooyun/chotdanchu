@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AppNav, type AppView } from "@/components/app-nav";
+import { Fab } from "@/components/fab";
 import { AgentLogPanel } from "@/components/agent-log-panel";
 import { AppDialog } from "@/components/app-dialog";
 import { AppHeader } from "@/components/app-header";
@@ -111,6 +112,16 @@ const NO_LOG: LogLine[] = [];
 /** 대화를 저장하는 칸 이름. 목업과 실데이터 대화가 섞이지 않게 모드를 붙인다 */
 const chatKey = (mode: AppMode, name: string) => `chotdanchu:chat:v1:${mode}:${name}`;
 
+/** 맞대결 아이콘 (겹친 카드 두 장) */
+function CardsIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="6" width="10" height="14" rx="1.5" transform="rotate(-8 8 13)" />
+      <rect x="11" y="4" width="10" height="14" rx="1.5" transform="rotate(8 16 11)" />
+    </svg>
+  );
+}
+
 /** 대화 새로 시작 아이콘 (도는 화살표) */
 function RefreshIcon() {
   return (
@@ -149,6 +160,8 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   const [view, setView] = useState<AppView>("chat");
   /** "대화 새로 시작" 확인 창 */
   const [resetAsk, setResetAsk] = useState(false);
+  /** 맞대결을 한 번이라도 끝까지 했는지 (건너뛴 뒤에도 "다시 하기"로 보이게) */
+  const [matchupDone, setMatchupDone] = useStoredState("chotdanchu:matchup-done", false);
   /** 모바일에서 사고 과정을 여는 창 */
   const [thinkModal, setThinkModal] = useState(false);
   const [pending, setPending] = useState(false);
@@ -311,6 +324,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   /** 7판이 끝나면: 선호 계산(코드) -> 유형 설명 문장 -> 결과 -> 리포트. 성향이 바뀌었고 맞춤 카드가 있으면 다시 판정할지 묻는다 */
   async function onMatchupDone(picks: string[]) {
     const pref = preferenceFromPicks(picks);
+    setMatchupDone(true);
     setPending(true);
     const { sentence, by } = await fetchSentence(pref);
     setPending(false);
@@ -426,7 +440,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     push({ from: "agent", text: askCompany(session.role), replies: EXAMPLE_REPLIES });
   }
 
-  const matchupLabel = isPersonalized(session.preference) ? "기업 맞대결 다시 하기" : "기업 맞대결 하기";
+  const matchupLabel = matchupDone || isPersonalized(session.preference) ? "기업 맞대결 다시 하기" : "기업 맞대결 하기";
   const handlers: WidgetHandlers = { onPickCompany, onSaveReport, isReportSaved, onMatchupDone, onMatchupSkip };
 
   /** 대화 새로 시작: 말풍선과 사고 과정만 지운다. 고른 직무, 성향, 기업 카드 모음은 남는다 */
@@ -457,45 +471,53 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       <div className="app" data-think={think ? "open" : "closed"} hidden={view !== "chat"}>
         {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}
         <div className="infobar" data-el="고정 정보줄">
-          <span>
-            <span className="muted">직무</span> <b>{session.role ?? "미정"}</b>{" "}
-            {session.role && (
-              <button type="button" className="btn btn-link small" aria-label="직무 변경하기" onClick={onChangeRole} disabled={pending}>
-                변경하기
-              </button>
-            )}
-          </span>
-          <span>
-            <span className="muted">회사</span> <b>{company ?? "미정"}</b>{" "}
-            {company && (
-              <button type="button" className="btn btn-link small" aria-label="회사 변경하기" onClick={onChangeCompany} disabled={pending}>
-                변경하기
-              </button>
-            )}
-          </span>
-          <span className="infobar-actions">
-            {session.role && (
-              <button type="button" className="btn btn-link small" onClick={() => startMatchup(matchupLabel)} disabled={pending} data-el="맞대결 버튼">
-                {matchupLabel}
-              </button>
-            )}
-            {messages.length > 0 && (
-              <button type="button" className="btn btn-quiet small only-pc" onClick={() => setResetAsk(true)} disabled={pending}>
-                대화 새로 시작하기
-              </button>
-            )}
-          </span>
-          <button
-            type="button"
-            className="btn btn-ai think-toggle only-pc"
-            aria-expanded={think}
-            aria-controls="think-panel"
-            data-el="사고 과정 버튼"
-            onClick={() => setThink(!think)}
-          >
-            <SparkleIcon />
-            {think ? "에이전트 사고 과정 닫기" : `에이전트 사고 과정 보기 (${log.length}단계)`}
-          </button>
+          <div className="infobar-main">
+            <b className="infobar-title">현재 분석 중인 직무 및 기업</b>
+            <div className="infobar-row">
+              <span>
+                <span className="muted">직무</span> <b>{session.role ?? "미정"}</b>{" "}
+                {session.role && (
+                  <button type="button" className="btn btn-link small" aria-label="직무 변경하기" onClick={onChangeRole} disabled={pending}>
+                    변경하기
+                  </button>
+                )}
+              </span>
+              <span>
+                <span className="muted">회사</span> <b>{company ?? "미정"}</b>{" "}
+                {company && (
+                  <button type="button" className="btn btn-link small" aria-label="회사 변경하기" onClick={onChangeCompany} disabled={pending}>
+                    변경하기
+                  </button>
+                )}
+              </span>
+            </div>
+          </div>
+          {/* PC: 오른쪽 두 줄(맞대결·새로 시작 / 사고 과정)로 왼쪽 두 줄과 높이를 맞춘다. 모바일은 오른쪽 아래 둥근 버튼 */}
+          <div className="infobar-side only-pc">
+            <span className="infobar-actions">
+              {session.role && (
+                <button type="button" className="btn btn-link small" onClick={() => startMatchup(matchupLabel)} disabled={pending} data-el="맞대결 버튼">
+                  {matchupLabel}
+                </button>
+              )}
+              {messages.length > 0 && (
+                <button type="button" className="btn btn-quiet small" onClick={() => setResetAsk(true)} disabled={pending}>
+                  대화 새로 시작하기
+                </button>
+              )}
+            </span>
+            <button
+              type="button"
+              className="btn btn-ai think-toggle"
+              aria-expanded={think}
+              aria-controls="think-panel"
+              data-el="사고 과정 버튼"
+              onClick={() => setThink(!think)}
+            >
+              <SparkleIcon />
+              {think ? "에이전트 사고 과정 닫기" : `에이전트 사고 과정 보기 (${log.length}단계)`}
+            </button>
+          </div>
         </div>
         <div className="cols">
           <div className="chat-col">
@@ -524,17 +546,22 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       {view === "chat" && (
         <div className="fab-stack only-mobile">
           {messages.length > 0 && (
-            <button type="button" className="fab fab-quiet" aria-label="대화 새로 시작하기" title="대화 새로 시작하기" onClick={() => setResetAsk(true)} disabled={pending}>
+            <Fab tone="quiet" label="대화 새로 시작하기" onClick={() => setResetAsk(true)} disabled={pending}>
               <RefreshIcon />
-            </button>
+            </Fab>
           )}
-          <button type="button" className="fab fab-ai" aria-label="에이전트 사고 과정 보기" title="에이전트 사고 과정 보기" onClick={() => setThinkModal(true)}>
+          {session.role && (
+            <Fab tone="lilac" label={matchupLabel} onClick={() => startMatchup(matchupLabel)} disabled={pending}>
+              <CardsIcon />
+            </Fab>
+          )}
+          <Fab tone="ai" label="에이전트 사고 과정 보기" onClick={() => setThinkModal(true)}>
             <SparkleIcon />
-          </button>
+          </Fab>
         </div>
       )}
       <AppDialog open={thinkModal} title="에이전트 사고 과정" onClose={() => setThinkModal(false)}>
-        <AgentLogPanel lines={log} />
+        <AgentLogPanel lines={log} bare />
       </AppDialog>
       {view === "collection" && (
         <CardCollection

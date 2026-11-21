@@ -19,12 +19,35 @@ const useOrigin = () => useSyncExternalStore(noopSubscribe, () => window.locatio
 
 const isFitLabel = (s: string): s is FitLabel => s in FIT_DESCRIPTIONS;
 
+/** 역량 개수 배지. 0개는 흐리게 */
+function Count({ n }: { n: number }) {
+  return <span className={n === 0 ? "count-badge is-muted" : "count-badge"}>{n}개</span>;
+}
+
+/**
+ * 역량 비교 설명 (i). 3년차 요구 역량 = 신입 때 쌓을 수 있는 역량 + 따로 채워야 하는 역량.
+ * 비교 기준은 팀이 만든 직무별 신입 역량 사전이라, "보통 그 직무 신입이 쌓는 것"과 "이 회사·업계에서 따로 준비할 것"을 갈라 준다
+ */
+function GapTip({ role }: { role: Role }) {
+  return (
+    <span className="info tip" tabIndex={0} aria-label="역량 비교 설명" onClick={(e) => e.stopPropagation()}>
+      i
+      <span className="tip-pop" role="tooltip">
+        3년차 요구 역량은 이 회사 3년차 공고가 요구하는 역량이에요. 이것을 팀이 자체 개발한 {role} 직무 신입 역량 사전과 비교해, 어느 회사에서든 {role} 신입이면 보통 쌓는
+        역량(신입 때 쌓을 수 있는 역량)과 이 회사나 업계에서 따로 준비해야 하는 역량(따로 채워야 하는 역량)으로 나눴어요. 그래서 3년차 요구 역량 = 신입 때 쌓을 수 있는 역량 + 따로
+        채워야 하는 역량이에요.
+      </span>
+    </span>
+  );
+}
+
 /** 근거 카드의 역량 목록: 라벨 한 줄 아래에 점 목록. 비었으면 "없음" */
 function GapList({ title, items }: { title: string; items: string[] }) {
   return (
     <div className="gap-list">
       <span className="gap-k">
-        {title} {items.length}개
+        {title}
+        <Count n={items.length} />
       </span>
       {items.length > 0 ? (
         <ul>
@@ -113,18 +136,26 @@ function Front({
               {d.gap ? (
                 <>
                   <div>
-                    <dt>3년차 때 요구되는 역량</dt>
+                    <dt>
+                      3년차 때 요구되는 역량
+                      <GapTip role={d.role} />
+                    </dt>
                     <dd>
-                      {d.gap.connected + d.gap.missing}개{d.careerYears ? ` (경력 ${d.careerYears})` : ""}
+                      {d.careerYears && <span className="tiny muted">경력 {d.careerYears} </span>}
+                      <Count n={d.gap.connected + d.gap.missing} />
                     </dd>
                   </div>
                   <div>
                     <dt>신입 {d.role} 직무 때 쌓을 수 있는 역량</dt>
-                    <dd>{d.gap.connected}개</dd>
+                    <dd>
+                      <Count n={d.gap.connected} />
+                    </dd>
                   </div>
                   <div>
                     <dt>따로 채워야 하는 역량</dt>
-                    <dd>{d.gap.missing}개</dd>
+                    <dd>
+                      <Count n={d.gap.missing} />
+                    </dd>
                   </div>
                 </>
               ) : (
@@ -135,8 +166,9 @@ function Front({
               )}
             </dl>
             {d.substituteNote && (
-              <p className="small muted" data-el="대체 공고 안내">
-                <span className="tag">유사 기업 공고로 비교</span> {d.substituteNote}
+              <p className="small muted label-block" data-el="대체 공고 안내">
+                <span className="tag">유사 기업 공고로 비교</span>
+                <span>{d.substituteNote}.</span>
               </p>
             )}
             {d.fitLabel && origin && (
@@ -175,8 +207,8 @@ function Back({ d, hidden }: { d: ReportCardData; hidden: boolean }) {
           ))}
         </div>
         {d.decisions.length > 0 && (
-          <div className="small">
-            <span className="tag tag-ai">AI 판단</span>{" "}
+          <div className="small label-block">
+            <span className="tag tag-ai">AI 판단</span>
             <span className="muted">{d.decisions.join(" · ")}</span>
           </div>
         )}
@@ -184,17 +216,23 @@ function Back({ d, hidden }: { d: ReportCardData; hidden: boolean }) {
         <div className="rc-boxes">
           {d.gapDetail && (
             <section className="rc-q" data-el="역량 비교 상세">
-              <h4>3년차 때 요구되는 역량 비교</h4>
-              <p className="rc-q-sub">{d.role} 직무에서 신입 때 쌓을 수 있는 역량과 비교했어요.</p>
+              <h4>
+                3년차 때 요구되는 역량 비교
+                <GapTip role={d.role} />
+              </h4>
+              <p className="rc-q-sub">팀이 자체 개발한 {d.role} 직무 신입 역량 사전과 비교한 결과예요.</p>
               <GapList title="3년차 요구 역량" items={d.gapDetail.required ?? [...d.gapDetail.connected, ...d.gapDetail.missing]} />
               <GapList title="신입 때 쌓을 수 있는 역량" items={d.gapDetail.connected} />
               <GapList title="따로 채워야 하는 역량" items={d.gapDetail.missing} />
               {d.careerSource && (
                 <p className="rc-src" data-el="3년차 공고 출처">
                   {d.careerUrl ? (
-                    <a href={d.careerUrl} target="_blank" rel="noreferrer" className="src-link">
-                      공고 원문 보기: {d.careerSource}
-                    </a>
+                    <>
+                      <span className="muted">공고 원문 보기: </span>
+                      <a href={d.careerUrl} target="_blank" rel="noreferrer" className="src-link">
+                        {d.careerSource}
+                      </a>
+                    </>
                   ) : (
                     <span className="muted">비교한 공고: {d.careerSource}</span>
                   )}
