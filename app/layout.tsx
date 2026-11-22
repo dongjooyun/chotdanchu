@@ -35,7 +35,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="ko" className="h-full antialiased">
       <head>
         {/* 글꼴 Pretendard v1.3.9 (SIL OFL 1.1, docs/data-sources.md). 정적 CSS 한 장이라 외부 링크로 둔다 */}
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+        {/* crossOrigin: 카드를 이미지로 저장할 때 글꼴 CSS를 읽어 사진에 넣어야 한다. 없으면 브라우저가 읽기를 막아 저장된 사진이 기본 글꼴로 나온다 (11/22) */}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full">
         {children}

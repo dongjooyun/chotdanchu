@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { toBlob } from "html-to-image";
 import { QRCodeSVG } from "qrcode.react";
+import { AppDialog } from "@/components/app-dialog";
+import { isTouchDevice, makeCardPng } from "@/components/card-image";
 import { CompanyMark } from "@/components/company-mark";
 import { GradeBadge } from "@/components/grade-badge";
+import { InfoTip } from "@/components/info-tip";
 import { shareHref } from "@/lib/share";
 import { FIT_DESCRIPTIONS, type FitLabel } from "@/lib/fit-label";
 import type { ReportCardData } from "@/lib/report-card";
@@ -30,17 +32,14 @@ function Count({ n }: { n: number }) {
  */
 function GapTip({ role }: { role: Role }) {
   return (
-    <span className="info tip" tabIndex={0} aria-label="역량 비교 설명" onClick={(e) => e.stopPropagation()}>
-      i
-      <span className="tip-pop" role="tooltip">
-        3년차 요구 역량
-        <br />= 신입 때 쌓을 수 있는 역량
-        <br />+ 따로 채워야 하는 역량
-        <br />
-        <br />
-        기준은 팀이 개발한 {role} 직무 신입 역량 사전이에요.
-      </span>
-    </span>
+    <InfoTip label="역량 비교 설명">
+      3년차 요구 역량
+      <br />= 신입 때 쌓을 수 있는 역량
+      <br />+ 따로 채워야 하는 역량
+      <br />
+      <br />
+      기준은 팀이 개발한 {role} 직무 신입 역량 사전이에요.
+    </InfoTip>
   );
 }
 
@@ -300,52 +299,84 @@ export function ReportCard({
   const shown = reports?.[role]?.report ?? data;
   const missingRole = reports && !reports[role] ? role : undefined;
 
-  /** 이미지로 저장: 요약(앞면) 또는 근거(뒷면) 카드를 사진으로 만든다. 돌아가 있어도 같은 결과가 나오게, 저장하는 동안만 화면 밖에 그 면을 따로 그린다 */
-  const [shot, setShot] = useState<"idle" | "making" | "failed">("idle");
+  /**
+   * 이미지로 저장: 요약(앞면) 또는 근거(뒷면) 카드를 사진으로 만든다 (11/22 다시 만듦, components/card-image.ts).
+   * - 사진은 카드가 보이면 미리 만들어 둔다. 사파리는 누른 "직후"에만 공유, 저장 창을 열어 주기 때문이다.
+   * - PC는 파일로 내려받는다. 휴대폰(터치 화면)은 사진을 큰 창에 띄우고 "길게 눌러 저장"을 안내한다. 같은 창에서 공유 창도 열 수 있다.
+   * - 만드는 동안만 화면 밖에 그 면을 따로 그린다 (돌아가 있어도 같은 결과가 나오게)
+   */
   const face: "요약" | "근거" = back ? "근거" : "요약";
   const capRef = useRef<HTMLDivElement>(null);
   const fileName = `첫단추-${shown.companyName}-${shown.role}-${face}카드.png`;
+  const imageKey = `${face}:${JSON.stringify(shown)}`;
+  const canMake = !missingRole && Boolean(shown.fitLabel);
+  const [blobs, setBlobs] = useState<Record<string, Blob>>({});
+  const [failedKey, setFailedKey] = useState<string | null>(null);
+  const blob = blobs[imageKey];
+  // 화면에 보이는 카드만 미리 만든다 (대화에 카드가 여러 장 쌓여 있어도 한꺼번에 찍지 않게)
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
-    if (shot !== "making") return;
+    const el = wrapRef.current;
+    if (!el || visible) return;
+    const io = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && setVisible(true), { rootMargin: "200px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [visible]);
+  const making = canMake && visible && !blob && failedKey !== imageKey;
+  const [viewer, setViewer] = useState<{ url: string; file: File } | null>(null);
+  useEffect(() => {
+    if (!making) return;
+    let alive = true;
     (async () => {
       try {
-        await document.fonts?.ready;
-        const blob = capRef.current ? await toBlob(capRef.current, {
-              pixelRatio: 2,
-              cacheBust: true,
-              backgroundColor: "#ffffff",
-              // 화면 밖(left -9999px)에 둔 위치를 그대로 복제하면 빈 흰 이미지가 나온다. 찍을 때만 제자리로 돌린다
-              style: { position: "static", left: "0", top: "0", margin: "0" },
-            }) : null;
-        if (!blob) throw new Error("empty");
-        const file = new File([blob], fileName, { type: "image/png" });
-        // 휴대폰에서는 공유 창으로 갤러리에 저장하고, 안 되면 파일로 내려받는다
-        if (navigator.canShare?.({ files: [file] })) {
-          try {
-            await navigator.share({ files: [file] });
-            setShot("idle");
-            return;
-          } catch (e) {
-            if ((e as Error).name === "AbortError") {
-              setShot("idle");
-              return;
-            }
-          }
-        }
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = file.name;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-        setShot("idle");
+        // 화면에 그린 직후에는 크기가 덜 잡혀 있을 수 있어 잠깐 기다린 뒤 찍는다
+        await new Promise((r) => setTimeout(r, 150));
+        if (!capRef.current) return;
+        const png = await makeCardPng(capRef.current);
+        if (alive) setBlobs((b) => ({ ...b, [imageKey]: png }));
       } catch {
-        setShot("failed");
+        if (alive) setFailedKey(imageKey);
       }
     })();
-    // 저장을 누른 순간의 파일 이름이면 충분하다
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shot]);
+    return () => {
+      alive = false;
+    };
+  }, [making, imageKey]);
+
+  function save() {
+    if (failedKey === imageKey) {
+      setFailedKey(null); // 다시 만들어 본다
+      return;
+    }
+    if (!blob) return;
+    const file = new File([blob], fileName, { type: "image/png" });
+    const url = URL.createObjectURL(blob);
+    if (isTouchDevice()) {
+      setViewer({ url, file });
+      return;
+    }
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = file.name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function closeViewer() {
+    if (viewer) URL.revokeObjectURL(viewer.url);
+    setViewer(null);
+  }
+
+  async function shareViewer() {
+    if (!viewer) return;
+    try {
+      await navigator.share({ files: [viewer.file] });
+    } catch {
+      // 취소하거나 막혀도 괜찮다. 위의 사진을 길게 눌러 저장하면 된다
+    }
+  }
+  const canShareFile = Boolean(viewer && typeof navigator !== "undefined" && navigator.canShare?.({ files: [viewer.file] }));
 
   function flip() {
     setBack((b) => !b);
@@ -373,7 +404,7 @@ export function ReportCard({
   ) : undefined;
 
   return (
-    <div className="flip-wrap">
+    <div className="flip-wrap" ref={wrapRef}>
       {/* 직무 탭은 카드 밖에 둔다. 이미지로 저장할 때 카드만 찍히게 하려는 것 (11/21) */}
       {tabs}
       {/* 카드 아무 곳이나 누르면 뒤집힌다 (링크와 버튼은 제외). 키보드는 아래 "근거 보기" 버튼으로 */}
@@ -396,27 +427,47 @@ export function ReportCard({
         <button
           type="button"
           className="btn btn-primary"
-          onClick={() => setShot("making")}
-          disabled={Boolean(missingRole) || shot === "making" || !shown.fitLabel}
+          onClick={save}
+          disabled={!canMake || (!blob && failedKey !== imageKey)}
           data-el="카드 저장"
+          data-ready={blob ? "true" : "false"}
         >
-          {shot === "making" ? "이미지 만드는 중" : `${face} 카드 저장하기`}
+          {canMake && !blob && failedKey !== imageKey ? "이미지 준비 중" : failedKey === imageKey ? "다시 시도하기" : `${face} 카드 저장하기`}
         </button>
         <button type="button" className="btn" onClick={flip} disabled={Boolean(missingRole)} data-el="카드 뒤집기">
           <FlipIcon />
           {back ? "요약 보기" : "근거 보기"}
         </button>
       </div>
-      {shot === "failed" && (
+      {failedKey === imageKey && (
         <p className="small muted" role="status">
-          이미지를 만들지 못했어요. 화면을 캡처해서 저장해 주세요.
+          이미지를 만들지 못했어요. 다시 시도하거나 화면을 캡처해서 저장해 주세요.
         </p>
       )}
-      {shot === "making" && (
+      {making && (
         <div className="cap-offscreen" ref={capRef} aria-hidden="true">
           {face === "요약" ? <Front d={shown} hidden /> : <Back d={shown} hidden={false} />}
         </div>
       )}
+      {/* 휴대폰: 사진을 크게 띄우고 길게 눌러 저장하게 한다 (갤러리 저장은 이 방법이 가장 확실하다) */}
+      <AppDialog open={viewer !== null} title={`${face} 카드 이미지`} onClose={closeViewer}>
+        {viewer && (
+          <div data-el="이미지 저장 창">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={viewer.url} alt={`${shown.companyName} ${shown.role} ${face} 카드`} className="save-img" />
+            <p className="dlg-text" style={{ marginTop: 12 }}>
+              사진을 <b>길게 눌러</b> &quot;사진에 저장&quot;(또는 &quot;이미지 저장&quot;)을 골라 주세요.
+            </p>
+            {canShareFile && (
+              <div className="dlg-actions">
+                <button type="button" className="btn btn-primary" onClick={shareViewer}>
+                  공유 창으로 저장하기
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </AppDialog>
     </div>
   );
 }
