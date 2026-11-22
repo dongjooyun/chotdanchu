@@ -204,7 +204,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       const bottom = Math.max(nav, above);
       document.documentElement.style.setProperty("--fab-bottom", `${bottom}px`);
       // 통합 버튼 자리(보내기 버튼 아래)까지 세 버튼이 내려가야 하는 거리
-      document.documentElement.style.setProperty("--dock-dy", `${Math.max(0, bottom - 70)}px`);
+      document.documentElement.style.setProperty("--dock-dy", `${Math.max(0, bottom - 66)}px`);
     };
     const queue = () => {
       if (!raf) raf = requestAnimationFrame(set);
@@ -649,7 +649,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
             tabIndex={matchupOpen ? 0 : -1}
             onClick={() => setDockMenu((v) => !v)}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <circle cx="6" cy="6" r="2.2" />
               <circle cx="18" cy="6" r="2.2" />
               <circle cx="6" cy="18" r="2.2" />
