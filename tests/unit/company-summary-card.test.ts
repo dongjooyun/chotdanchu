@@ -157,10 +157,10 @@ describe("SUM-16~19 실제 사전 계산 결과 파일 (data/real/business-summa
   });
 });
 
-/** 요약 구역만 잘라 본다. 11/22 디자인에서 요약은 회사 정보 바로 아래 section이라, 아래 등급 분포의 "확인 불가" 배지와 섞이지 않게 한다 */
+/** 요약 상자(.cc-biz)만 잘라 본다. 11/22 디자인에서 요약은 회사 정보 바로 아래라, 아래 등급 분포의 "확인 불가" 배지와 섞이지 않게 한다 */
 function summaryBlock(html: string): string {
-  const i = html.indexOf("하는 일 세 줄 요약");
-  return html.slice(i, html.indexOf("</section>", i));
+  const i = html.indexOf('data-el="하는 일 세 줄 요약"');
+  return html.slice(i, html.indexOf('<div class="cc-sum">', i));
 }
 
 describe("SUM-09~12 카드 화면 문구 (서버 렌더링으로 확인)", () => {
