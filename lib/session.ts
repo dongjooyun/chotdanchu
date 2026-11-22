@@ -15,7 +15,7 @@ const INDICATOR_IDS: IndicatorId[] = [
   "tenure", "tech_investment", "funding_stage", "risk", "transparency",
 ];
 
-/** 맞대결을 건너뛴 사용자의 선호: 모든 지표를 같은 비중으로 본다 (PRD 02). 예: weights.growth === 0.1 */
+/** 밸런스 게임을 건너뛴 사용자의 선호: 모든 지표를 같은 비중으로 본다 (PRD 02). 예: weights.growth === 0.1 */
 export function skippedPreference(): Preference {
   const w = 1 / INDICATOR_IDS.length;
   const weights = Object.fromEntries(INDICATOR_IDS.map((id) => [id, w])) as Record<IndicatorId, number>;

@@ -1,4 +1,4 @@
-// 맞대결(PRD 02): 가상 카드 8장의 8강 토너먼트(7판)와 선호 가중치 계산.
+// 밸런스 게임(PRD 02): 가상 카드 8장의 8강 토너먼트(7판)와 선호 가중치 계산.
 // 출제는 미리 정한 대진이고(적응형 아님), 계산은 Bradley-Terry 쌍 비교 모델이다. 같은 선택이면 항상 같은 결과가 나온다.
 import cardsFile from "@/data/matchup/cards.json";
 import {
@@ -30,7 +30,7 @@ const GRADE_SCORE: Record<Grade, number> = { A: 1, B: 0.5, C: 0 };
 
 const byId = (id: string) => {
   const card = MATCHUP_CARDS.find((c) => c.id === id);
-  if (!card) throw new Error(`맞대결 카드 없음: ${id}`);
+  if (!card) throw new Error(`밸런스 게임 카드 없음: ${id}`);
   return card;
 };
 

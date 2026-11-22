@@ -16,7 +16,7 @@ async function openReport(page: Page) {
   await chooseRole(page, "서비스기획");
   await page.getByLabel("메시지 입력").fill("별하늘랩스");
   await page.getByRole("button", { name: "보내기" }).click();
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click({ timeout: 20_000 });
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click({ timeout: 20_000 });
   await expect(page.locator('[data-el="리포트 카드"]')).toBeVisible({ timeout: 20_000 });
 }
 

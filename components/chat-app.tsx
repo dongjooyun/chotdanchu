@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AppNav, type AppView } from "@/components/app-nav";
-import { Fab } from "@/components/fab";
+import { CardsIcon, CompanyIcon, InfoIcon, RefreshIcon, RoleIcon, SparkleIcon } from "@/components/menu-icons";
+import { MobileMenu } from "@/components/mobile-menu";
+import { ScrollButtons } from "@/components/scroll-buttons";
 import { AgentLogPanel } from "@/components/agent-log-panel";
 import { AppDialog } from "@/components/app-dialog";
 import { AppHeader } from "@/components/app-header";
@@ -49,10 +51,10 @@ function sourceNote(mode: AppMode, names: string[]): string {
   return `OpenDART 공시, 국민연금 가입 사업장, 국세청 사업자 상태로 미리 확인해 둔 회사만 볼 수 있어요: ${names.join(", ")}`;
 }
 
-/** 맞대결 권유. 원하는 행동(맞대결)만 연보라로 강조한다 */
+/** 밸런스 게임 권유. 원하는 행동(밸런스 게임)만 연보라로 강조한다 */
 const PREF_REPLIES: QuickReply[] = [
-  { label: "기업 맞대결로 내 성향 맞춤 판정 받기", value: "pref:matchup", main: true },
-  { label: "건너뛰고 기본 기준으로", value: "pref:skip" },
+  { label: "기업 밸런스 게임 시작하기", value: "pref:matchup", main: true },
+  { label: "건너뛰기(일반 기준 적용)", value: "pref:skip" },
 ];
 
 /** 리포트가 끝난 뒤 마지막 말풍선에만 붙는 다음 행동. 매 말풍선마다 붙이면 시선이 흩어진다 */
@@ -61,8 +63,8 @@ function nextReplies(personalized: boolean): QuickReply[] {
     { label: "다른 회사 보기", value: "next:company" },
     { label: "직무 변경하기", value: "next:role" },
     personalized
-      ? { label: "기업 맞대결 다시 하기", value: "pref:matchup" }
-      : { label: "기업 맞대결로 내 성향 맞춤 판정 받기", value: "pref:matchup", main: true },
+      ? { label: "기업 밸런스 게임 다시 하기", value: "pref:matchup" }
+      : { label: "기업 밸런스 게임 시작하기", value: "pref:matchup", main: true },
   ];
 }
 
@@ -114,36 +116,6 @@ const NO_LOG: LogLine[] = [];
 /** 대화를 저장하는 칸 이름. 목업과 실데이터 대화가 섞이지 않게 모드를 붙인다 */
 const chatKey = (mode: AppMode, name: string) => `chotdanchu:chat:v1:${mode}:${name}`;
 
-/** 맞대결 아이콘 (겹친 카드 두 장) */
-function CardsIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="6" width="10" height="14" rx="1.5" transform="rotate(-8 8 13)" />
-      <rect x="11" y="4" width="10" height="14" rx="1.5" transform="rotate(8 16 11)" />
-    </svg>
-  );
-}
-
-/** 대화 새로 시작 아이콘 (도는 화살표) */
-function RefreshIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M21 12a9 9 0 1 1-2.6-6.4L21 8" />
-      <path d="M21 3v5h-5" />
-    </svg>
-  );
-}
-
-/** 단색 반짝임 아이콘 (AI 표시). 색은 글자색을 따른다 */
-function SparkleIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-      <path d="M12 2c.6 4.9 2.6 7.4 8 8-5.4.6-7.4 3.1-8 8-.6-4.9-2.6-7.4-8-8 5.4-.6 7.4-3.1 8-8Z" />
-      <path d="M19 15c.3 2.3 1.2 3.4 3.5 3.7-2.3.3-3.2 1.4-3.5 3.7-.3-2.3-1.2-3.4-3.5-3.7 2.3-.3 3.2-1.4 3.5-3.7Z" />
-    </svg>
-  );
-}
-
 /** 채팅 화면 전체: 헤더, 고정 정보줄, 말풍선과 위젯, 입력창, 에이전트 사고 과정 패널, 면책 문구, 기업 카드 모음 */
 export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] }) {
   const EXAMPLE_REPLIES = exampleReplies(examples);
@@ -171,33 +143,20 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   const view: AppView = picked ?? (hydrated && tutorialSeen !== true ? "tutorial" : "chat");
   /** "대화 새로 시작" 확인 창 */
   const [resetAsk, setResetAsk] = useState(false);
-  /** 맞대결을 한 번이라도 끝까지 했는지 (건너뛴 뒤에도 "다시 하기"로 보이게) */
+  /** 밸런스 게임을 한 번이라도 끝까지 했는지 (건너뛴 뒤에도 "다시 하기"로 보이게) */
   const [matchupDone, setMatchupDone] = useStoredState("chotdanchu:matchup-done", false);
   /** 모바일에서 사고 과정을 여는 창 */
   const [thinkModal, setThinkModal] = useState(false);
-  /** 맞대결 중 통합 버튼 메뉴 */
-  const [dockMenu, setDockMenu] = useState(false);
-  const dockPointer = useRef<string>("");
-  const dockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  /** 마우스를 올리면 메뉴가 열리고, 벗어나면 0.25초 뒤 닫힌다 (버튼에서 메뉴로 옮겨 가는 동안 닫히지 않게) */
-  const openDock = () => {
-    if (dockTimer.current) clearTimeout(dockTimer.current);
-    setDockMenu(true);
-  };
-  const closeDockSoon = () => {
-    if (dockTimer.current) clearTimeout(dockTimer.current);
-    dockTimer.current = setTimeout(() => setDockMenu(false), 250);
-  };
   const [pending, setPending] = useState(false);
   const [think, setThink] = useState(false);
-  /** 맞대결을 다시 해 성향이 바뀌었을 때 저장 카드를 어떻게 할지 묻는 창 */
+  /** 밸런스 게임을 다시 해 성향이 바뀌었을 때 저장 카드를 어떻게 할지 묻는 창 */
   const [retype, setRetype] = useState<{ from: Preference; to: Preference; count: number } | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const intro = introMessage(introRole === undefined ? session.role : introRole, EXAMPLE_REPLIES);
   const shown = [intro, ...messages];
-  // 맞대결이 진행 중이면(마지막 말풍선이 맞대결) 모바일 둥근 버튼을 숨겨 카드 오른쪽 등급 배지와 "건너뛰고 기본 기준으로"를 가리지 않게 한다 (11/22)
-  const matchupOpen = messages.at(-1)?.widget?.type === "matchup";
+  /** 모바일 메뉴의 "출처와 유의사항" 창 (모바일은 입력창 아래 안내와 면책 문구를 없애고 여기로 옮겼다) */
+  const [noticeOpen, setNoticeOpen] = useState(false);
 
   // 새 말풍선이 생기면(보냈거나 받았거나) 그 묶음의 첫 말풍선이 화면 위쪽에 오게 스크롤한다 (11/22).
   // 처음 화면이 뜰 때(저장된 대화를 불러올 때)는 움직이지 않는다
@@ -212,51 +171,6 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       document.querySelector(`[data-msg-id="${first.id}"]`)?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }, [messages]);
-
-  // 모바일 둥근 버튼은 입력창 바로 위에 띄운다. 입력창이 어디에 있든(바닥에 붙었든, 아직 아래에 있든) 보내기 버튼을 가리지 않게
-  // 입력창의 실제 위쪽 위치를 재서 그 12px 위로 맞춘다 (스크롤, 크기가 바뀔 때마다)
-  useEffect(() => {
-    const el = document.querySelector<HTMLElement>(".inputbar");
-    if (!el) return;
-    let raf = 0;
-    const set = () => {
-      raf = 0;
-      const nav = 60 + 12; // 하단 탭 높이 + 여백
-      const above = window.innerHeight - el.getBoundingClientRect().top + 12;
-      const bottom = Math.max(nav, above);
-      document.documentElement.style.setProperty("--fab-bottom", `${bottom}px`);
-      // 통합 버튼 자리(보내기 버튼 아래)까지 세 버튼이 내려가야 하는 거리
-      document.documentElement.style.setProperty("--dock-dy", `${Math.max(0, bottom - 66)}px`);
-    };
-    const queue = () => {
-      if (!raf) raf = requestAnimationFrame(set);
-    };
-    set();
-    const ro = new ResizeObserver(queue);
-    ro.observe(el);
-    window.addEventListener("scroll", queue, { passive: true });
-    window.addEventListener("resize", queue);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("scroll", queue);
-      window.removeEventListener("resize", queue);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [view, messages.length]);
-
-  // 통합 버튼 메뉴는 바깥을 누르거나 Esc로 닫고, 맞대결이 끝나면 닫는다
-  useEffect(() => {
-    if (!dockMenu) return;
-    const close = (e: Event) => {
-      if (e instanceof KeyboardEvent ? e.key === "Escape" : !(e.target as HTMLElement).closest(".fab-dock")) setDockMenu(false);
-    };
-    document.addEventListener("pointerdown", close);
-    document.addEventListener("keydown", close);
-    return () => {
-      document.removeEventListener("pointerdown", close);
-      document.removeEventListener("keydown", close);
-    };
-  }, [dockMenu]);
 
   // 메뉴를 오가도 챗봇 화면의 스크롤 위치를 기억한다
   const chatScroll = useRef(0);
@@ -324,17 +238,17 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     return { from: "agent", text: careerMessage(gap, role), log: lines };
   }
 
-  /** 기업 카드 다음 단계: 3년차 공고 안내, 그다음 맞대결 권유 또는 바로 리포트 */
+  /** 기업 카드 다음 단계: 3년차 공고 안내, 그다음 밸런스 게임 권유 또는 바로 리포트 */
   function afterCompanyCard(role: Role | null, a: Analysis) {
     const career = careerStep(role, a);
-    // 이미 맞대결을 했거나 건너뛴 사용자는 다시 묻지 않고 그 기준으로 바로 판정한다. 건너뛴 사용자에게는 리포트 뒤에 맞대결 버튼을 다시 준다
+    // 이미 밸런스 게임을 했거나 건너뛴 사용자는 다시 묻지 않고 그 기준으로 바로 판정한다. 건너뛴 사용자에게는 리포트 뒤에 밸런스 게임 버튼을 다시 준다
     if (session.preference && role) {
       const personal = isPersonalized(session.preference);
       const { next, widget } = withReport(session, a, role, session.preference);
       setSession(next);
       push(career, {
         from: "agent",
-        text: personal ? "저장해 둔 내 성향으로 판정한 최종 판단 리포트예요." : "기본 기준으로 판정한 최종 판단 리포트예요.",
+        text: personal ? "저장해 둔 내 성향으로 판정한 최종 판단 리포트예요." : "일반 기준으로 판정한 최종 판단 리포트예요.",
         widget,
         replies: nextReplies(personal),
       });
@@ -342,7 +256,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     }
     push(career, {
       from: "agent",
-      text: "내 기준에 맞춰 최종 판정할까요? 회사명을 가린 카드 7판, 1분이면 돼요.",
+      text: "내 성향 맞춤 판단을 원하시나요? 회사명을 가린 카드 7판, 1분이면 돼요.",
       replies: PREF_REPLIES,
     });
   }
@@ -382,7 +296,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     void ask({ pickCompanyId: id });
   }
 
-  /** 리포트 아래 "기업 카드 모음에 담기": 그 리포트(기업, 직무, 판정)를 모음에 담는다. 맞대결 전이면 "기본 기준" 카드 */
+  /** 리포트 아래 "기업 카드 모음에 담기": 그 리포트(기업, 직무, 판정)를 모음에 담는다. 밸런스 게임 전이면 "일반 기준" 카드 */
   function onSaveReport(w: Extract<MessageWidget, { type: "report" }>) {
     if (!w.analysis) return;
     const a: Analysis = { ...w.analysis, log: w.log ?? [] };
@@ -407,7 +321,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     const { sentence, by } = await fetchSentence(pref);
     setPending(false);
     appendLog([
-      { step: 0, type: "tool_call", title: "compute_preference: 맞대결 7판을 Bradley-Terry로 계산", reason: "같은 선택이면 항상 같은 결과", mode },
+      { step: 0, type: "tool_call", title: "compute_preference: 밸런스 게임 7판을 Bradley-Terry로 계산", reason: "같은 선택이면 항상 같은 결과", mode },
       { step: 0, type: by === "llm" ? "decision" : "info", title: by === "llm" ? "유형 설명 문장을 AI가 작성" : "유형 설명 문장은 규칙 문장", reason: by === "llm" ? "중시 지표 순서만 근거로 씀, 숫자 없음" : undefined, mode },
     ]);
     const before = session.preference;
@@ -450,7 +364,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     setRetype(null);
   }
 
-  /** 모음의 "맞춤 판정 받기": 그 카드의 기업과 직무로 맞대결을 시작한다 */
+  /** 모음의 "맞춤 판정 받기": 그 카드의 기업과 직무로 밸런스 게임을 시작한다 */
   function onPersonalize(r: AnalysisRecord) {
     if (!r.analysis) return;
     const role = r.lastRole ?? session.role;
@@ -480,12 +394,12 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       return;
     }
     if (value === "pref:matchup") {
-      startMatchup("기업 맞대결로 내 성향 맞춤 판정 받기");
+      startMatchup("기업 밸런스 게임 시작하기");
       return;
     }
     if (value === "pref:skip") {
       const preference = skippedPreference();
-      push({ from: "user", text: "건너뛰고 기본 기준으로" });
+      push({ from: "user", text: "건너뛰기(일반 기준 적용)" });
       if (!current || !session.role) {
         setSession({ ...session, preference });
         return;
@@ -494,7 +408,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       setSession(next);
       push({
         from: "agent",
-        text: "기본 기준으로 판정한 최종 판단 리포트예요.",
+        text: "일반 기준으로 판정한 최종 판단 리포트예요.",
         widget,
         replies: nextReplies(false),
       });
@@ -518,7 +432,20 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     push({ from: "agent", text: askCompany(session.role), replies: EXAMPLE_REPLIES });
   }
 
-  const matchupLabel = matchupDone || isPersonalized(session.preference) ? "기업 맞대결 다시 하기" : "기업 맞대결 하기";
+  const matchupLabel = matchupDone || isPersonalized(session.preference) ? "기업 밸런스 게임 다시 하기" : "기업 밸런스 게임 하기";
+  const mobileMenu = (
+    <MobileMenu
+      status={`${session.role ?? "직무 미정"} · ${company ?? "회사 미정"}`}
+      items={[
+        ...(session.role ? [{ key: "role", label: "직무 변경하기", icon: <RoleIcon />, onSelect: onChangeRole, disabled: pending }] : []),
+        ...(company ? [{ key: "company", label: "회사 변경하기", icon: <CompanyIcon />, onSelect: onChangeCompany, disabled: pending }] : []),
+        ...(session.role ? [{ key: "matchup", label: matchupLabel, icon: <CardsIcon />, onSelect: () => startMatchup(matchupLabel), disabled: pending }] : []),
+        ...(messages.length > 0 ? [{ key: "reset", label: "대화 새로 시작하기", icon: <RefreshIcon />, onSelect: () => setResetAsk(true), disabled: pending }] : []),
+        { key: "think", label: "에이전트 사고 과정 보기", icon: <SparkleIcon />, onSelect: () => setThinkModal(true) },
+        { key: "notice", label: "출처와 유의사항", icon: <InfoIcon />, onSelect: () => setNoticeOpen(true) },
+      ]}
+    />
+  );
   const handlers: WidgetHandlers = { onPickCompany, onSaveReport, isReportSaved, onMatchupDone, onMatchupSkip };
 
   /** 대화 새로 시작: 말풍선과 사고 과정만 지운다. 고른 직무, 성향, 기업 카드 모음은 남는다 */
@@ -535,10 +462,10 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     <>
       <AppHeader mode={mode} onHome={goHome} />
       <InAppNotice />
-      <AppNav view={view} onChange={changeView} count={session.analyzed.length} />
+      <AppNav view={view} onChange={changeView} />
       {view === "tutorial" && <TutorialTour examples={examples} onFinish={() => changeView("chat")} />}
-      {/* 메뉴를 바꿔도 대화와 맞대결 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}
-      <div className="app" data-think={think ? "open" : "closed"} data-docked={matchupOpen ? "true" : "false"} hidden={view !== "chat"}>
+      {/* 메뉴를 바꿔도 대화와 밸런스 게임 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}
+      <div className="app" data-think={think ? "open" : "closed"} hidden={view !== "chat"}>
         {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}
         <div className="infobar" data-el="고정 정보줄">
           <div className="infobar-main">
@@ -562,11 +489,11 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
               </span>
             </div>
           </div>
-          {/* PC: 오른쪽 두 줄(맞대결·새로 시작 / 사고 과정)로 왼쪽 두 줄과 높이를 맞춘다. 모바일은 오른쪽 아래 둥근 버튼 */}
+          {/* PC: 오른쪽 두 줄(밸런스 게임·새로 시작 / 사고 과정)로 왼쪽 두 줄과 높이를 맞춘다. 모바일은 오른쪽 아래 둥근 버튼 */}
           <div className="infobar-side only-pc">
             <span className="infobar-actions">
               {session.role && (
-                <button type="button" className="btn btn-link small" onClick={() => startMatchup(matchupLabel)} disabled={pending} data-el="맞대결 버튼">
+                <button type="button" className="btn btn-link small" onClick={() => startMatchup(matchupLabel)} disabled={pending} data-el="밸런스 게임 버튼">
                   {matchupLabel}
                 </button>
               )}
@@ -597,9 +524,10 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
               <ChatInput
                 onSend={onSend}
                 disabled={pending || !session.role}
-                placeholder={session.role ? "회사 이름을 입력해 주세요" : "먼저 위에서 직무를 골라 주세요"}
+                placeholder={session.role ? "궁금한 기업명을 알려 주세요" : "먼저 직무를 골라 주세요"}
+                trailing={mobileMenu}
               />
-              <p className="tiny muted" style={{ marginTop: 6 }}>
+              <p className="tiny muted only-pc" style={{ marginTop: 6 }}>
                 {sourceNote(mode, examples)}
               </p>
             </div>
@@ -610,85 +538,17 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
             </div>
           )}
         </div>
-        <Disclaimer />
+        <div className="only-pc">
+          <Disclaimer />
+        </div>
       </div>
-      {/* 모바일: 사고 과정과 대화 새로 시작은 오른쪽 아래 둥근 아이콘 버튼. 사고 과정은 창으로 연다 */}
-      {view === "chat" && (
-        <div className="fab-stack only-mobile" data-docked={matchupOpen ? "true" : "false"}>
-          {messages.length > 0 && (
-            <Fab tone="quiet" label="대화 새로 시작하기" onClick={() => setResetAsk(true)} disabled={pending}>
-              <RefreshIcon />
-            </Fab>
-          )}
-          {session.role && (
-            <Fab tone="lilac" label={matchupLabel} onClick={() => startMatchup(matchupLabel)} disabled={pending}>
-              <CardsIcon />
-            </Fab>
-          )}
-          <Fab tone="ai" label="에이전트 사고 과정 보기" onClick={() => setThinkModal(true)}>
-            <SparkleIcon />
-          </Fab>
-        </div>
-      )}
-      {/* 맞대결 중에는 세 버튼이 입력창 보내기 버튼 아래 작은 통합 버튼 하나로 모인다. 누르면 두 가지 메뉴(대화 새로 시작, 사고 과정)가 열린다 (11/22) */}
-      {view === "chat" && (
-        <div
-          className="fab-dock only-mobile"
-          data-docked={matchupOpen ? "true" : "false"}
-          onPointerEnter={(e) => e.pointerType === "mouse" && openDock()}
-          onPointerLeave={(e) => e.pointerType === "mouse" && closeDockSoon()}
-        >
-          {dockMenu && matchupOpen && (
-            <div className="dock-menu" role="menu">
-              {messages.length > 0 && (
-                <button
-                  type="button"
-                  role="menuitem"
-                  onClick={() => {
-                    setDockMenu(false);
-                    setResetAsk(true);
-                  }}
-                >
-                  <RefreshIcon />
-                  대화 새로 시작하기
-                </button>
-              )}
-              <button
-                type="button"
-                role="menuitem"
-                onClick={() => {
-                  setDockMenu(false);
-                  setThinkModal(true);
-                }}
-              >
-                <SparkleIcon />
-                에이전트 사고 과정 보기
-              </button>
-            </div>
-          )}
-          <button
-            type="button"
-            className="dock-btn"
-            aria-label="빠른 메뉴"
-            aria-haspopup="menu"
-            aria-expanded={dockMenu && matchupOpen}
-            tabIndex={matchupOpen ? 0 : -1}
-            onPointerDown={(e) => (dockPointer.current = e.pointerType)}
-            // 마우스는 올리면 열리므로 클릭으로 닫지 않는다. 터치와 키보드는 누를 때마다 열고 닫는다
-            onClick={() => {
-              if (dockPointer.current === "mouse") return;
-              setDockMenu((v) => !v);
-            }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <circle cx="6" cy="6" r="2.2" />
-              <circle cx="18" cy="6" r="2.2" />
-              <circle cx="6" cy="18" r="2.2" />
-              <circle cx="18" cy="18" r="2.2" />
-            </svg>
-          </button>
-        </div>
-      )}
+      {view === "chat" && <ScrollButtons />}
+      <AppDialog open={noticeOpen} title="출처와 유의사항" onClose={() => setNoticeOpen(false)}>
+        <p className="dlg-text">{sourceNote(mode, examples)}</p>
+        <p className="dlg-text" style={{ marginTop: 12 }}>
+          공개 데이터 기반 참고 정보이며 기업 평가가 아닙니다. 수치마다 출처와 기준 시점을 확인해 주세요.
+        </p>
+      </AppDialog>
       <AppDialog open={thinkModal} title="에이전트 사고 과정" onClose={() => setThinkModal(false)}>
         <AgentLogPanel lines={log} bare />
       </AppDialog>
@@ -721,7 +581,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
         {retype && (
           <div data-el="성향 변경 확인">
             <p className="dlg-text">
-              이번 맞대결에서는 &quot;{PREFERENCE_TYPE_LABELS[retype.to.type!]}&quot;으로 나왔어요(이전: {PREFERENCE_TYPE_LABELS[retype.from.type!]}). 저장한 카드
+              이번 밸런스 게임에서는 &quot;{PREFERENCE_TYPE_LABELS[retype.to.type!]}&quot;으로 나왔어요(이전: {PREFERENCE_TYPE_LABELS[retype.from.type!]}). 저장한 카드
               중 맞춤 판정을 받은 {retype.count}장도 새 성향으로 다시 판정할까요?
             </p>
             <div className="dlg-actions">

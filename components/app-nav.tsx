@@ -40,7 +40,7 @@ const ITEMS: { id: AppView; label: string; icon: React.ReactNode }[] = [
   },
 ];
 
-export function AppNav({ view, onChange, count }: { view: AppView; onChange: (v: AppView) => void; count: number }) {
+export function AppNav({ view, onChange }: { view: AppView; onChange: (v: AppView) => void }) {
   // 메뉴를 누르면 마우스가 사이드바 위에 있어도 바로 아이콘만 남게 접고, 마우스가 나갔다 다시 들어오면 다시 펼친다 (11/22)
   const [picked, setPicked] = useState(false);
   return (
@@ -61,10 +61,7 @@ export function AppNav({ view, onChange, count }: { view: AppView; onChange: (v:
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             {it.icon}
           </svg>
-          <span className="app-nav-label">
-            {it.label}
-            {it.id === "collection" && count > 0 ? ` (${count})` : ""}
-          </span>
+          <span className="app-nav-label">{it.label}</span>
         </button>
       ))}
     </nav>

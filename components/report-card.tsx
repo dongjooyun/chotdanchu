@@ -127,7 +127,7 @@ function Front({
             <dl className="rc-facts">
               <div>
                 <dt>내 성향</dt>
-                <dd>{d.preferenceType ?? "기본 기준 (맞대결 건너뜀)"}</dd>
+                <dd>{d.preferenceType ?? "일반 기준 (밸런스 게임 건너뜀)"}</dd>
               </div>
               {top && (
                 <div>

@@ -67,7 +67,7 @@ describe("리포트 카드 초안", () => {
     expect(d.careerUrl).toBeUndefined();
   });
 
-  test("RPT-06 맞대결을 건너뛰면 성향은 비고 중시한 지표도 없다", () => {
+  test("RPT-06 밸런스 게임을 건너뛰면 성향은 비고 중시한 지표도 없다", () => {
     const d = draft("별하늘랩스", "마케팅");
     expect(d.preferenceType).toBeNull();
     expect(d.topIndicators).toEqual([]);
