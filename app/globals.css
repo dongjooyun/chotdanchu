@@ -466,7 +466,6 @@ body { padding-top: var(--header-h); }
 @media (min-width: 821px) { .app-nav { top: var(--header-h); } }
 @media (max-width: 820px) {
   .wrap > .app-header { padding: 0 var(--s-4); }
-  .wrap > .app-header .tagline { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
   .msg { scroll-margin-top: calc(var(--header-h) + 136px); }
 }
 /* 정보줄: 왼쪽은 제목 + 직무·회사, 오른쪽은 맞대결·새로 시작 + 사고 과정 (두 줄씩) */
@@ -623,3 +622,39 @@ body { padding-top: var(--header-h); }
 .result-rows > div { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-1); }
 .result-rows dt { margin: 0; font-size: 14px; }
 .result-rows dd { margin: 0; font-size: 16px; line-height: 1.6; }
+/* ===== 11/23 QA (준오 실기기 확인) ===== */
+/* 한글은 단어 중간에서 끊지 않는다. 아주 긴 영문, 주소만 칸 끝에서 끊는다 */
+body { word-break: keep-all; overflow-wrap: break-word; }
+/* 리포트 카드 앞면 줄: 라벨은 줄어들며 줄바꿈되고, 개수 배지는 늘 카드 안쪽 같은 오른쪽 선에 붙는다 */
+.rc-facts > div { align-items: center; }
+.rc-facts dt { flex: 0 1 auto; min-width: 0; }
+.rc-facts dd { flex: 0 1 auto; min-width: 0; }
+.count-badge { flex: none; white-space: nowrap; }
+/* 내가 중시한 지표와 이 회사 등급 (밸런스 게임을 했을 때만) */
+.rc-facts > .rc-top3 { flex-direction: column; align-items: stretch; gap: var(--s-1); padding-bottom: var(--s-2); border-bottom: 1px solid var(--line-2); }
+.rc-top3 dd { text-align: left; font-weight: 500; }
+.rc-top3 ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.rc-top3 li { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); }
+/* 저장 이미지가 너무 길다(11/23 QA): 카드 안 로고 칸을 낮추고, 저장용 사진은 조금 넓게 찍는다 */
+.rc .art { aspect-ratio: 3 / 1; }
+.rc-front .rc-body { gap: var(--s-3); }
+.cap-offscreen { width: 400px; }
+/* 근거 카드의 역량 목록은 두 칸 (쌓을 수 있는 역량 | 따로 채울 역량) */
+.gap-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); margin-top: var(--s-3); }
+.gap-cols .gap-list, .gap-cols .gap-list:first-of-type { margin-top: 0; }
+.gap-cols .gap-k { align-items: flex-start; flex-direction: column; gap: 2px; }
+.rc-years { display: block; margin-top: 2px; }
+/* 휴대폰: 리포트 구역의 바깥 테두리와 여백을 없앤다 (카드 안에 테두리가 한 번 더 있어 폭이 좁아졌다) */
+@media (max-width: 820px) {
+  .report-block { width: 100%; padding: 0; border: 0; background: none; }
+  .report-save { width: 100%; }
+}
+/* 휴대폰 이미지 저장 창: 가운데 안내 한 줄, 그 아래 가운데 공유 아이콘, 그 아래 사진 */
+.save-view { display: flex; flex-direction: column; align-items: center; gap: var(--s-3); }
+.save-hint { margin: 0; font-size: 16px; font-weight: 600; text-align: center; }
+.share-icon-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--gray-4); background: var(--surface); color: var(--purple-ink); display: inline-flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; touch-action: manipulation; }
+.share-icon-btn:active, .share-icon-btn:hover { background: var(--lilac); }
+.share-icon-btn:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }/* 튜토리얼 끝 화면의 PC 메뉴 안내 */
+.tut-menu-list { margin: var(--s-1) 0 0; padding-left: 1.2em; list-style: disc; font-size: 16px; line-height: 1.6; }
+.tut-menu-list li + li { margin-top: var(--s-1); }
+.cc-sum-note { display: block; margin-top: 2px; font-size: 14px; font-weight: 400; }
