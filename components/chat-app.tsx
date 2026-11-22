@@ -11,6 +11,7 @@ import { ChatInput } from "@/components/chat-input";
 import { Disclaimer } from "@/components/disclaimer";
 import { MessageList, type ChatMessage, type MessageWidget, type WidgetHandlers } from "@/components/message-list";
 import type { QuickReply } from "@/components/quick-replies";
+import { InAppNotice } from "@/components/in-app-notice";
 import { TutorialTour } from "@/components/tutorial-tour";
 import { useSession } from "@/components/use-session";
 import { useStoredState } from "@/components/use-stored-state";
@@ -533,6 +534,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   return (
     <>
       <AppHeader mode={mode} onHome={goHome} />
+      <InAppNotice />
       <AppNav view={view} onChange={changeView} count={session.analyzed.length} />
       {view === "tutorial" && <TutorialTour examples={examples} onFinish={() => changeView("chat")} />}
       {/* 메뉴를 바꿔도 대화와 맞대결 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}
