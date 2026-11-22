@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import script from "@/data/tutorial/script.json";
 import { AgentLogPanel } from "@/components/agent-log-panel";
 import { LogBadge } from "@/components/log-badge";
+import { CardsIcon, CompanyIcon, InfoIcon, RefreshIcon, RoleIcon, SparkleIcon } from "@/components/menu-icons";
+import { MobileMenu } from "@/components/mobile-menu";
 import { MessageList, type ChatMessage, type MessageWidget, type WidgetHandlers } from "@/components/message-list";
 import type { QuickReply } from "@/components/quick-replies";
 import { computeCareerGap } from "@/lib/career-gap";
@@ -45,7 +47,7 @@ const INTRO: ChatMessage = {
   replies: ROLE_REPLIES,
 };
 
-type StepId = "role" | "input" | "candidates" | "company" | "career" | "pref" | "matchup" | "report" | "think" | "done";
+type StepId = "role" | "input" | "candidates" | "company" | "career" | "pref" | "matchup" | "report" | "think" | "menu" | "done";
 
 const STEPS: { id: StepId; title: string; body: string }[] = [
   { id: "role", title: "직무 고르기", body: "직무에 따라 비교하는 3년차 공고가 달라져요. 직무 버튼을 눌러 보세요. 다음을 누르면 서비스기획으로 진행해요." },
@@ -80,6 +82,19 @@ const STEPS: { id: StepId; title: string; body: string }[] = [
   { id: "done", title: "준비 끝", body: "" },
 ];
 
+/** 모바일에서만 보이는 단계: 입력창 오른쪽 메뉴 버튼 (11/22). PC에는 이 버튼이 없고 정보줄의 버튼들이 같은 일을 한다 */
+const MENU_STEP: { id: StepId; title: string; body: string } = {
+  id: "menu",
+  title: "오른쪽 아래 메뉴 버튼",
+  body: "입력창 오른쪽의 보라색 둥근 버튼이에요. 누르면 위로 메뉴가 펼쳐져요: 직무 변경하기, 회사 변경하기, 기업 맞대결 하기, 대화 새로 시작하기, 에이전트 사고 과정 보기, 출처와 유의사항. 맨 위 한 줄에는 지금 보는 직무와 회사가 나와요. 어느 화면에서든, 맞대결 중에도 같은 자리에 있어요.",
+};
+
+const subscribeNarrow = (cb: () => void) => {
+  const mq = window.matchMedia("(max-width: 820px)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+
 const reduceMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, reduceMotion() ? Math.min(ms, 80) : ms));
 const today = () => new Date().toISOString().slice(0, 10);
@@ -97,7 +112,9 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
   const ids = useRef<Record<string, number>>({ intro: INTRO.id });
   const nextId = useRef(INTRO.id + 1);
   const busy = ticker !== null;
-  const current = STEPS[step];
+  const mobile = useSyncExternalStore(subscribeNarrow, () => window.matchMedia("(max-width: 820px)").matches, () => false);
+  const steps = mobile ? [...STEPS.slice(0, -1), MENU_STEP, STEPS[STEPS.length - 1]] : STEPS;
+  const current = steps[Math.min(step, steps.length - 1)];
 
   const push = useCallback((items: Omit<ChatMessage, "id">[], tag?: string) => {
     const withIds = items.map((m) => ({ ...m, id: nextId.current++ }));
@@ -263,7 +280,9 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
       case "report":
         return setStep(8);
       case "think":
-        return setStep(9);
+        return setStep(9); // 모바일은 메뉴 단계, PC는 마지막 화면
+      case "menu":
+        return setStep(10);
     }
   }
 
@@ -312,6 +331,8 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
         return msg("report")?.querySelector<HTMLElement>('[data-el="리포트 구역"]') ?? null;
       case "think":
         return root.querySelector<HTMLElement>('[data-tut="think"]');
+      case "menu":
+        return root.querySelector<HTMLElement>(".mmenu-btn");
       default:
         return null;
     }
@@ -414,8 +435,9 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
     if (ticker && ticker.length > 0) rootRef.current?.querySelector('[data-tut="ticker"]')?.scrollIntoView({ block: "nearest" });
   }, [ticker]);
 
-  const showThink = current.id === "think" || current.id === "done";
-  const n = Math.min(step + 1, STEPS.length - 1);
+  const showThink = current.id === "think" || current.id === "menu" || current.id === "done";
+  const n = Math.min(step + 1, steps.length - 1);
+  const isLast = steps[step + 1]?.id === "done";
 
   return (
     <section className="coll tutorial" data-el="튜토리얼">
@@ -475,9 +497,26 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
                   placeholder={current.id === "input" ? "보내기를 누르면 몽돌커머스를 입력해요" : "튜토리얼에서는 버튼으로 진행해요"}
                   aria-label="튜토리얼 입력창"
                 />
-                <button type="submit" className="btn btn-ink" disabled={current.id !== "input" || busy}>
-                  보내기
+                <button type="submit" className="btn btn-ink send-btn" disabled={current.id !== "input" || busy}>
+                  <span className="send-label">보내기</span>
+                  <svg className="send-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 19V5" />
+                    <path d="M5 12l7-7 7 7" />
+                  </svg>
                 </button>
+                {/* 모바일 전용: 실제 챗봇 화면과 같은 메뉴 버튼. 메뉴 단계에서는 펼쳐 둔다 */}
+                <MobileMenu
+                  forceOpen={current.id === "menu"}
+                  status="서비스기획 · 몽돌커머스"
+                  items={[
+                    { key: "role", label: "직무 변경하기", icon: <RoleIcon />, onSelect: () => {} },
+                    { key: "company", label: "회사 변경하기", icon: <CompanyIcon />, onSelect: () => {} },
+                    { key: "matchup", label: "기업 맞대결 하기", icon: <CardsIcon />, onSelect: () => {} },
+                    { key: "reset", label: "대화 새로 시작하기", icon: <RefreshIcon />, onSelect: () => {} },
+                    { key: "think", label: "에이전트 사고 과정 보기", icon: <SparkleIcon />, onSelect: () => {} },
+                    { key: "notice", label: "출처와 유의사항", icon: <InfoIcon />, onSelect: () => {} },
+                  ]}
+                />
               </form>
             </div>
           )}
@@ -514,13 +553,13 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
             style={TIP_START}
           >
             <span className="tut-step">
-              {n} / {STEPS.length - 1}
+              {n} / {steps.length - 1}
             </span>
             <b className="tut-title">{current.title}</b>
             <p>{current.body}</p>
             <div className="tut-actions">
               <button type="button" className="btn tut-next" onClick={next} disabled={busy}>
-                {current.id === "think" ? "마치기" : "다음"}
+                {isLast ? "마치기" : "다음"}
               </button>
               <button type="button" className="tut-skip" onClick={onFinish}>
                 건너뛰기
