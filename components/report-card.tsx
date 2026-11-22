@@ -175,7 +175,7 @@ function Front({
             )}
             {d.fitLabel && origin && (
               <div className="rc-qr" data-el="카드 QR">
-                <QRCodeSVG value={`${origin}${shareHref(d.companyId, d.role, d.weightsParam)}`} size={52} level="M" marginSize={0} fgColor="#6b6b76" />
+                <QRCodeSVG value={`${origin}${shareHref(d.companyId, d.role, d.weightsParam)}`} size={64} level="M" marginSize={0} />
                 <span className="tiny muted">
                   스캔하여 기업 카드 자세히 보기
                   <br />
