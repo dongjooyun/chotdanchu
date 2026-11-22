@@ -14,7 +14,7 @@
 | 단위 (하는 일 세 줄 요약) | Vitest + 가짜 fetch, 가짜 LLM | 세 줄 고르기와 숫자 문장 제외, 공시 없음과 확인 불가의 구분, 카드 표시, 원문 추출, 오류 처리, 캐시 | `tests/unit/business-summary.test.ts`, `company-summary-card.test.ts`, `real-business-overview.test.ts`, `summarize-llm.test.ts` | `npm test` |
 | 시스템(E2E) | Playwright | 실제 브라우저로 처음부터 끝까지 (데스크톱 1280px, 모바일 375px) | `tests/e2e/chat-flow.spec.ts` | `npm run test:e2e` |
 
-- 사용 현황 (2026-11-22): 단위·통합·회귀 405개(에이전트 14개, 리포트 초안 8개, 실데이터 변환 18개, 하는 일 세 줄 요약 90개 포함), E2E 12개 x 화면 2종 = 24개
+- 사용 현황 (2026-11-22): 단위·통합·회귀 433개(에이전트 14개, 리포트 초안 8개, 실데이터 변환 18개, 하는 일 세 줄 요약 90개 포함), E2E 25개 케이스 x 화면 2종(데스크톱, 모바일 375px) + 아이폰 사파리 엔진(WebKit) 4개 = 54회 실행 (`npx vitest run`과 `npx playwright test --list`로 11/22 확인)
 - E2E는 `.env.local`에 `USE_AGENT=true`가 있어도 에이전트를 끈 채로 돈다 (크레딧을 쓰지 않고 결과가 같도록)
 - 각 테스트 이름 맨 앞이 케이스 ID다 (예: `IND-FH-G-03`). `npm run test:verbose`로 ID와 입력, 기대 등급이 한 줄씩 보인다
 
