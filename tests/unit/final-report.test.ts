@@ -223,7 +223,7 @@ describe("카드 공유 링크 (QR)", () => {
     }
   });
 
-  test("SHR-02 링크 값이 없거나 깨졌으면 기본 기준(null)이다", () => {
+  test("SHR-02 링크 값이 없거나 깨졌으면 일반 기준(null)이다", () => {
     expect(decodeWeights(null)).toBeNull();
     expect(decodeWeights("1_2_3")).toBeNull();
     expect(decodeWeights("a_b_c_d_e_f_g_h_i_j")).toBeNull();

@@ -15,7 +15,7 @@ export function typeSentence(pref: Input): string {
 /** LLM에 보내는 글. 유형 이름과 지표 이름 순서만 들어간다 */
 export function preferencePrompt(pref: Input): string {
   const names = pref.topIndicators.map((id) => INDICATOR_LABELS[id]).join(", ");
-  const type = pref.type ? PREFERENCE_TYPE_LABELS[pref.type] : "기본 기준";
+  const type = pref.type ? PREFERENCE_TYPE_LABELS[pref.type] : "일반 기준";
   return [
     "취업 준비생이 회사 카드 밸런스 게임에서 고른 결과를 한 문장으로 설명해 주세요.",
     `유형: ${type}`,

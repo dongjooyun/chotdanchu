@@ -15,7 +15,7 @@ export function encodeWeights(weights: Record<IndicatorId, number>): string {
 }
 
 /**
- * 링크의 값으로 선호를 되살린다. 값이 없거나 형식이 틀리면 null(기본 기준).
+ * 링크의 값으로 선호를 되살린다. 값이 없거나 형식이 틀리면 null(일반 기준).
  * 예: decodeWeights("100_100_...") -> { skipped: false, type: "balance_practical", ... }
  */
 export function decodeWeights(raw: string | null | undefined): Preference | null {

@@ -158,7 +158,7 @@ test("E2E-08 리포트 아래 \"기업 카드 모음에 담기\"를 눌러야 �
   await page.getByRole("button", { name: "기업 카드 모음에 담기" }).last().click();
   await openView(page, "기업 카드 모음");
   await expect(page.getByText("총 2장")).toBeVisible();
-  await expect(page.getByText("기본 기준", { exact: true })).toHaveCount(2);
+  await expect(page.getByText("일반 기준", { exact: true })).toHaveCount(2);
   // 모은 직무를 이름으로 나열한다 ("직무 1/3" 같은 분수 표기 없음)
   await expect(page.locator('[data-el="내 카드 모음"]')).not.toContainText("/3)");
   // 목록 줄 아무 곳이나 눌러도 카드가 열린다
@@ -258,7 +258,7 @@ test("E2E-13 밸런스 게임 7판을 끝내면 내 성향과 맞춤 판정 리�
   await expect(page.getByText("맞춤 판정 완료")).toBeVisible();
 });
 
-test("E2E-14 밸런스 게임: 이전 판으로 돌아가면 진행 표시가 한 판 줄고, 건너뛰면 기본 기준 리포트가 나온다", async ({ page }) => {
+test("E2E-14 밸런스 게임: 이전 판으로 돌아가면 진행 표시가 한 판 줄고, 건너뛰면 일반 기준 리포트가 나온다", async ({ page }) => {
   await chooseRole(page, "운영");
   await searchCompany(page, "별하늘랩스");
   await page.getByRole("button", { name: "기업 밸런스 게임 시작하기" }).click();
@@ -267,7 +267,7 @@ test("E2E-14 밸런스 게임: 이전 판으로 돌아가면 진행 표시가 �
   await page.getByRole("button", { name: "이전 판으로 돌아가기" }).click();
   await expect(page.getByText("1 / 7")).toBeVisible();
   await page.locator('[data-el="밸런스 게임"]').getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
-  await expect(page.getByText("기본 기준으로 판정한 최종 판단 리포트예요.")).toBeVisible();
+  await expect(page.getByText("일반 기준으로 판정한 최종 판단 리포트예요.")).toBeVisible();
 });
 
 test("E2E-15 밸런스 게임을 다시 해 성향이 바뀌면 저장 카드를 다시 판정할지 묻는다", async ({ page }) => {
@@ -356,7 +356,7 @@ test("E2E-17 첫 직무 선택도 내 말풍선으로 남고, 메뉴로 튜토�
 test("E2E-20 튜토리얼: 다음만 눌러 가상 기업으로 끝까지 가고, 내 대화와 카드 모음은 그대로다", async ({ page }) => {
   test.setTimeout(90_000);
   await openView(page, "튜토리얼");
-  const titles = ["직무 고르기", "회사 이름 말하기", "AI 에이전트의 판단", "기업 카드", "3년차 공고와 비교", "내 기준 정하기", "기업 밸런스 게임", "최종 판단 리포트", "에이전트 사고 과정"];
+  const titles = ["직무 고르기", "궁금한 회사 이름 입력", "AI 에이전트의 판단", "기업 카드", "3년차 공고와 비교", "내 기준 정하기", "기업 밸런스 게임", "최종 판단 리포트", "에이전트 사고 과정"];
   // 모바일에서만 입력창 오른쪽 메뉴 버튼 단계가 하나 더 있다 (PC에는 그 버튼이 없다)
   if (isMobile(page)) titles.push("오른쪽 아래 메뉴 버튼");
   for (const [i, title] of titles.entries()) {

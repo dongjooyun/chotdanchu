@@ -72,18 +72,20 @@ function Progress({ done }: { done: number }) {
 /** 등급 범례: A, B, C가 등급이라는 것을 알려 준다 (11/20 피드백) */
 export function GradeLegend() {
   return (
-    <p className="legend">
-      <b>A, B, C는 지표별 등급이에요.</b>
+    <div className="legend-wrap">
+      <p className="legend-note">A, B, C는 지표별 등급이에요.</p>
+      <p className="legend">
       <span><GradeBadge grade="A" size="sm" /> 좋음</span>
       <span><GradeBadge grade="B" size="sm" /> 보통</span>
       <span><GradeBadge grade="C" size="sm" /> 미흡</span>
       <span><GradeBadge grade={null} size="sm" /> 확인 불가</span>
-    </p>
+      </p>
+    </div>
   );
 }
 
 /**
- * 밸런스 게임 게임 한 번 (8강 토너먼트 7판). 고르면 0.5초 뒤 다음 판으로 넘어가고, 7판이 끝나면 onDone에 고른 기록을 넘긴다.
+ * 밸런스 게임 한 번 (8강 토너먼트 7판). 고르면 0.5초 뒤 다음 판으로 넘어가고, 7판이 끝나면 onDone에 고른 기록을 넘긴다.
  * "이전 판으로 돌아가기"로 한 판씩 되돌리고, "건너뛰기(일반 기준 적용)"는 늘 보인다.
  */
 export function MatchupGame({

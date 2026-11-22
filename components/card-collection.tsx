@@ -24,7 +24,7 @@ function summaryOf(r: AnalysisRecord) {
 }
 
 function StateTag({ personalized }: { personalized: boolean }) {
-  return personalized ? <span className="tag tag-lilac">맞춤 판정 완료</span> : <span className="tag">기본 기준</span>;
+  return personalized ? <span className="tag tag-lilac">맞춤 판정 완료</span> : <span className="tag">일반 기준</span>;
 }
 
 /**

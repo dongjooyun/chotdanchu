@@ -183,7 +183,7 @@ export interface Preference {
 /** 직무 하나에 대해 저장한 최종 판단 리포트 카드 */
 export interface SavedReport {
   report: ReportCardData;
-  /** 밸런스 게임 결과로 판정했으면 true ("맞춤 판정 완료"), 건너뛰었거나 아직이면 false ("기본 기준") */
+  /** 밸런스 게임 결과로 판정했으면 true ("맞춤 판정 완료"), 건너뛰었거나 아직이면 false ("일반 기준") */
   personalized: boolean;
   /** ISO 8601 */
   savedAt: string;

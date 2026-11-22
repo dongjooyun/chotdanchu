@@ -248,7 +248,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       setSession(next);
       push(career, {
         from: "agent",
-        text: personal ? "저장해 둔 내 성향으로 판정한 최종 판단 리포트예요." : "기본 기준으로 판정한 최종 판단 리포트예요.",
+        text: personal ? "저장해 둔 내 성향으로 판정한 최종 판단 리포트예요." : "일반 기준으로 판정한 최종 판단 리포트예요.",
         widget,
         replies: nextReplies(personal),
       });
@@ -296,7 +296,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     void ask({ pickCompanyId: id });
   }
 
-  /** 리포트 아래 "기업 카드 모음에 담기": 그 리포트(기업, 직무, 판정)를 모음에 담는다. 밸런스 게임 전이면 "기본 기준" 카드 */
+  /** 리포트 아래 "기업 카드 모음에 담기": 그 리포트(기업, 직무, 판정)를 모음에 담는다. 밸런스 게임 전이면 "일반 기준" 카드 */
   function onSaveReport(w: Extract<MessageWidget, { type: "report" }>) {
     if (!w.analysis) return;
     const a: Analysis = { ...w.analysis, log: w.log ?? [] };
@@ -408,7 +408,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       setSession(next);
       push({
         from: "agent",
-        text: "기본 기준으로 판정한 최종 판단 리포트예요.",
+        text: "일반 기준으로 판정한 최종 판단 리포트예요.",
         widget,
         replies: nextReplies(false),
       });

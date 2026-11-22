@@ -51,7 +51,7 @@ type StepId = "role" | "input" | "candidates" | "company" | "career" | "pref" | 
 
 const STEPS: { id: StepId; title: string; body: string }[] = [
   { id: "role", title: "직무 고르기", body: "직무에 따라 비교하는 3년차 공고가 달라져요. 직무 버튼을 눌러 보세요. 다음을 누르면 서비스기획으로 진행해요." },
-  { id: "input", title: "회사 이름 말하기", body: "궁금한 회사 이름을 입력창에 적어 보내요. 여기서는 가상 기업 몽돌커머스로 해 볼게요. 보내기나 다음을 눌러 보세요." },
+  { id: "input", title: "궁금한 회사 이름 입력", body: "궁금한 회사 이름을 입력창에 적어 보내요. 여기서는 가상 기업 몽돌커머스로 해 볼게요. 보내기나 다음을 눌러 보세요." },
   {
     id: "candidates",
     title: "AI 에이전트의 판단",
@@ -242,7 +242,7 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
     const data = buildReportDraft({ company: COMPANY.company, graded: COMPANY.graded, log: PICKED.log, role, preference: pref, mode: "mock", checkedAt: today() });
     const report: MessageWidget = { type: "report", data, personalized: !skipped, analysis: { company: COMPANY.company, graded: COMPANY.graded }, log: PICKED.log };
     const items: Omit<ChatMessage, "id">[] = skipped
-      ? [{ from: "user", text: "건너뛰기(일반 기준 적용)" }, { from: "agent", text: "기본 기준으로 판정한 최종 판단 리포트예요.", widget: report }]
+      ? [{ from: "user", text: "건너뛰기(일반 기준 적용)" }, { from: "agent", text: "일반 기준으로 판정한 최종 판단 리포트예요.", widget: report }]
       : [
           { from: "agent", text: `내 성향은 ${PREFERENCE_TYPE_LABELS[pref.type!]}이에요.`, widget: { type: "preference", preference: pref, sentence: typeSentence(pref) } },
           { from: "agent", text: "내 성향으로 판정한 최종 판단 리포트예요.", widget: report },
