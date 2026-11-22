@@ -249,10 +249,18 @@ test("E2E-13 밸런스 게임 7판을 끝내면 내 성향과 맞춤 판정 리�
   await searchCompany(page, "별하늘랩스");
   await page.getByRole("button", { name: "기업 밸런스 게임 시작하기" }).click();
   await expect(page.getByText("더 끌리는 카드를 선택해 주세요")).toBeVisible();
+  // 두 카드는 같은 개수의 지표만 보이고, 등급이 같은 지표는 빠져 있다 (11/23)
+  const cards = page.locator('[data-el="밸런스 게임 카드"]');
+  const rows = async (i: number) => cards.nth(i).locator("li").evaluateAll((li) => li.map((x) => [x.querySelector(".k")?.textContent?.trim(), x.querySelector("[data-grade], .g, .g-n")?.textContent?.trim() ?? x.textContent?.trim()]));
+  const [a, b] = [await rows(0), await rows(1)];
+  expect(a.length).toBe(b.length);
+  expect(a.map((r) => r[0])).toEqual(b.map((r) => r[0]));
   await playMatchup(page, "기업 A");
   await expect(page.getByText("내 성향은 안정·시스템 지향이에요.")).toBeVisible();
   await expect(page.getByText("내 성향으로 판정한 최종 판단 리포트예요")).toBeVisible();
   await expect(page.locator(".chat .flip").last()).toContainText("안정·시스템 지향");
+  // 앞면에 내가 중시한 지표와 이 회사 등급이 나란히 보인다 (밸런스 게임을 했을 때만)
+  await expect(page.locator('.chat [data-el="중시 지표 비교"]').last().locator("li")).toHaveCount(3);
   await page.getByRole("button", { name: "기업 카드 모음에 담기" }).last().click();
   await openView(page, "기업 카드 모음");
   await expect(page.getByText("맞춤 판정 완료")).toBeVisible();
@@ -268,6 +276,7 @@ test("E2E-14 밸런스 게임: 이전 판으로 돌아가면 진행 표시가 �
   await expect(page.getByText("1 / 7")).toBeVisible();
   await page.locator('[data-el="밸런스 게임"]').getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await expect(page.getByText("일반 기준으로 판정한 최종 판단 리포트예요.")).toBeVisible();
+  await expect(page.locator('.chat [data-el="중시 지표 비교"]')).toHaveCount(0);
 });
 
 test("E2E-15 밸런스 게임을 다시 해 성향이 바뀌면 저장 카드를 다시 판정할지 묻는다", async ({ page }) => {
@@ -321,7 +330,7 @@ test("E2E-16 리포트 카드: 보이는 면 하나를 이미지로 저장하고
   const flip = page.locator(".chat .flip").last();
   await flip.click({ position: { x: 20, y: 120 } });
   await expect(flip).toHaveClass(/is-back/);
-  await expect(page.locator('.chat [data-el="역량 비교 상세"]').last()).toContainText("팀이 자체 개발한 마케팅 직무 신입 역량 사전과 비교한 결과예요.");
+  await expect(page.locator('.chat [data-el="역량 비교 상세"]').last()).toContainText("팀이 자체 개발한 마케팅 직무 신입 역량 사전과 비교했어요.");
   await save("근거");
   await expect(page.getByText("이미지를 만들지 못했어요")).toHaveCount(0);
   // QR이 여는 주소로 가면 같은 라벨의 카드가 다시 그려진다
@@ -344,13 +353,13 @@ test("E2E-17 첫 직무 선택도 내 말풍선으로 남고, 메뉴로 튜토�
   await expect(page.locator('[data-el="내 카드 모음"]')).toBeVisible();
   await openView(page, "챗봇");
   await expect(page.getByLabel("메시지 입력")).toBeVisible();
-  // 대화 새로 시작: 확인 창(가운데, X 닫기) 뒤에 말풍선이 지워지고 직무는 남는다
+  // 대화 새로 시작: 확인 창(가운데, X 닫기) 뒤에 말풍선이 지워지고 직무 고르기부터 다시 한다 (11/23 QA)
   await menuAction(page, "대화 새로 시작하기");
   const dlg = page.getByRole("dialog", { name: "대화를 새로 시작할까요?" });
   await expect(dlg).toBeVisible();
   await dlg.getByRole("button", { name: "새로 시작" }).click();
-  await expect(page.getByText("운영 직무로 볼게요. 어느 회사가 궁금하세요?")).toBeVisible();
-  await expect(page.getByText("먼저 어떤 직무로 준비하세요?")).toHaveCount(0);
+  await expect(page.getByText("먼저 어떤 직무로 준비하세요?")).toBeVisible();
+  await expect(page.getByText("운영 직무로 볼게요. 어느 회사가 궁금하세요?")).toHaveCount(0);
 });
 
 test("E2E-20 튜토리얼: 다음만 눌러 가상 기업으로 끝까지 가고, 내 대화와 카드 모음은 그대로다", async ({ page }) => {
@@ -385,7 +394,8 @@ test("E2E-21 처음 접속하면 튜토리얼부터 열리고, 한 번 벗어나
   // 헤더(로고, 이름, 소개를 묶은 링크)를 누르면 챗봇으로 가고, 주소는 그대로 "/"다
   const home = page.locator('[data-el="홈 링크"]');
   await expect(home).toContainText("첫단추");
-  await expect(home).toContainText("첫 회사, 3년 뒤까지 보고 고르세요.");
+  // 한 줄 소개는 휴대폰에서 잘려 11/23에 뺐다
+  await expect(home).not.toContainText("3년 뒤까지");
   await home.click();
   await expect(page.getByLabel("메시지 입력")).toBeVisible();
   await expect(page).toHaveURL(/\/$/);
