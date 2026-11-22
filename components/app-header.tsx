@@ -6,13 +6,13 @@ import type { AppMode } from "@/lib/chat";
 export function AppHeader({ mode }: { mode: AppMode }) {
   return (
     <header className="app-header" data-el="헤더">
-      <span className="logo-slot" data-el="로고 자리" aria-hidden="true">
-        첫
-      </span>
+      {/* 로고: 보라 단추 아이콘 (11/22 후보 A, design/logo-candidates). 파비콘도 같은 그림이다 */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="logo-slot" data-el="로고 자리" src="/brand/logo.png" alt="" width={32} height={32} />
       <h1 className="brand">
         <Link href="/">첫단추</Link>
       </h1>
-      <span className="small muted">첫 회사, 3년 뒤까지 보고 고르세요</span>
+      <span className="small muted">첫 회사, 3년 뒤까지 보고 고르세요.</span>
       {mode === "mock" && (
         <span className="header-end">
           <ModeBadge mode={mode} />

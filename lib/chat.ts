@@ -1,5 +1,5 @@
 // 채팅 화면과 /api/chat이 주고받는 데이터 모양. 서버와 클라이언트가 같이 쓴다.
-import type { Company, GradedIndicator, SessionState } from "@/lib/types";
+import type { BusinessSummary, Company, GradedIndicator, SessionState } from "@/lib/types";
 
 /** mock: 목업 데이터, live: 실데이터 */
 export type AppMode = "mock" | "live";
@@ -36,7 +36,7 @@ export interface CandidateSummary {
 export type ChatWidget =
   | { type: "candidates"; candidates: CandidateSummary[] }
   /** graded: compute_indicators가 기준표로 계산한 10개 등급 (정보 투명도 포함) */
-  | { type: "company"; company: Company; graded: GradedIndicator[] };
+  | { type: "company"; company: Company; graded: GradedIndicator[]; summary: BusinessSummary };
 
 export interface ChatRequest {
   /** 사용자가 입력한 문장 (기업명 등) */

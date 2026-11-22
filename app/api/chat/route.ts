@@ -5,7 +5,24 @@ import { config, getMode } from "@/lib/config";
 import { getCompany } from "@/lib/data";
 import { createAnthropicClient } from "@/lib/agent/llm";
 import { runAgent } from "@/lib/agent/loop";
-import { companyResponse, line, profileLine, ruleResponse } from "@/lib/agent/responses";
+import { companyResponse, line, profileLine, renumber, ruleResponse } from "@/lib/agent/responses";
+import { refreshSummary } from "@/lib/agent/fresh-summary";
+import { realBusinessSummaries } from "@/lib/data";
+
+/**
+ * 기업 카드 응답이면 "하는 일 세 줄 요약"을 AI가 그때그때 새로 쓴다 (USE_AGENT=true일 때만). 실패하면 미리 만든 요약 그대로
+ */
+async function withFreshSummary(res: ChatResponse): Promise<ChatResponse> {
+  if (!config.useAgent || res.widget?.type !== "company") return res;
+  const { summary, log } = await refreshSummary(
+    res.widget.company,
+    res.widget.summary,
+    realBusinessSummaries,
+    { llm: createAnthropicClient(), model: config.models.small },
+    getMode(),
+  );
+  return { ...res, widget: { ...res.widget, summary }, log: log ? renumber([...res.log, log]) : res.log };
+}
 
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as ChatRequest | null;
@@ -18,7 +35,7 @@ export async function POST(request: Request) {
       line(0, "decision", `사용자가 후보 중 ${company.name}을(를) 골라 확정`, "동명 후보 중 사용자 선택"),
       profileLine(),
     ]);
-    return Response.json(res);
+    return Response.json(await withFreshSummary(res));
   }
 
   const message = typeof body.message === "string" ? body.message.trim().slice(0, 100) : "";
@@ -31,5 +48,5 @@ export async function POST(request: Request) {
     model: config.models.small,
     maxToolCalls: config.maxToolCalls,
   });
-  return Response.json(res);
+  return Response.json(await withFreshSummary(res));
 }

@@ -3,10 +3,11 @@ import {
   DISCLOSURE_LABELS,
   METRIC_LABELS,
   NATURE_LABELS,
+  SUMMARY_UNAVAILABLE_LABELS,
   UNAVAILABLE_REASON_LABELS,
 } from "@/lib/format";
 import { gradeDistribution } from "@/lib/indicators";
-import { INDICATOR_LABELS, type Company, type GradedIndicator } from "@/lib/types";
+import { INDICATOR_LABELS, type BusinessSummary, type Company, type GradedIndicator } from "@/lib/types";
 
 /** 지표 한 줄: 이름, 수치 한 줄, 등급 배지, 아래에 기준과 출처 (PRD 04). 공시 표처럼 행으로 읽는다 */
 function IndicatorRow({ g, metric }: { g: GradedIndicator; metric?: string }) {
@@ -43,7 +44,7 @@ function IndicatorRow({ g, metric }: { g: GradedIndicator; metric?: string }) {
 function summary(graded: GradedIndicator[], company: Company): { head: string; none: number } {
   const d = gradeDistribution(graded, company.nature);
   const total = d.A + d.B + d.C + d.none;
-  return { head: `지표 ${total}개 중 ${total - d.none}개를 공식 출처로 확인했어요`, none: d.none };
+  return { head: `지표 ${total}개 중 ${total - d.none}개를 공식 출처로 확인했어요.`, none: d.none };
 }
 
 /**
@@ -72,19 +73,68 @@ function Highlights({ cells }: { cells: GradedIndicator[] }) {
 }
 
 /**
+ * 하는 일 세 줄 요약 (PRD 04, CDC-26, 준오 구현). 세 가지 상태를 다르게 보여준다.
+ * 요약 있음: 3줄 + 원문 링크 (목업은 "가상 링크"), 공시 없음: 사업보고서가 없는 기업, 확인 불가: 아직 못 만든 상태.
+ * USE_AGENT=true면 검색할 때마다 AI가 새로 요약한다 (lib/agent/fresh-summary.ts).
+ * 스타일은 새 디자인 규칙을 따른다: 흰 카드 안 1px 회색 선 상자, 그림자 없음, 모서리 4px (globals.css의 .cc-biz)
+ */
+function BusinessSummaryBlock({ summary }: { summary: BusinessSummary }) {
+  return (
+    <div className="cc-biz" data-el="하는 일 세 줄 요약" data-summary-status={summary.status}>
+      <b>
+        하는 일 세 줄 요약{" "}
+        {summary.status === "ok" && summary.method === "llm" && <span className="tag tag-ai">AI 요약</span>}
+      </b>
+      {summary.status === "ok" && (
+        <>
+          <ol className="cc-biz-l">
+            {summary.lines.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ol>
+          <p className="cc-biz-n">
+            {summary.method === "llm" ? "AI가 요약했고 숫자는 쓰지 않았어요. " : "원문 문장 중 숫자가 없는 문장만 골랐어요. "}
+            원문:{" "}
+            {summary.source.url ? (
+              <a href={summary.source.url} target="_blank" rel="noreferrer" className="src-link">
+                {summary.source.name}
+              </a>
+            ) : (
+              <span>원문 링크 자리 (가상 링크, 목업)</span>
+            )}{" "}
+            · 확인 {summary.source.checkedAt}
+          </p>
+        </>
+      )}
+      {summary.status === "no_report" && (
+        <>
+          <p className="cc-biz-v">공시 없음</p>
+          <p className="cc-biz-n">사업보고서가 없는 기업이라 요약을 보여주지 않아요.</p>
+        </>
+      )}
+      {summary.status === "unavailable" && (
+        <>
+          <p className="cc-biz-v">확인 불가</p>
+          <p className="cc-biz-n">이유: {SUMMARY_UNAVAILABLE_LABELS[summary.reason]}</p>
+        </>
+      )}
+    </div>
+  );
+}
+
+/**
  * 기업 카드: 결론(유형, 확인 개수, 등급 분포, 정보 투명도)을 먼저 보여주고 지표 행은 펼쳐서 본다.
- * 주 버튼은 "기업 카드 저장하기" 하나 (화면당 1개). 저장하면 기업 카드 모음에 "기본 기준" 카드로 들어간다.
+ * 저장 버튼은 두지 않는다. 기업 카드 모음에는 최종 판단 리포트 아래 "기업 카드 모음에 담기"로만 담는다 (11/22).
  */
 export function CompanyCard({
   company,
   graded,
-  onSave,
-  saved = false,
+  summary: business,
 }: {
   company: Company;
   graded: GradedIndicator[];
-  onSave?: () => void;
-  saved?: boolean;
+  /** 하는 일 세 줄 요약. 예전 대화(저장된 말풍선)에는 없을 수 있다 */
+  summary?: BusinessSummary;
 }) {
   const d = gradeDistribution(graded, company.nature);
   const s = summary(graded, company);
@@ -107,6 +157,7 @@ export function CompanyCard({
           {company.industry} · {company.address} · 설립 {company.foundedOn?.slice(0, 4) ?? "-"}
         </p>
       </div>
+      {business && <BusinessSummaryBlock summary={business} />}
       <div className="cc-sum">
         <b>{s.head}</b>
         {s.none > 0 && <span className="muted"> · 확인 불가 {s.none}개</span>}
@@ -132,14 +183,6 @@ export function CompanyCard({
           {transparency && <IndicatorRow g={transparency} />}
         </div>
       </details>
-      {onSave && (
-        <div className="cc-foot">
-          {saved && <span className="small muted">기업 카드 모음에 담았어요</span>}
-          <button type="button" className="btn btn-primary" data-el="기업 카드 저장하기" onClick={onSave} disabled={saved}>
-            {saved ? "저장했어요" : "기업 카드 저장하기"}
-          </button>
-        </div>
-      )}
     </div>
   );
 }

@@ -11,6 +11,7 @@ import { MatchupPair } from "@/components/matchup-card";
 import { QuickReplies } from "@/components/quick-replies";
 import { ReportCard } from "@/components/report-card";
 import type { LogLine } from "@/lib/chat";
+import { getBusinessSummary } from "@/lib/business-summary";
 import { getMode } from "@/lib/config";
 import { findMockCandidates, getMockCompany, toCandidateSummary } from "@/lib/data";
 import { computeIndicators } from "@/lib/indicators";
@@ -44,7 +45,7 @@ export default function CatalogPage() {
   const twins = findMockCandidates("몽돌커머스").map(toCandidateSummary);
   const graded = startup ? computeIndicators(startup, CATALOG_AS_OF) : [];
   const report = startup
-    ? buildReportDraft({ company: startup, graded, role: "서비스기획", preference: null, log: SAMPLE_LOG, checkedAt: "2026-11-20" })
+    ? buildReportDraft({ company: startup, graded, role: "서비스기획", preference: null, log: SAMPLE_LOG, checkedAt: "2026-11-20", mode: "mock" })
     : SAMPLE_REPORT_CARD;
 
   return (
@@ -84,8 +85,8 @@ export default function CatalogPage() {
       </Section>
 
       <Section title="04 기업 실사 (기업 카드)">
-        {startup && <CompanyCard company={startup} graded={graded} />}
-        {general && <CompanyCard company={general} graded={computeIndicators(general, CATALOG_AS_OF)} />}
+        {startup && <CompanyCard company={startup} graded={graded} summary={getBusinessSummary(startup, "mock")} />}
+        {general && <CompanyCard company={general} graded={computeIndicators(general, CATALOG_AS_OF)} summary={getBusinessSummary(general, "mock")} />}
       </Section>
 
       <Section title="06 최종 판단 리포트 카드 (앞면 결론, 뒷면 근거)">

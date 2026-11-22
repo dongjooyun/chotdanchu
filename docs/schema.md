@@ -41,10 +41,26 @@
 | `nature` | `startup` \| `general` | 기업 성격 | `startup` |
 | `natureBasis` | string | 유형 판정 근거 한 줄 | `설립 4년, 2025년 시리즈 A 공식 발표` |
 | `certifications` | string[] | 공공 인증(보조 신호): 이노비즈, 메인비즈, 워크넷 강소기업 | `["이노비즈"]` |
+| `businessOverview` | BusinessOverview (선택) | 사업보고서 "사업의 개요" 문단 하나와 원문 링크. 목업 전용 샘플이고, 사업보고서가 없는 기업은 이 필드가 없다 ("공시 없음", 아래 3-1) | |
 | `indicators` | IndicatorValue[] | 아래 9개 지표 (정보 투명도 제외) | |
 | `aliases` | string[] (선택) | 사람들이 부르는 다른 이름. 검색에 쓴다 | `["당근"]` |
 | `externalLinks` | {name, url}[] | "원문 보기" 링크 (theVC, 혁신의숲 등). 데이터는 가져오지 않는다 | |
 | `isMock` | boolean | 목업이면 true | `true` |
+
+### 3-1. 하는 일 세 줄 요약 (`BusinessSummary`, CDC-26)
+
+기업 카드에 보이는 요약의 상태 세 가지. 계산하는 곳은 `lib/business-summary.ts`이고 데이터 파일에는 저장하지 않는다 (실데이터의 사전 계산 결과 파일은 `data/real/business-summaries.json`).
+
+| 상태 | 뜻 | 화면 |
+|---|---|---|
+| `ok` | 요약 3줄과 원문 링크가 있다. `method`는 `rule`(코드가 문장을 뽑음) 또는 `llm`(작은 모델이 요약하고 코드가 검증함) | 3줄 + 원문 링크 (목업은 "가상 링크") |
+| `no_report` | 사업보고서가 없는 기업. 확인한 결과다 | "공시 없음". 요약은 보여주지 않는다 |
+| `unavailable` | 아직 계산하지 않았거나(`not_computed`) 조회에 실패했다(`fetch_failed`). 결과를 모르는 상태다 | "확인 불가"와 이유 |
+
+- 요약은 수치 없이 문장으로만 쓴다. 숫자가 든 문장은 코드가 걸러 낸다 (CLAUDE.md 3번)
+- "공시 없음"과 "확인 불가"는 다르게 보인다. 앞은 "사업보고서를 확인했더니 없음", 뒤는 "아직 모름"이다
+- 목업: `businessOverview` 필드가 있으면 `ok`, 없으면 `no_report`
+- 실데이터: 사전 계산 파일에 기업이 있으면 그 상태를 그대로 쓰고, 파일에 없으면 `unavailable`(`not_computed`)
 
 ## 4. 지표 값 (`IndicatorValue`)
 
@@ -143,3 +159,24 @@
 - 비공시 기업은 재무·성장·수익·근속을 `unavailable`(`not_disclosed`)로 둔다
 - 투자 단계는 스타트업만 값이 있을 수 있고, 목업에서는 `manual` 대신 `ok`로 둔다 (가상 값)
 - 기업명, 대표자는 전부 가상이다. 실존 기업과 겹치지 않게 한다
+- 상장 5곳(`mock-026`~`mock-030`)에는 가상 "사업의 개요" 문단(`businessOverview`)이 있다. 나머지 25곳은 사업보고서가 없는 경우라 이 필드가 없고, 카드에 "공시 없음"이 보인다 (CDC-26)
+
+## 8. 3년차 공고 (`data/real/postings.json`, `data/mock/postings.json`)
+
+실데이터 모드는 시연 기업 4곳 x 3직무 = 12칸(준오 수동 확인 시드, 원본은 `data/real/postings-seed.md`), 목업 모드는 직무별 가상 공고 1건씩이다. 읽는 코드는 `lib/career-gap.ts`.
+
+| 필드 | 뜻 |
+|---|---|
+| `companyId` | 비교 대상 기업의 OpenDART 고유번호. 목업 가상 공고는 `*` |
+| `role` | 서비스기획, 마케팅, 운영 |
+| `postedBy`, `title`, `years` | 공고를 낸 회사(대체 칸이면 다른 회사), 공고 제목, 원문 요구 연차 |
+| `url`, `checkedAt` | 회사 공식 채용 페이지 원문 링크, 확인 날짜. 가상 공고는 `url`이 빈 문자열 |
+| `substitute` | 같은 회사 공고가 없어 유사 기업 공고로 대신했으면 `{ reason }`, 아니면 null |
+| `requirements[]` | `text`(요구 역량 문장 발췌), `phrases`(문장에서 고른 역량 표현), `preferred`(우대 항목) |
+
+- 역량 갭: 역량 표현 하나씩 센다(같은 역량은 한 번). 같은 직무의 신입 역량(사전에서 `data/competencies/year3-expected.json`의 10개를 뺀 것)에 맞으면 `connected`(신입 때 쌓을 수 있음), 아니면 `missing`(따로 채움, `why`: `year3` 3년차 때 새로 요구, `other_role` 다른 직무의 역량, `unknown` 사전에 없음). `phrases`가 빈 문장(연차 조건, 태도, 직무 공통 소통)과 우대 항목은 세지 않는다. 이어짐 비율 = connected / 전체
+- 판정 라벨(`lib/fit-label.ts`): 정보 투명도 C이거나 공고가 없으면 정보 보강. 아니면 이어짐 비율과 회사 기반 점수(선호 가중치로 낸 등급 평균, A 1, B 0.5, C 0, 확인 불가 제외)가 각각 기반 0.75, 이어짐 0.6 이상인지로 최적, 도전, 안정, 고려를 고른다
+
+## 9. 카드 공유 링크 (`/card`)
+
+`/card?c=<기업 ID>&r=<직무>&w=<가중치>`. `w`는 맞대결로 판정한 카드에만 있고, 지표 10개의 가중치를 1000배 반올림한 정수를 `_`로 이은 값이다(`lib/share.ts`). 링크에는 이 세 값 외에 아무것도 담지 않는다(개인정보 없음). 열면 서버가 같은 코드(`computeIndicators`, `buildReportDraft`)로 카드를 다시 계산해 그린다. 에이전트 판단 로그는 링크에 없으므로 뒷면의 "AI 판단" 줄은 비어 있다.
