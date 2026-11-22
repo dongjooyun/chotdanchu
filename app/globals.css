@@ -616,3 +616,10 @@ body { padding-top: var(--header-h); }
 .im .src { grid-column: 2; min-width: 0; overflow-wrap: anywhere; }
 .im .src-from { margin-top: 0; }
 @media (max-width: 820px) { .im { grid-template-columns: 84px minmax(0, 1fr) 28px; } }
+/* 기업 성향 테스트 결과 카드 (11/22): 제목, 설명 문장, 중시한 지표와 어울리는 곳을 줄을 나눠 크게. 라벨은 연보라 배지 */
+.result-kicker { font-size: 16px; color: var(--ink-2); }
+.result-sentence { margin: 0; font-size: 18px; line-height: 1.65; }
+.result-rows { margin: 0; display: flex; flex-direction: column; gap: var(--s-3); }
+.result-rows > div { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-1); }
+.result-rows dt { margin: 0; font-size: 14px; }
+.result-rows dd { margin: 0; font-size: 16px; line-height: 1.6; }

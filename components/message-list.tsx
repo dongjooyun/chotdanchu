@@ -44,12 +44,19 @@ function PreferenceResult({ preference, sentence }: { preference: Preference; se
   return (
     <div className="cc" data-el="밸런스 게임 결과">
       <div className="cc-head result">
-        <span className="small muted">기업 성향 테스트 결과</span>
+        <span className="result-kicker">기업 성향 테스트 결과</span>
         <span className="result-type">{PREFERENCE_TYPE_LABELS[preference.type]}</span>
-        <p>{sentence}</p>
-        <p className="small muted">
-          중시한 지표: {preference.topIndicators.map((id) => INDICATOR_LABELS[id]).join(", ")} · 어울리는 곳: {TYPE_INFO[preference.type].fits}
-        </p>
+        <p className="result-sentence">{sentence}</p>
+        <dl className="result-rows">
+          <div>
+            <dt className="tag tag-lilac">중시한 지표</dt>
+            <dd>{preference.topIndicators.map((id) => INDICATOR_LABELS[id]).join(", ")}</dd>
+          </div>
+          <div>
+            <dt className="tag tag-lilac">어울리는 곳</dt>
+            <dd>{TYPE_INFO[preference.type].fits}</dd>
+          </div>
+        </dl>
       </div>
     </div>
   );
