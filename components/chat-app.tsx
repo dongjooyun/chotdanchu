@@ -166,6 +166,17 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   const [thinkModal, setThinkModal] = useState(false);
   /** 맞대결 중 통합 버튼 메뉴 */
   const [dockMenu, setDockMenu] = useState(false);
+  const dockPointer = useRef<string>("");
+  const dockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** 마우스를 올리면 메뉴가 열리고, 벗어나면 0.25초 뒤 닫힌다 (버튼에서 메뉴로 옮겨 가는 동안 닫히지 않게) */
+  const openDock = () => {
+    if (dockTimer.current) clearTimeout(dockTimer.current);
+    setDockMenu(true);
+  };
+  const closeDockSoon = () => {
+    if (dockTimer.current) clearTimeout(dockTimer.current);
+    dockTimer.current = setTimeout(() => setDockMenu(false), 250);
+  };
   const [pending, setPending] = useState(false);
   const [think, setThink] = useState(false);
   /** 맞대결을 다시 해 성향이 바뀌었을 때 저장 카드를 어떻게 할지 묻는 창 */
@@ -611,7 +622,12 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       )}
       {/* 맞대결 중에는 세 버튼이 입력창 보내기 버튼 아래 작은 통합 버튼 하나로 모인다. 누르면 두 가지 메뉴(대화 새로 시작, 사고 과정)가 열린다 (11/22) */}
       {view === "chat" && (
-        <div className="fab-dock only-mobile" data-docked={matchupOpen ? "true" : "false"}>
+        <div
+          className="fab-dock only-mobile"
+          data-docked={matchupOpen ? "true" : "false"}
+          onPointerEnter={(e) => e.pointerType === "mouse" && openDock()}
+          onPointerLeave={(e) => e.pointerType === "mouse" && closeDockSoon()}
+        >
           {dockMenu && matchupOpen && (
             <div className="dock-menu" role="menu">
               {messages.length > 0 && (
@@ -647,7 +663,12 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
             aria-haspopup="menu"
             aria-expanded={dockMenu && matchupOpen}
             tabIndex={matchupOpen ? 0 : -1}
-            onClick={() => setDockMenu((v) => !v)}
+            onPointerDown={(e) => (dockPointer.current = e.pointerType)}
+            // 마우스는 올리면 열리므로 클릭으로 닫지 않는다. 터치와 키보드는 누를 때마다 열고 닫는다
+            onClick={() => {
+              if (dockPointer.current === "mouse") return;
+              setDockMenu((v) => !v);
+            }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <circle cx="6" cy="6" r="2.2" />

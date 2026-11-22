@@ -341,3 +341,18 @@ test("E2E-18 모음 카드 창에서 근거 면을 보다가 아직 판정하지
   await expect(dlg.getByText("운영 직무로는 아직 판정하지 않았어요.")).toBeVisible();
   await expect(dlg.locator(".rc-back")).toHaveCount(0);
 });
+
+test("E2E-19 모바일: 맞대결 중 통합 버튼에 마우스를 올리면 메뉴가 뜨고, 벗어나면 닫힌다", async ({ page }) => {
+  test.skip((page.viewportSize()?.width ?? 0) > 820, "통합 버튼은 모바일 화면에만 있다");
+  await chooseRole(page, "마케팅");
+  await searchCompany(page, "별하늘랩스");
+  await page.getByRole("button", { name: "기업 맞대결로 내 성향 맞춤 판정 받기" }).click();
+  const dock = page.getByRole("button", { name: "빠른 메뉴" });
+  await expect(dock).toBeVisible();
+  await dock.hover();
+  const menu = page.getByRole("menu");
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole("menuitem", { name: "에이전트 사고 과정 보기" })).toBeVisible();
+  await page.mouse.move(150, 150);
+  await expect(menu).toBeHidden();
+});
