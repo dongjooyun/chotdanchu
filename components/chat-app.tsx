@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AppNav, type AppView } from "@/components/app-nav";
 import { Fab } from "@/components/fab";
 import { AgentLogPanel } from "@/components/agent-log-panel";
@@ -158,7 +158,16 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   /** 가장 최근에 분석한 기업의 카드 내용. 리포트 카드를 만들 때 쓴다 */
   const [current, setCurrent] = useStoredState<Analysis | null>(chatKey(mode, "current"), null);
   /** 화면 메뉴: 챗봇(기본), 기업 카드 모음, 튜토리얼 */
-  const [view, setView] = useState<AppView>("chat");
+  // 처음 접속하면 튜토리얼부터 보여 주고(11/22), 튜토리얼을 한 번 벗어난 뒤에는 챗봇부터 연다.
+  // 서버가 그릴 때는 알 수 없어 챗봇으로 그리고, 화면이 뜬 뒤 처음 온 사람만 튜토리얼로 바뀐다 (재방문자는 깜빡임 없음)
+  const [tutorialSeen, setTutorialSeen] = useStoredState<boolean | null>("chotdanchu:tutorial-seen", null);
+  const hydrated = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  const [picked, setPicked] = useState<AppView | null>(null);
+  const view: AppView = picked ?? (hydrated && tutorialSeen !== true ? "tutorial" : "chat");
   /** "대화 새로 시작" 확인 창 */
   const [resetAsk, setResetAsk] = useState(false);
   /** 맞대결을 한 번이라도 끝까지 했는지 (건너뛴 뒤에도 "다시 하기"로 보이게) */
@@ -252,8 +261,15 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   const chatScroll = useRef(0);
   function changeView(v: AppView) {
     if (view === "chat") chatScroll.current = window.scrollY;
-    setView(v);
+    if (view === "tutorial" && v !== "tutorial") setTutorialSeen(true);
+    setPicked(v);
     requestAnimationFrame(() => window.scrollTo({ top: v === "chat" ? chatScroll.current : 0 }));
+  }
+
+  /** 헤더(로고, 이름, 소개)를 누르면 홈인 챗봇 화면으로. 이미 챗봇이면 맨 위로 올린다 */
+  function goHome() {
+    if (view === "chat") window.scrollTo({ top: 0, behavior: "smooth" });
+    else changeView("chat");
   }
 
   function push(...items: Omit<ChatMessage, "id">[]) {
@@ -516,7 +532,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
 
   return (
     <>
-      <AppHeader mode={mode} />
+      <AppHeader mode={mode} onHome={goHome} />
       <AppNav view={view} onChange={changeView} count={session.analyzed.length} />
       {view === "tutorial" && <TutorialTour examples={examples} onFinish={() => changeView("chat")} />}
       {/* 메뉴를 바꿔도 대화와 맞대결 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}

@@ -28,8 +28,13 @@ async function searchCompany(page: Page, name: string) {
   await page.getByRole("button", { name: "보내기" }).click();
 }
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, info) => {
+  // 처음 접속하면 튜토리얼부터 열리므로, 챗봇부터 보는 다른 테스트는 "튜토리얼을 본 적 있음"으로 시작한다 (E2E-21만 처음 방문)
+  if (!info.title.startsWith("E2E-21")) {
+    await page.addInitScript(() => localStorage.setItem("chotdanchu:tutorial-seen", "true"));
+  }
   await page.goto("/");
+  if (info.title.startsWith("E2E-21")) return;
   await expect(page.getByRole("button", { name: "서비스기획", exact: true })).toBeVisible();
 });
 
@@ -347,6 +352,25 @@ test("E2E-20 튜토리얼: 다음만 눌러 가상 기업으로 끝까지 가고
   await expect(page.locator(".app").getByText("몽돌커머스")).toHaveCount(0);
   await openView(page, "기업 카드 모음");
   await expect(page.locator('[data-el="내 카드 모음"]').getByText("몽돌커머스")).toHaveCount(0);
+});
+
+test("E2E-21 처음 접속하면 튜토리얼부터 열리고, 한 번 벗어나면 다음부터 챗봇부터 열린다. 헤더를 누르면 챗봇(홈)으로 간다", async ({ page }) => {
+  // 처음 방문: 튜토리얼이 먼저 보이고 챗봇 입력창은 숨겨져 있다
+  await expect(page.locator('[data-el="튜토리얼"]')).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByLabel("메시지 입력")).toBeHidden();
+  // 헤더(로고, 이름, 소개를 묶은 링크)를 누르면 챗봇으로 가고, 주소는 그대로 "/"다
+  const home = page.locator('[data-el="홈 링크"]');
+  await expect(home).toContainText("첫단추");
+  await expect(home).toContainText("첫 회사, 3년 뒤까지 보고 고르세요.");
+  await home.click();
+  await expect(page.getByLabel("메시지 입력")).toBeVisible();
+  await expect(page).toHaveURL(/\/$/);
+  // 새로고침하면 이제 챗봇부터 열린다 (튜토리얼은 메뉴에서 언제든 다시)
+  await page.reload();
+  await expect(page.getByLabel("메시지 입력")).toBeVisible();
+  await expect(page.locator('[data-el="튜토리얼"]')).toHaveCount(0);
+  await openView(page, "튜토리얼");
+  await expect(page.locator('[data-el="튜토리얼"]')).toBeVisible();
 });
 
 test("E2E-18 모음 카드 창에서 근거 면을 보다가 아직 판정하지 않은 직무 탭을 누르면 앞면 안내로 돌아간다", async ({ page }) => {
