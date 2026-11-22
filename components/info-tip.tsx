@@ -85,6 +85,12 @@ export function InfoTip({ label, children }: { label: string; children: ReactNod
   }, [open, place]);
 
   const pointer = useRef("");
+  // 창(dialog) 안의 (i)는 말풍선도 그 창 안에 띄운다. 창은 화면 맨 위 층에 떠서 body에 띄우면 창 뒤로 숨는다 (11/23 QA: 카드 모음 창에서 말풍선이 안 뜸)
+  const [host, setHost] = useState<HTMLElement | null>(null);
+  const show = (v: boolean | ((v: boolean) => boolean)) => {
+    setHost(btn.current?.closest("dialog") ?? null);
+    setOpen(v);
+  };
   return (
     <>
       <button
@@ -96,15 +102,15 @@ export function InfoTip({ label, children }: { label: string; children: ReactNod
         aria-describedby={open ? id : undefined}
         data-el="설명 아이콘"
         onPointerDown={(e) => (pointer.current = e.pointerType)}
-        onPointerEnter={(e) => e.pointerType === "mouse" && setOpen(true)}
+        onPointerEnter={(e) => e.pointerType === "mouse" && show(true)}
         onPointerLeave={(e) => e.pointerType === "mouse" && setOpen(false)}
-        onFocus={() => pointer.current !== "touch" && setOpen(true)}
+        onFocus={() => pointer.current !== "touch" && show(true)}
         onBlur={() => setOpen(false)}
         onClick={(e) => {
           // 카드 위의 (i)를 눌러도 카드가 뒤집히지 않게 한다
           e.stopPropagation();
           if (pointer.current === "mouse") return;
-          setOpen((v) => !v);
+          show((v) => !v);
         }}
       >
         <InfoIcon />
@@ -121,7 +127,7 @@ export function InfoTip({ label, children }: { label: string; children: ReactNod
           >
             {children}
           </div>,
-          document.body,
+          host ?? document.body,
         )}
     </>
   );

@@ -68,3 +68,34 @@ test("E2E-22 카드를 뒤집은 뒤에도 (i) 설명 말풍선 글자가 똑바
   // (i)를 눌러도 카드는 뒤집히지 않는다
   await expect(page.getByRole("button", { name: "요약 보기" })).toBeVisible();
 });
+
+test("E2E-26 말풍선이 떠 있을 때 카드 위 빈 곳이나 말풍선을 누르면 말풍선만 닫히고 카드는 뒤집히지 않는다 (11/23 QA)", async ({ page, hasTouch }) => {
+  // 손가락으로 누르는 화면만 해당한다. PC는 마우스를 (i)에서 떼면 말풍선이 먼저 닫힌다
+  test.skip(!hasTouch, "터치 화면 전용");
+  await openReport(page);
+  const card = page.locator('[data-el="리포트 카드"]');
+  const tip = page.getByRole("tooltip");
+  await card.locator('[data-el="설명 아이콘"]').first().tap();
+  await expect(tip).toBeVisible();
+  // 카드 안 빈 곳(회사 이름 줄)을 누른다
+  await card.locator(".rc-name").tap();
+  await expect(tip).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "근거 보기" })).toBeVisible();
+  // 말풍선이 닫힌 뒤에는 카드를 누르면 뒤집힌다
+  await card.locator(".rc-name").tap();
+  await expect(page.getByRole("button", { name: "요약 보기" })).toBeVisible();
+});
+
+test("E2E-27 기업 카드 모음 창 안의 카드에서도 (i) 말풍선이 창 위에 보인다 (11/23 QA)", async ({ page }) => {
+  await openReport(page);
+  await page.getByRole("button", { name: "기업 카드 모음에 담기" }).click();
+  await page.locator('[data-el="메뉴"]').getByRole("button", { name: /^기업 카드 모음/ }).click();
+  await page.locator('[data-el="내 카드 모음"]').getByText("별하늘랩스").first().click();
+  const dlg = page.locator("dialog[open]");
+  await expect(dlg).toBeVisible();
+  await dlg.locator('[data-el="설명 아이콘"]').first().click();
+  const tip = page.getByRole("tooltip");
+  await expect(tip).toBeVisible();
+  // 말풍선이 열린 창 안(맨 위 층)에 들어 있어야 창 뒤로 숨지 않는다
+  expect(await tip.evaluate((el) => el.closest("dialog[open]") !== null)).toBe(true);
+});

@@ -4,8 +4,10 @@ import { cardNo, logoOf, monogram } from "@/lib/brand";
 import {
   comparisons,
   currentPair,
+  differingIndicators,
   featureDiff,
   MATCHUP_CARDS,
+  MATCHUP_INDICATORS,
   MATCHUP_ROUNDS,
   preferenceFromPicks,
 } from "@/lib/matchup";
@@ -40,6 +42,18 @@ describe("밸런스 게임 대진과 선호 계산", () => {
     expect(MATCHUP_CARDS).toHaveLength(8);
   });
 
+  test("MAT-20 한 판의 두 카드는 등급이 다른 지표만 같은 개수로 보이고, 모두 같으면 전부 보인다", () => {
+    for (let k = 0; k < MATCHUP_ROUNDS; k++) {
+      const pair = currentPair(play((a) => a).slice(0, k));
+      if (!pair) continue;
+      const [a, b] = pair;
+      const ids = differingIndicators(a, b);
+      expect(ids.length).toBeGreaterThan(0);
+      for (const id of ids) expect(a.grades[id] ?? null).not.toBe(b.grades[id] ?? null);
+      for (const id of MATCHUP_INDICATORS.filter((x) => !ids.includes(x))) expect(a.grades[id] ?? null).toBe(b.grades[id] ?? null);
+    }
+    expect(differingIndicators(MATCHUP_CARDS[0], MATCHUP_CARDS[0])).toEqual(MATCHUP_INDICATORS);
+  });
   test("MAT-02 같은 선택이면 항상 같은 결과가 나온다", () => {
     const picks = play(byIndicator("growth"));
     expect(preferenceFromPicks(picks)).toEqual(preferenceFromPicks([...picks]));

@@ -154,6 +154,10 @@ export function CompanyCard({
       <div className="cc-sum">
         <b>{s.head}</b>
         {s.none > 0 && <span className="muted"> · 확인 불가 {s.none}개</span>}
+        {/* 지표는 10가지인데 여기서 세는 수가 8, 9개인 이유 (11/23 QA: 10가지와 숫자가 달라 헷갈림) */}
+        <span className="muted cc-sum-note" data-el="지표 수 안내">
+          {company.nature === "startup" ? "10가지 지표 중 정보 투명도는 이 비율로 매겨서 세지 않아요." : "10가지 지표 중 정보 투명도는 이 비율로 매기고, 투자 단계는 스타트업만 봐서 세지 않아요."}
+        </span>
         <div className="dist" data-el="등급 분포">
           <span><GradeBadge grade="A" size="sm" />{d.A}</span>
           <span><GradeBadge grade="B" size="sm" />{d.B}</span>

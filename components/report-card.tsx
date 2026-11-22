@@ -76,6 +76,17 @@ function FlipIcon() {
   );
 }
 
+/** 공유 아이콘 (위로 나가는 화살표와 상자). 휴대폰 공유 창을 연다 */
+function ShareIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 3v12" />
+      <path d="M7 8l5-5 5 5" />
+      <path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" />
+    </svg>
+  );
+}
+
 /** 앞면: 한눈에 보는 결론. 판정 결과가 가장 크다 */
 function Front({
   d,
@@ -129,21 +140,38 @@ function Front({
                 <dt>내 성향</dt>
                 <dd>{d.preferenceType ?? "일반 기준 (밸런스 게임 건너뜀)"}</dd>
               </div>
-              {top && (
-                <div>
-                  <dt>내가 중시한 지표</dt>
-                  <dd>{top}</dd>
+              {/* 밸런스 게임을 했으면 내가 중시한 지표마다 이 회사 등급을 나란히 보여 준다 (11/22 실사용 피드백). 건너뛰었으면 줄이 없다 */}
+              {d.preferenceType && d.topIndicators.length > 0 ? (
+                <div className="rc-top3" data-el="중시 지표 비교">
+                  <dt>내가 중시한 지표와 이 회사 등급</dt>
+                  <dd>
+                    <ul>
+                      {d.topIndicators.map((t) => (
+                        <li key={t.id}>
+                          <span>{INDICATOR_LABELS[t.id]}</span>
+                          <GradeBadge grade={t.grade} size="sm" />
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
                 </div>
+              ) : (
+                top && (
+                  <div>
+                    <dt>내가 중시한 지표</dt>
+                    <dd>{top}</dd>
+                  </div>
+                )
               )}
               {d.gap ? (
                 <>
+                  {/* 공고 연차와 원문 표현은 뒷면(근거)에만 둔다. 앞면은 줄마다 라벨과 개수 배지만 (11/23 QA) */}
                   <div>
                     <dt>
                       3년차 때 요구되는 역량
                       <GapTip role={d.role} />
                     </dt>
                     <dd>
-                      {d.careerYears && <span className="tiny muted">경력 {d.careerYears} </span>}
                       <Count n={d.gap.connected + d.gap.missing} />
                     </dd>
                   </div>
@@ -222,10 +250,15 @@ function Back({ d, hidden }: { d: ReportCardData; hidden: boolean }) {
                 3년차 때 요구되는 역량 비교
                 <GapTip role={d.role} />
               </h4>
-              <p className="rc-q-sub">팀이 자체 개발한 {d.role} 직무 신입 역량 사전과 비교한 결과예요.</p>
-              <GapList title="3년차 요구 역량" items={d.gapDetail.required ?? [...d.gapDetail.connected, ...d.gapDetail.missing]} />
-              <GapList title="신입 때 쌓을 수 있는 역량" items={d.gapDetail.connected} />
-              <GapList title="따로 채워야 하는 역량" items={d.gapDetail.missing} />
+              <p className="rc-q-sub">
+                3년차 요구 역량 {d.gapDetail.connected.length + d.gapDetail.missing.length}개를 팀이 자체 개발한 {d.role} 직무 신입 역량 사전과 비교했어요.
+                {d.careerYears && <span className="rc-years">비교한 공고의 요구 경력: {d.careerYears}</span>}
+              </p>
+              {/* 3년차 요구 역량 = 두 목록의 합이라 목록은 두 칸으로만 보인다 (저장 이미지가 너무 길다는 11/23 QA) */}
+              <div className="gap-cols">
+                <GapList title="신입 때 쌓을 수 있는 역량" items={d.gapDetail.connected} />
+                <GapList title="따로 채워야 하는 역량" items={d.gapDetail.missing} />
+              </div>
               {d.careerSource && (
                 <p className="rc-src label-block" data-el="3년차 공고 출처">
                   {d.careerUrl ? (
@@ -292,6 +325,7 @@ export function ReportCard({
   const [flipping, setFlipping] = useState(false);
   const [role, setRole] = useState<Role>(data.role);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tipWasOpen = useRef(false);
   useEffect(() => () => {
     if (timer.current) clearTimeout(timer.current);
   }, []);
@@ -411,8 +445,14 @@ export function ReportCard({
       <div
         className={`flip ${back ? "is-back" : ""} ${flipping ? "flipping" : ""} ${missingRole ? "" : "is-clickable"}`}
         data-el="리포트 카드"
+        onPointerDownCapture={() => {
+          // (i) 말풍선이 떠 있을 때 누른 것은 말풍선을 닫는 손짓이다. 카드는 뒤집지 않는다 (11/23 QA)
+          tipWasOpen.current = document.querySelector(".tip-float") !== null;
+        }}
         onClick={(e) => {
-          if (missingRole || (e.target as HTMLElement).closest("a, button")) return;
+          const wasOpen = tipWasOpen.current;
+          tipWasOpen.current = false;
+          if (missingRole || wasOpen || (e.target as HTMLElement).closest("a, button, .tip-float")) return;
           flip();
         }}
       >
@@ -452,19 +492,16 @@ export function ReportCard({
       {/* 휴대폰: 사진을 크게 띄우고 길게 눌러 저장하게 한다 (갤러리 저장은 이 방법이 가장 확실하다) */}
       <AppDialog open={viewer !== null} title={`${face} 카드 이미지`} onClose={closeViewer}>
         {viewer && (
-          <div data-el="이미지 저장 창">
+          <div className="save-view" data-el="이미지 저장 창">
+            {/* 안내는 가운데 한 줄만, 공유는 사진 위 가운데 아이콘 버튼 하나 (11/23 동주 요청) */}
+            <p className="save-hint">▼ 카드 이미지를 길게 눌러 저장하기</p>
+            {canShareFile && (
+              <button type="button" className="share-icon-btn" onClick={shareViewer} aria-label="공유하기" data-el="공유 버튼">
+                <ShareIcon />
+              </button>
+            )}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={viewer.url} alt={`${shown.companyName} ${shown.role} ${face} 카드`} className="save-img" />
-            <p className="dlg-text" style={{ marginTop: 12 }}>
-              사진을 <b>길게 눌러</b> &quot;사진에 저장&quot;(또는 &quot;이미지 저장&quot;)을 골라 주세요.
-            </p>
-            {canShareFile && (
-              <div className="dlg-actions">
-                <button type="button" className="btn btn-primary" onClick={shareViewer}>
-                  공유 창으로 저장하기
-                </button>
-              </div>
-            )}
           </div>
         )}
       </AppDialog>

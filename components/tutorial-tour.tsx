@@ -532,6 +532,20 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
                 챗봇에서는 {examples.join(", ")}을(를) 볼 수 있어요.{" "}
                 {preference && !preference.skipped && preference.type ? `튜토리얼에서 나온 성향(${PREFERENCE_TYPE_LABELS[preference.type]})은 저장되지 않으니 챗봇에서 밸런스 게임을 다시 해 주세요.` : ""}
               </p>
+              {/* PC에는 모바일 메뉴 버튼 단계가 없어서 화면 메뉴를 여기서 한 번에 알려 준다 (11/23 준오 제안) */}
+              {!mobile && (
+                <ul className="tut-menu-list" data-el="PC 메뉴 안내">
+                  <li>
+                    <b>왼쪽 메뉴</b>: 튜토리얼, 챗봇, 기업 카드 모음을 오가요.
+                  </li>
+                  <li>
+                    <b>챗봇 위쪽 줄</b>: 직무와 회사 변경하기, 기업 밸런스 게임 하기, 대화 새로 시작하기, 노란 에이전트 사고 과정 버튼이 있어요.
+                  </li>
+                  <li>
+                    <b>입력창 아래와 화면 맨 아래</b>: 데이터 출처와 유의사항이 있어요.
+                  </li>
+                </ul>
+              )}
               <div className="tut-done-actions">
                 <button type="button" className="btn btn-primary" onClick={onFinish}>
                   챗봇에서 시작하기

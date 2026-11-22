@@ -41,7 +41,9 @@ test("E2E-23 카드 이미지는 미리 만들어지고, PC는 파일로, 터치
     await save.click();
     const box = page.locator('[data-el="이미지 저장 창"]');
     await expect(box).toBeVisible();
-    await expect(box).toContainText("길게 눌러");
+    // 안내는 가운데 한 줄, 예전 "공유 창으로 저장하기" 버튼은 없다 (11/23 동주 요청)
+    await expect(box.locator(".save-hint")).toHaveText("▼ 카드 이미지를 길게 눌러 저장하기");
+    await expect(box.getByText("공유 창으로 저장하기")).toHaveCount(0);
     expect(await nonBlankRatio(page, '[data-el="이미지 저장 창"] img')).toBeGreaterThan(0.05);
     await page.getByRole("button", { name: "닫기" }).click();
     await expect(box).toHaveCount(0);
