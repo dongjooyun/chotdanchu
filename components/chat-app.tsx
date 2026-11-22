@@ -11,6 +11,7 @@ import { ChatInput } from "@/components/chat-input";
 import { Disclaimer } from "@/components/disclaimer";
 import { MessageList, type ChatMessage, type MessageWidget, type WidgetHandlers } from "@/components/message-list";
 import type { QuickReply } from "@/components/quick-replies";
+import { TutorialTour } from "@/components/tutorial-tour";
 import { useSession } from "@/components/use-session";
 import { useStoredState } from "@/components/use-stored-state";
 import type { AppMode, ChatRequest, ChatResponse, LogLine } from "@/lib/chat";
@@ -517,16 +518,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     <>
       <AppHeader mode={mode} />
       <AppNav view={view} onChange={changeView} count={session.analyzed.length} />
-      {view === "tutorial" && (
-        <section className="coll tutorial" data-el="튜토리얼">
-          <div className="coll-h">
-            <b>튜토리얼</b>
-          </div>
-          <p className="small muted" style={{ padding: "var(--s-5)" }}>
-            첫단추를 처음부터 끝까지 따라 해 보는 안내를 준비하고 있어요. 지금은 챗봇 메뉴에서 바로 시작해 주세요.
-          </p>
-        </section>
-      )}
+      {view === "tutorial" && <TutorialTour examples={examples} onFinish={() => changeView("chat")} />}
       {/* 메뉴를 바꿔도 대화와 맞대결 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}
       <div className="app" data-think={think ? "open" : "closed"} data-docked={matchupOpen ? "true" : "false"} hidden={view !== "chat"}>
         {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}

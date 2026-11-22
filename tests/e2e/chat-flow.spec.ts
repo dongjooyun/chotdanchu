@@ -326,6 +326,29 @@ test("E2E-17 첫 직무 선택도 내 말풍선으로 남고, 메뉴로 튜토�
   await expect(page.getByText("먼저 어떤 직무로 준비하세요?")).toHaveCount(0);
 });
 
+test("E2E-20 튜토리얼: 다음만 눌러 가상 기업으로 끝까지 가고, 내 대화와 카드 모음은 그대로다", async ({ page }) => {
+  test.setTimeout(90_000);
+  await openView(page, "튜토리얼");
+  const titles = ["직무 고르기", "회사 이름 말하기", "AI 에이전트의 판단", "기업 카드", "3년차 공고와 비교", "내 기준 정하기", "기업 맞대결", "최종 판단 리포트", "에이전트 사고 과정"];
+  for (const [i, title] of titles.entries()) {
+    const tip = page.getByRole("dialog", { name: `튜토리얼 ${i + 1}단계: ${title}` });
+    await expect(tip).toBeVisible({ timeout: 15_000 });
+    const next = tip.getByRole("button", { name: i === titles.length - 1 ? "마치기" : "다음" });
+    await expect(next).toBeEnabled({ timeout: 15_000 });
+    await next.click();
+  }
+  // AI 판단 줄과 실제 코드로 계산한 리포트가 보인다
+  await expect(page.locator('[data-tut="think"] .tag-ai').first()).toBeVisible();
+  await expect(page.locator('[data-el="튜토리얼"] [data-el="리포트 구역"]')).toBeVisible();
+  await expect(page.getByText("이제 실제 회사로 해 볼까요?")).toBeVisible();
+  await page.getByRole("button", { name: "챗봇에서 시작하기" }).click();
+  // 실제 챗봇은 첫 방문 그대로 (튜토리얼 대화가 섞이지 않음), 카드 모음도 비어 있다
+  await expect(page.getByText("먼저 어떤 직무로 준비하세요?")).toBeVisible();
+  await expect(page.locator(".app").getByText("몽돌커머스")).toHaveCount(0);
+  await openView(page, "기업 카드 모음");
+  await expect(page.locator('[data-el="내 카드 모음"]').getByText("몽돌커머스")).toHaveCount(0);
+});
+
 test("E2E-18 모음 카드 창에서 근거 면을 보다가 아직 판정하지 않은 직무 탭을 누르면 앞면 안내로 돌아간다", async ({ page }) => {
   await chooseRole(page, "마케팅");
   await searchCompany(page, "별하늘랩스");

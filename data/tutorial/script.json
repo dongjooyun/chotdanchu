@@ -1,0 +1,351 @@
+{
+  "version": 1,
+  "note": "튜토리얼 전용 정적 대본. 가상 기업이고 AI를 부르지 않는다",
+  "query": "몽돌커머스 분석해줘",
+  "candidates": {
+    "reply": "같은 이름의 회사가 2곳 있습니다. 대표자, 소재지, 업종, 설립연도를 보고 골라 주세요.",
+    "widget": {
+      "type": "candidates",
+      "candidates": [
+        {
+          "id": "mock-010",
+          "name": "주식회사 몽돌커머스",
+          "ceoName": "안온유(가상)",
+          "address": "서울 송파구",
+          "industry": "전자상거래 소매 중개업",
+          "foundedYear": "2022",
+          "tags": []
+        },
+        {
+          "id": "mock-020",
+          "name": "주식회사 몽돌커머스",
+          "ceoName": "진솔(가상)",
+          "address": "경기 부천시",
+          "industry": "전자상거래 소매 중개업",
+          "foundedYear": "2009",
+          "tags": []
+        }
+      ]
+    },
+    "log": [
+      {
+        "step": 1,
+        "type": "tool_call",
+        "title": "search_company: \"몽돌커머스\" 후보 2곳",
+        "reason": "사용자가 말한 회사 이름으로 법인 후보를 찾음",
+        "mode": "mock"
+      },
+      {
+        "step": 2,
+        "type": "decision",
+        "title": "show_choices: 후보 2곳 중에서 사용자에게 고르게 함",
+        "reason": "이름이 같은 법인이 여럿이고 설립연도와 소재지가 달라 사용자에게 확인",
+        "mode": "mock"
+      }
+    ]
+  },
+  "picked": {
+    "reply": "주식회사 몽돌커머스의 기업 분석 결과입니다.",
+    "widget": {
+      "type": "company",
+      "company": {
+        "id": "mock-020",
+        "corpCode": null,
+        "bizRegNo": null,
+        "bizRegNoSource": null,
+        "name": "주식회사 몽돌커머스",
+        "ceoName": "진솔(가상)",
+        "address": "경기 부천시",
+        "industry": "전자상거래 소매 중개업",
+        "industryCode": "47912",
+        "foundedOn": "2009-05-20",
+        "disclosure": "audited",
+        "nature": "general",
+        "natureBasis": "설립 17년, 투자 유치 신호 없음",
+        "certifications": [
+          "이노비즈"
+        ],
+        "indicators": [
+          {
+            "id": "financial_health",
+            "metric": "debt_ratio",
+            "status": "ok",
+            "value": 168.9,
+            "unit": "%",
+            "period": "2025",
+            "source": {
+              "name": "OpenDART 재무 (목업)",
+              "url": "",
+              "checkedAt": "2026-11-19"
+            },
+            "extra": {
+              "reserve_ratio": 828
+            }
+          },
+          {
+            "id": "growth",
+            "metric": "revenue_growth",
+            "status": "ok",
+            "value": 10.4,
+            "unit": "%",
+            "period": "2025",
+            "source": {
+              "name": "OpenDART 재무 (목업)",
+              "url": "",
+              "checkedAt": "2026-11-19"
+            }
+          },
+          {
+            "id": "profitability",
+            "metric": "operating_margin",
+            "status": "ok",
+            "value": 12.5,
+            "unit": "%",
+            "period": "2025",
+            "source": {
+              "name": "OpenDART 재무 (목업)",
+              "url": "",
+              "checkedAt": "2026-11-19"
+            },
+            "extra": {
+              "op_income_per_employee": 5359
+            }
+          },
+          {
+            "id": "hiring_flow",
+            "metric": "headcount_change_12m",
+            "status": "estimated",
+            "value": 6.9,
+            "unit": "%",
+            "period": "2026-09",
+            "source": {
+              "name": "국민연금 가입 사업장 (목업)",
+              "url": "",
+              "checkedAt": "2026-11-19"
+            },
+            "extra": {
+              "annual_attrition": 14.1,
+              "headcount": 1437
+            }
+          },
+          {
+            "id": "compensation",
+            "metric": "avg_salary",
+            "status": "estimated",
+            "value": 5160,
+            "range": [
+              4850,
+              5470
+            ],
+            "unit": "만원",
+            "period": "2026-09",
+            "source": {
+              "name": "국민연금 가입 사업장 (목업)",
+              "url": "",
+              "checkedAt": "2026-11-19"
+            },
+            "extra": {
+              "industry_avg": 4300
+            }
+          },
+          {
+            "id": "tenure",
+            "metric": "avg_tenure",
+            "status": "unavailable",
+            "value": null,
+            "unit": "년",
+            "period": null,
+            "source": null,
+            "reason": "not_disclosed"
+          },
+          {
+            "id": "tech_investment",
+            "metric": "rnd_ratio",
+            "status": "unavailable",
+            "value": null,
+            "unit": "%",
+            "period": null,
+            "source": null,
+            "reason": "not_disclosed"
+          },
+          {
+            "id": "risk",
+            "metric": "risk_flags",
+            "status": "ok",
+            "value": null,
+            "unit": "",
+            "period": "2026-11",
+            "label": "해당 없음",
+            "source": {
+              "name": "국세청 사업자 상태 (목업)",
+              "url": "",
+              "checkedAt": "2026-11-19"
+            }
+          }
+        ],
+        "externalLinks": [],
+        "isMock": true
+      },
+      "graded": [
+        {
+          "id": "financial_health",
+          "grade": "B",
+          "display": "168.9%",
+          "basis": "일반 기업 기준표: 부채비율 100% 미만 A, 100~300% B, 300% 이상 C",
+          "source": {
+            "name": "OpenDART 재무 (목업)",
+            "url": "",
+            "checkedAt": "2026-11-19"
+          }
+        },
+        {
+          "id": "growth",
+          "grade": "B",
+          "display": "10.4%",
+          "basis": "일반 기업 기준표: 매출 증가율 연 15% 이상 A, 0~15% B, 감소 C",
+          "source": {
+            "name": "OpenDART 재무 (목업)",
+            "url": "",
+            "checkedAt": "2026-11-19"
+          }
+        },
+        {
+          "id": "profitability",
+          "grade": "A",
+          "display": "12.5%",
+          "basis": "일반 기업 기준표: 영업이익률 7% 이상 A, 3~7% B, 3% 미만 C",
+          "source": {
+            "name": "OpenDART 재무 (목업)",
+            "url": "",
+            "checkedAt": "2026-11-19"
+          }
+        },
+        {
+          "id": "hiring_flow",
+          "grade": "A",
+          "display": "+6.9% (추정)",
+          "basis": "일반 기업 기준표: 1년 전보다 직원이 늘었고 연 퇴사율 20% 이하면 A, 1년 새 직원이 10% 이상 줄면 C, 그 외 B",
+          "source": {
+            "name": "국민연금 가입 사업장 (목업)",
+            "url": "",
+            "checkedAt": "2026-11-19"
+          }
+        },
+        {
+          "id": "compensation",
+          "grade": "A",
+          "display": "4,850~5,470만원 (추정)",
+          "basis": "업종 평균(4,300만원) 대비 +20.0%. 10% 이상 높음 A, ±10% 이내 B, 10% 이상 낮음 C",
+          "source": {
+            "name": "국민연금 가입 사업장 (목업)",
+            "url": "",
+            "checkedAt": "2026-11-19"
+          }
+        },
+        {
+          "id": "tenure",
+          "grade": null,
+          "display": "확인 불가",
+          "basis": "공식 근거가 없어 등급을 매기지 않음",
+          "source": null,
+          "reason": "not_disclosed"
+        },
+        {
+          "id": "tech_investment",
+          "grade": null,
+          "display": "확인 불가",
+          "basis": "공식 근거가 없어 등급을 매기지 않음",
+          "source": null,
+          "reason": "not_disclosed"
+        },
+        {
+          "id": "funding_stage",
+          "grade": null,
+          "display": "등급 없음",
+          "basis": "일반 기업 기준표: 일반 기업은 투자 라운드로 판단하지 않음 (등급 없음)",
+          "source": null
+        },
+        {
+          "id": "risk",
+          "grade": "A",
+          "display": "해당 없음",
+          "basis": "해당 없음 A, 경미(감사의견 한정 등) B, 해당(휴폐업, 감사의견 부적정·거절) C",
+          "source": {
+            "name": "국세청 사업자 상태 (목업)",
+            "url": "",
+            "checkedAt": "2026-11-19"
+          }
+        },
+        {
+          "id": "transparency",
+          "grade": "B",
+          "display": "지표 8개 중 6개 확인",
+          "basis": "확인된 지표 7개 이상 A, 4~6개 B, 3개 이하 C",
+          "source": null
+        }
+      ],
+      "summary": {
+        "status": "ok",
+        "lines": [
+          "온라인 장터를 운영하는 가상 회사예요.",
+          "판매자 수수료와 광고로 수익을 내요.",
+          "판매자용 정산, 배송 도구도 만들어요."
+        ],
+        "source": {
+          "name": "가상 사업보고서 (튜토리얼 예시)",
+          "url": "",
+          "checkedAt": "2026-11-22"
+        },
+        "method": "llm"
+      }
+    },
+    "log": [
+      {
+        "step": 1,
+        "type": "decision",
+        "title": "사용자가 후보 중 주식회사 몽돌커머스을(를) 골라 확정",
+        "reason": "동명 후보 중 사용자 선택",
+        "mode": "mock"
+      },
+      {
+        "step": 2,
+        "type": "tool_call",
+        "title": "get_company_profile: 목업 데이터에서 지표 원시값을 읽음",
+        "mode": "mock"
+      },
+      {
+        "step": 3,
+        "type": "tool_call",
+        "title": "compute_indicators: A 4 · B 2 · C 0, 확인 불가 2개",
+        "mode": "mock"
+      },
+      {
+        "step": 4,
+        "type": "unavailable",
+        "title": "근속: 확인 불가",
+        "reason": "공시 의무가 없어 볼 수 없음",
+        "mode": "mock"
+      },
+      {
+        "step": 5,
+        "type": "unavailable",
+        "title": "기술 투자: 확인 불가",
+        "reason": "공시 의무가 없어 볼 수 없음",
+        "mode": "mock"
+      },
+      {
+        "step": 6,
+        "type": "tool_call",
+        "title": "get_business_summary: 사업의 개요를 3줄로 요약함 (AI 요약, 숫자 없음 검증)",
+        "mode": "mock"
+      },
+      {
+        "step": 7,
+        "type": "decision",
+        "title": "하는 일 세 줄 요약을 AI가 사업의 개요에서 새로 작성",
+        "reason": "공시 문단만 읽고 숫자 없이 3줄로, 코드가 줄 수와 숫자를 검증",
+        "mode": "mock"
+      }
+    ]
+  }
+}
