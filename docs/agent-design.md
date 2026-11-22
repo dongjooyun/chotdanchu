@@ -115,13 +115,15 @@
 | `start_matchup` / `get_preference` | 맞대결 출제, 선호 가중치 계산 | 코드 | Bradley-Terry, 고정 대진 8강 토너먼트(7판). 화면에서 바로 계산하고(`lib/matchup.ts`) LLM 도구로 부르지 않는다. 유형 설명 한 문장만 `/api/preference`가 작은 모델로 쓰고(USE_AGENT=true일 때), 검사에 걸리면 규칙 문장 |
 | `render_report` | 지표 + 선호 + 역량 갭 → 리포트 | LLM 문장 + 코드 레이아웃 | 면접 역질문 포함 |
 
+위 표는 설계 초안이다. 11/22 기준 실제로 구현된 도구는 `search_company`, `show_choices`, `get_company_profile`, `compute_indicators` 4종이고, LLM이 일하는 곳은 에이전트 루프(법인 판별), 하는 일 세 줄 요약, 성향 설명 한 문장이며 모두 작은 모델이다. 공고 역량 추출과 리포트 문장은 코드가 만든다 (3년차 공고는 사람이 확인해 넣은 시드).
+
 ## 세션 상태
 
 브라우저 localStorage에 보관, 매 요청에 서버로 전송. 개인 식별 정보 없음. 최근 분석 기록과 그 판단 로그도 같이 저장해 다시 열어볼 수 있다. 전체 모양과 예시는 [`schema.md`](schema.md) 6장, 타입은 `lib/types.ts`의 `SessionState`.
 
 ## 비용 관리 (API 크레딧 약 20달러)
 
-- 가벼운 단계는 작은 모델, 최종 리포트만 큰 모델
+- LLM 호출은 작은 모델(`config.models.small`) 하나만 쓴다. 최종 리포트 문장은 LLM이 아니라 코드가 만든다. 큰 모델(`config.models.large`)은 설정에 선언만 있고 호출하는 곳이 없다 (11/22 코드 확인, 같은 날 콘솔의 11월 지출 US$0.06)
 - 기업별 결과 캐시
 - 시연용 기업 20~30곳 사전 계산, 새 기업 검색은 일일 횟수 제한
 - 대화 전체 대신 세션 상태 + 최근 몇 턴만 전송
