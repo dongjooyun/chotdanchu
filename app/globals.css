@@ -531,3 +531,34 @@ body { padding-top: var(--header-h); }
 @media (prefers-reduced-motion: reduce) {
   .fab-stack, .fab-stack .fab-wrap, .dock-btn, .fab-dock[data-docked="true"] .dock-btn, .inputbar { transition: none !important; }
 }
+
+/* 튜토리얼 (CDC-32, 11/22): 가상 기업 대본을 따라가며 단계별 말풍선이 지금 볼 곳을 가리킨다 */
+.tut-stage { position: relative; padding-bottom: 260px; }
+@media (max-width: 767px) { .tut-stage { padding-bottom: 360px; } }
+.tut-stage .chat-col { min-height: 60vh; }
+.tut-focus { outline: 2px solid var(--purple); outline-offset: 4px; border-radius: var(--r-2); }
+.tut-tip { position: absolute; z-index: 20; width: min(340px, calc(100% - 16px)); padding: var(--s-4); border-radius: var(--r-3); background: var(--ink); color: #fff; font-size: 14px; line-height: 1.55; animation: tut-in .2s ease both; }
+/* 가리키는 버튼 묶음은 버튼 크기만큼만 테두리를 그린다 */
+.tut-stage .quick.tut-focus, .tut-stage .cand.tut-focus { width: fit-content; max-width: 100%; }
+.tut-tip p { margin: var(--s-1) 0 0; }
+.tut-step { display: block; font-size: 12px; color: #c9c9d1; }
+.tut-title { display: block; margin-top: 2px; font-size: 15px; }
+.tut-actions { display: flex; align-items: center; gap: var(--s-3); margin-top: var(--s-3); }
+.tut-next.btn { min-width: 0; height: 40px; padding: 0 var(--s-5); background: #fff; border-color: #fff; color: var(--ink); }
+.tut-next.btn:disabled { opacity: .5; cursor: default; }
+.tut-skip { min-height: 40px; padding: 0 var(--s-2); border: 0; background: none; color: #c9c9d1; font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.tut-skip:hover { color: #fff; }
+.tut-next:focus-visible, .tut-skip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.tut-ticker { min-width: min(420px, 100%); }
+.tut-lines { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-1); font-size: 13px; }
+.tut-lines li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); animation: tut-in .3s ease both; }
+@keyframes tut-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.tut-input { margin: var(--s-4) var(--s-5) 0; }
+.tut-input form { display: flex; gap: var(--s-2); }
+.tut-think { margin: var(--s-4) var(--s-5) 0; border: 1px solid var(--line); border-radius: var(--r-3); max-height: 420px; overflow: auto; }
+.tut-done { margin: var(--s-4) var(--s-5) 0; padding: var(--s-5); border: 1px solid var(--line); border-radius: var(--r-3); display: flex; flex-direction: column; gap: var(--s-2); }
+.tut-done-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-2); }
+@media (prefers-reduced-motion: reduce) {
+  .tut-tip { animation: none; }
+  .tut-lines li { animation: none; }
+}
