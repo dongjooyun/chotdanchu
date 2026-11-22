@@ -448,12 +448,13 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   );
   const handlers: WidgetHandlers = { onPickCompany, onSaveReport, isReportSaved, onMatchupDone, onMatchupSkip };
 
-  /** 대화 새로 시작: 말풍선과 사고 과정만 지운다. 고른 직무, 성향, 기업 카드 모음은 남는다 */
+  /** 대화 새로 시작: 말풍선과 사고 과정을 지우고 직무 고르기부터 다시 한다 (11/23 QA). 성향과 기업 카드 모음은 남는다 */
   function resetChat() {
     setMessages(NO_MESSAGES);
     setLog(NO_LOG);
     setCompany(null);
     setCurrent(null);
+    setSession({ ...session, role: null });
     setIntroRaw("unset");
     setResetAsk(false);
   }
@@ -567,7 +568,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
         />
       )}
       <AppDialog open={resetAsk} title="대화를 새로 시작할까요?" choice onClose={() => setResetAsk(false)}>
-        <p className="dlg-text">지금까지의 말풍선과 에이전트 사고 과정이 지워져요. 고른 직무, 내 성향, 기업 카드 모음은 그대로 남아요.</p>
+        <p className="dlg-text">지금까지의 말풍선과 에이전트 사고 과정이 지워지고 직무 고르기부터 다시 시작해요. 내 성향과 기업 카드 모음은 그대로 남아요.</p>
         <div className="dlg-actions">
           <button type="button" className="btn btn-primary" onClick={resetChat}>
             새로 시작
