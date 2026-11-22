@@ -79,6 +79,16 @@ describe("도구 순서 (상태 전이)", () => {
     expect(res.widget).toBeUndefined();
     expect(res.log).toEqual([expect.objectContaining({ step: 1, type: "decision" })]);
   });
+  test("AGT-15 검색 후보가 0곳인데 모델이 문장으로 답하면, 그 문장 대신 '준비되지 않은 회사' 안내를 코드가 낸다 (11/23 QA)", async () => {
+    const { llm } = fakeLlm([
+      message([use("search_company", { query: "없는회사", reason: "이름으로 후보 찾기" })]),
+      message([text("일치하는 회사를 찾지 못했습니다.")], "end_turn"),
+    ]);
+    const res = await runAgent("없는회사", null, deps(llm));
+    expect(res.reply).not.toContain("찾지 못했습니다");
+    expect(res.reply).toContain("없는회사");
+    expect(res.log.at(-1)).toMatchObject({ type: "decision" });
+  });
 });
 
 describe("호출 상한 (경계값: 8회)", () => {

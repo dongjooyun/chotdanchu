@@ -33,7 +33,7 @@ export async function refreshSummary(
   if (!lines) {
     return {
       summary,
-      log: { step: 0, type: "fallback", title: "하는 일 요약: AI 요약이 규칙을 어겨 미리 만든 요약을 씀", reason: "3줄, 숫자 없음 검증 실패", mode },
+      log: { step: 0, type: "fallback", title: "하는 일 요약: 새 AI 요약이 규칙을 어겨 미리 만들어 둔 AI 요약을 씀", reason: "3줄, 숫자 없음 검증 실패", mode },
     };
   }
   return {

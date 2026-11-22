@@ -8,7 +8,7 @@ import type { ChatResponse, LogLine } from "@/lib/chat";
 import type { Role } from "@/lib/types";
 import type { LlmClient } from "./llm";
 import { SYSTEM_PROMPT, userTurn } from "./prompt";
-import { candidatesResponse, companyResponse, line, renumber, ruleResponse } from "./responses";
+import { candidatesResponse, companyResponse, line, notFoundResponse, renumber, ruleResponse } from "./responses";
 import { runTool, TOOLS } from "./tools";
 
 export interface AgentDeps {
@@ -47,6 +47,9 @@ export async function runAgent(message: string, role: Role | null, deps: AgentDe
   const messages: Anthropic.MessageParam[] = [{ role: "user", content: userTurn(message, role) }];
   const fallback = (title: string, reason: string) => ruleResponse(message, [...log, line(0, "fallback", title, reason)]);
   let calls = 0;
+  // 회사 검색을 했는데 한 번도 후보가 없었는지. 그러면 모델 문장 대신 "준비되지 않은 회사" 안내를 코드가 낸다 (11/23 QA)
+  let searched = false;
+  let foundAny = false;
 
   try {
     // 응답 한 번에 도구가 0개면 끝나므로, 반복 횟수도 호출 상한 + 1을 넘지 않는다
@@ -68,6 +71,7 @@ export async function runAgent(message: string, role: Role | null, deps: AgentDe
       if (uses.length === 0) {
         const text = textOf(res);
         log.push(line(0, "decision", "도구 없이 답하기로 함", "더 부를 도구가 없다고 판단"));
+        if (searched && !foundAny) return notFoundResponse(message, log);
         return { reply: text || "회사 이름을 알려 주세요.", log: renumber(log) };
       }
 
@@ -84,6 +88,10 @@ export async function runAgent(message: string, role: Role | null, deps: AgentDe
         const input = (use.input ?? {}) as Record<string, unknown>;
         const why = reasonOf(input);
         const out = runTool(use.name, input);
+        if (use.name === "search_company" && out.kind === "result") {
+          searched = true;
+          if (!out.summary.endsWith(" 후보 0곳")) foundAny = true;
+        }
 
         if (out.kind === "choices") {
           return candidatesResponse(out.companies, [

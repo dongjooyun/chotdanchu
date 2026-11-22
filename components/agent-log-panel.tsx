@@ -16,7 +16,7 @@ export function AgentLogPanel({ lines, onClose, bare = false }: { lines: LogLine
           {onClose && <CloseButton onClick={onClose} label="에이전트 사고 과정 닫기" />}
         </div>
       )}
-      <p className="panel-sub">답을 만들 때 거친 단계입니다. 숫자는 코드가 계산하고, AI는 판단과 문장만 맡습니다.</p>
+      <p className="panel-sub">답을 만들 때 거친 단계입니다. 숫자와 등급은 코드가 계산하고, AI는 세 가지(동명 법인 판별, 하는 일 세 줄 요약, 성향 설명 한 문장)만 맡습니다.</p>
       {lines.length === 0 ? (
         <p className="small muted">아직 기록이 없어요. 기업을 분석하면 무엇을 왜 했는지 여기에 쌓여요.</p>
       ) : (
