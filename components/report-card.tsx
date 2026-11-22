@@ -232,9 +232,11 @@ function Back({ d, hidden }: { d: ReportCardData; hidden: boolean }) {
                   {d.careerUrl ? (
                     <>
                       <span className="muted">공고 원문 보기</span>
-                      <a href={d.careerUrl} target="_blank" rel="noreferrer" className="src-link">
-                        {d.careerTitle ?? d.careerSource}
-                      </a>
+                      <span className="src-line">
+                        <a href={d.careerUrl} target="_blank" rel="noreferrer" className="src-link">
+                          {d.careerTitle ?? d.careerSource}
+                        </a>
+                      </span>
                       <span className="tiny muted">
                         수동 확인 {d.careerCheckedAt}
                         <br />

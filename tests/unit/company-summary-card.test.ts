@@ -1,5 +1,7 @@
 // 기업 카드에 "하는 일 세 줄 요약"이 실려 나가는지 (CDC-26). 케이스 ID: SUM-*
 // 채팅 API 응답(위젯과 판단 로그)과 카드 화면 문구를 본다. 요약 규칙 자체는 business-summary.test.ts (BS-*)
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, test, vi } from "vitest";
@@ -197,5 +199,59 @@ describe("SUM-09~12 카드 화면 문구 (서버 렌더링으로 확인)", () =>
     expect(block).toContain("확인 불가");
     expect(block).toContain("아직 요약을 만들지 못했어요");
     expect(block).not.toContain("공시 없음");
+  });
+});
+
+describe("SUM-20~23 새 디자인(동주님 카드)과 요약 블록이 함께 있다", () => {
+  const company = mockCompanies.find((c) => c.id === "mock-026")!;
+  const graded = computeIndicators(company, new Date(2026, 10, 20));
+  const summary: BusinessSummary = {
+    status: "ok",
+    lines: ["가입니다.", "나입니다.", "다입니다."],
+    source: { name: "OpenDART 사업보고서", url: "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260318001423", checkedAt: "2026-11-22" },
+    method: "llm",
+  };
+  const render = (props: Record<string, never>) =>
+    renderToStaticMarkup(createElement(CompanyCard, { company, graded, summary, ...props }));
+
+  test("SUM-20 요약 블록은 기업 카드 안, 회사 정보 바로 아래에 있다 (11/22 동주 카드 구성: 저장 버튼은 카드에 없음)", () => {
+    const html = render({});
+    const at = {
+      head: html.indexOf("판정 근거"),
+      biz: html.indexOf('data-el="하는 일 세 줄 요약"'),
+      dist: html.indexOf('data-el="등급 분포"'),
+    };
+    expect(at.head).toBeGreaterThan(-1);
+    expect(at.biz).toBeGreaterThan(at.head);
+    expect(at.dist).toBeGreaterThan(at.biz);
+    expect((html.match(/data-el="기업 카드"/g) ?? []).length).toBe(1); // 카드는 하나
+  });
+
+  test("SUM-21 기업 카드에는 저장 버튼이 없다 (저장은 최종 판단 리포트 아래 \"기업 카드 모음에 담기\"만, 11/22 결정)", () => {
+    const html = render({});
+    expect(html).not.toContain("기업 카드 저장하기");
+    expect(html).toContain("가입니다.");
+    expect((html.match(/btn-primary/g) ?? []).length).toBe(0);
+  });
+
+  test("SUM-22 요약 블록은 새 디자인 클래스(cc-biz)를 쓰고, 옛 와이어프레임 클래스와 대괄호 이름표를 쓰지 않는다", () => {
+    const html = render({});
+    const block = html.slice(html.indexOf('data-el="하는 일 세 줄 요약"') - 40);
+    expect(block).toContain("cc-biz");
+    expect(block).not.toMatch(/bg-box|border-line|text-\[10px\]|rounded border/);
+    expect(html).not.toContain("[하는 일 세 줄 요약]");
+  });
+
+  test("SUM-23 요약 블록 스타일(globals.css의 .cc-biz)은 디자인 규칙을 지킨다: 토큰만 쓰고, 그림자와 그라데이션 없음, 1px 회색 선, 모서리 4px(--r-2)", () => {
+    const css = readFileSync(path.resolve(import.meta.dirname, "../../app/globals.css"), "utf8");
+    const rules = css.split("\n").filter((l) => l.startsWith(".cc-biz"));
+    expect(rules.length).toBeGreaterThanOrEqual(5);
+    const all = rules.join("\n");
+    expect(all).not.toMatch(/#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(/); // 직접 쓴 색 없음 (:root 토큰만)
+    expect(all).not.toMatch(/box-shadow|gradient/);
+    const box = rules.find((l) => l.startsWith(".cc-biz {"))!;
+    expect(box).toContain("border: 1px solid var(--line)");
+    expect(box).toContain("border-radius: var(--r-2)");
+    expect(box).toContain("background: var(--surface)");
   });
 });

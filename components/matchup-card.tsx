@@ -126,7 +126,7 @@ export function MatchupGame({
         <p className="mp-note" data-el="맞대결 안내">
           진행 중인 맞대결은 임시 저장되지 않아요.
           <br />
-          새로고침하거나 창을 닫으면 첫 판부터 다시 해요.
+          새로고침하거나 창을 닫으면 첫 판부터 다시 시작돼요.
         </p>
       </div>
       <div className="mp">
