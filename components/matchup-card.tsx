@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { GradeBadge } from "@/components/grade-badge";
+import { InfoTip } from "@/components/info-tip";
 import { currentPair, MATCHUP_INDICATORS, MATCHUP_ROUNDS } from "@/lib/matchup";
 import { INDICATOR_LABELS, type IndicatorId, type MatchupCard as MatchupCardData } from "@/lib/types";
 
@@ -42,9 +43,7 @@ function MatchupCardView({
           <li key={id}>
             <span className="k">
               {INDICATOR_LABELS[id]}
-              <span className="info tip" tabIndex={0} aria-label={`${INDICATOR_LABELS[id]} 설명`}>
-                i<span className="tip-pop" role="tooltip">{INDICATOR_HINTS[id]}</span>
-              </span>
+              <InfoTip label={`${INDICATOR_LABELS[id]} 설명`}>{INDICATOR_HINTS[id]}</InfoTip>
             </span>
             <GradeBadge grade={card.grades[id] ?? null} size="sm" />
           </li>
