@@ -59,7 +59,7 @@ export function companyResponse(company: Company, lead: LogLine[]): ChatResponse
   const missing = graded.filter((g) => g.grade === null && g.reason);
   const summary = getBusinessSummary(company, getMode(), { store: realBusinessSummaries });
   return {
-    reply: `${company.name}의 기업 카드입니다.`,
+    reply: `${company.name}의 기업 분석 결과입니다.`,
     widget: { type: "company", company, graded, summary },
     log: renumber([
       ...lead,

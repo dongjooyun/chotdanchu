@@ -24,6 +24,9 @@ async function withFreshSummary(res: ChatResponse): Promise<ChatResponse> {
   return { ...res, widget: { ...res.widget, summary }, log: log ? renumber([...res.log, log]) : res.log };
 }
 
+/** Vercel에서 AI 호출(에이전트 판단, 요약)이 기본 제한 시간보다 길어질 수 있어 60초로 늘린다 */
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as ChatRequest | null;
   if (!body) return Response.json({ error: "요청 형식이 올바르지 않습니다" }, { status: 400 });

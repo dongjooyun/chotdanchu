@@ -164,6 +164,19 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   const [matchupDone, setMatchupDone] = useStoredState("chotdanchu:matchup-done", false);
   /** 모바일에서 사고 과정을 여는 창 */
   const [thinkModal, setThinkModal] = useState(false);
+  /** 맞대결 중 통합 버튼 메뉴 */
+  const [dockMenu, setDockMenu] = useState(false);
+  const dockPointer = useRef<string>("");
+  const dockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** 마우스를 올리면 메뉴가 열리고, 벗어나면 0.25초 뒤 닫힌다 (버튼에서 메뉴로 옮겨 가는 동안 닫히지 않게) */
+  const openDock = () => {
+    if (dockTimer.current) clearTimeout(dockTimer.current);
+    setDockMenu(true);
+  };
+  const closeDockSoon = () => {
+    if (dockTimer.current) clearTimeout(dockTimer.current);
+    dockTimer.current = setTimeout(() => setDockMenu(false), 250);
+  };
   const [pending, setPending] = useState(false);
   const [think, setThink] = useState(false);
   /** 맞대결을 다시 해 성향이 바뀌었을 때 저장 카드를 어떻게 할지 묻는 창 */
@@ -199,7 +212,10 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       raf = 0;
       const nav = 60 + 12; // 하단 탭 높이 + 여백
       const above = window.innerHeight - el.getBoundingClientRect().top + 12;
-      document.documentElement.style.setProperty("--fab-bottom", `${Math.max(nav, above)}px`);
+      const bottom = Math.max(nav, above);
+      document.documentElement.style.setProperty("--fab-bottom", `${bottom}px`);
+      // 통합 버튼 자리(보내기 버튼 아래)까지 세 버튼이 내려가야 하는 거리
+      document.documentElement.style.setProperty("--dock-dy", `${Math.max(0, bottom - 66)}px`);
     };
     const queue = () => {
       if (!raf) raf = requestAnimationFrame(set);
@@ -216,6 +232,20 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       if (raf) cancelAnimationFrame(raf);
     };
   }, [view, messages.length]);
+
+  // 통합 버튼 메뉴는 바깥을 누르거나 Esc로 닫고, 맞대결이 끝나면 닫는다
+  useEffect(() => {
+    if (!dockMenu) return;
+    const close = (e: Event) => {
+      if (e instanceof KeyboardEvent ? e.key === "Escape" : !(e.target as HTMLElement).closest(".fab-dock")) setDockMenu(false);
+    };
+    document.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", close);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+      document.removeEventListener("keydown", close);
+    };
+  }, [dockMenu]);
 
   // 메뉴를 오가도 챗봇 화면의 스크롤 위치를 기억한다
   const chatScroll = useRef(0);
@@ -498,7 +528,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
         </section>
       )}
       {/* 메뉴를 바꿔도 대화와 맞대결 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}
-      <div className="app" data-think={think ? "open" : "closed"} hidden={view !== "chat"}>
+      <div className="app" data-think={think ? "open" : "closed"} data-docked={matchupOpen ? "true" : "false"} hidden={view !== "chat"}>
         {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}
         <div className="infobar" data-el="고정 정보줄">
           <div className="infobar-main">
@@ -573,8 +603,8 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
         <Disclaimer />
       </div>
       {/* 모바일: 사고 과정과 대화 새로 시작은 오른쪽 아래 둥근 아이콘 버튼. 사고 과정은 창으로 연다 */}
-      {view === "chat" && !matchupOpen && (
-        <div className="fab-stack only-mobile">
+      {view === "chat" && (
+        <div className="fab-stack only-mobile" data-docked={matchupOpen ? "true" : "false"}>
           {messages.length > 0 && (
             <Fab tone="quiet" label="대화 새로 시작하기" onClick={() => setResetAsk(true)} disabled={pending}>
               <RefreshIcon />
@@ -588,6 +618,65 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
           <Fab tone="ai" label="에이전트 사고 과정 보기" onClick={() => setThinkModal(true)}>
             <SparkleIcon />
           </Fab>
+        </div>
+      )}
+      {/* 맞대결 중에는 세 버튼이 입력창 보내기 버튼 아래 작은 통합 버튼 하나로 모인다. 누르면 두 가지 메뉴(대화 새로 시작, 사고 과정)가 열린다 (11/22) */}
+      {view === "chat" && (
+        <div
+          className="fab-dock only-mobile"
+          data-docked={matchupOpen ? "true" : "false"}
+          onPointerEnter={(e) => e.pointerType === "mouse" && openDock()}
+          onPointerLeave={(e) => e.pointerType === "mouse" && closeDockSoon()}
+        >
+          {dockMenu && matchupOpen && (
+            <div className="dock-menu" role="menu">
+              {messages.length > 0 && (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setDockMenu(false);
+                    setResetAsk(true);
+                  }}
+                >
+                  <RefreshIcon />
+                  대화 새로 시작하기
+                </button>
+              )}
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setDockMenu(false);
+                  setThinkModal(true);
+                }}
+              >
+                <SparkleIcon />
+                에이전트 사고 과정 보기
+              </button>
+            </div>
+          )}
+          <button
+            type="button"
+            className="dock-btn"
+            aria-label="빠른 메뉴"
+            aria-haspopup="menu"
+            aria-expanded={dockMenu && matchupOpen}
+            tabIndex={matchupOpen ? 0 : -1}
+            onPointerDown={(e) => (dockPointer.current = e.pointerType)}
+            // 마우스는 올리면 열리므로 클릭으로 닫지 않는다. 터치와 키보드는 누를 때마다 열고 닫는다
+            onClick={() => {
+              if (dockPointer.current === "mouse") return;
+              setDockMenu((v) => !v);
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="6" cy="6" r="2.2" />
+              <circle cx="18" cy="6" r="2.2" />
+              <circle cx="6" cy="18" r="2.2" />
+              <circle cx="18" cy="18" r="2.2" />
+            </svg>
+          </button>
         </div>
       )}
       <AppDialog open={thinkModal} title="에이전트 사고 과정" onClose={() => setThinkModal(false)}>

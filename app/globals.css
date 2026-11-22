@@ -502,3 +502,32 @@ body { padding-top: var(--header-h); }
   .wrap > .app > .cols > .chat-col { flex: 1; display: flex; flex-direction: column; }
   .wrap > .app > .cols > .chat-col > .chat { flex: 1; align-content: start; }
 }
+
+/* ===== 모바일 둥근 버튼 3개 <-> 통합 버튼 (11/22) =====
+   맞대결이 시작되면 세 버튼이 아래로 나란히 모여 보내기 버튼 아래 작은 통합 버튼이 되고, 끝나면 다시 위로 펼쳐진다.
+   transform과 opacity만 움직여 부드럽게(0.38초), 모션을 줄인 설정에서는 바로 바뀐다 */
+.fab-stack { transition: transform .38s cubic-bezier(.4, .2, .2, 1); }
+.fab-stack .fab-wrap { transition: transform .38s cubic-bezier(.4, .2, .2, 1), opacity .28s ease, visibility 0s 0s; }
+.fab-stack[data-docked="true"] { transform: translateY(var(--dock-dy, 100px)); pointer-events: none; }
+.fab-stack[data-docked="true"] .fab-wrap { opacity: 0; visibility: hidden; transition: transform .38s cubic-bezier(.4, .2, .2, 1), opacity .28s ease .1s, visibility 0s .4s; }
+.fab-stack[data-docked="true"] .fab-wrap:nth-last-child(2) { transform: translateY(60px) scale(.5); }
+.fab-stack[data-docked="true"] .fab-wrap:nth-last-child(3) { transform: translateY(120px) scale(.5); }
+.fab-stack[data-docked="true"] .fab-wrap:nth-last-child(1) { transform: scale(.5); }
+/* 통합 버튼: 입력창 오른쪽 아래 (보내기 버튼 바로 아래) */
+.fab-dock { position: fixed; right: 16px; bottom: 66px; z-index: 26; display: flex; flex-direction: column; align-items: flex-end; gap: var(--s-2); pointer-events: none; }
+.dock-btn { position: relative; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--purple); background: var(--lilac); color: var(--purple-ink); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transform: scale(.4); visibility: hidden; transition: transform .3s cubic-bezier(.4, .2, .2, 1), opacity .2s ease, visibility 0s .3s; }
+.dock-btn svg { width: 20px; height: 20px; }
+.fab-dock[data-docked="true"] .dock-btn { opacity: 1; transform: scale(1); visibility: visible; pointer-events: auto; transition: transform .3s cubic-bezier(.4, .2, .2, 1) .22s, opacity .2s ease .22s, visibility 0s .22s; }
+.dock-btn:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.dock-menu { display: flex; flex-direction: column; min-width: 190px; padding: var(--s-1); border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface); pointer-events: auto; }
+.dock-menu button { display: flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: 0 var(--s-3); border: 0; border-radius: var(--r-2); background: none; color: var(--ink); font: inherit; font-size: 14px; text-align: left; cursor: pointer; }
+.dock-menu button:hover { background: var(--fill); }
+.dock-menu svg { flex: none; color: var(--ink-2); }
+/* 통합 버튼이 입력창 안내 글을 가리지 않게 오른쪽을 비운다 */
+.app[data-docked="true"] .inputbar > p { padding-right: 60px; }
+/* 통합 버튼(48px)이 보내기 버튼 바로 아래에 들어갈 자리를 맞대결 중에만 만든다 */
+.inputbar { transition: padding-bottom .3s ease; }
+.app[data-docked="true"] .inputbar { padding-bottom: calc(var(--s-3) + 24px); }
+@media (prefers-reduced-motion: reduce) {
+  .fab-stack, .fab-stack .fab-wrap, .dock-btn, .fab-dock[data-docked="true"] .dock-btn, .inputbar { transition: none !important; }
+}
