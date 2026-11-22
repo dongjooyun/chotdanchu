@@ -23,6 +23,27 @@ async function openView(page: Page, name: "챗봇" | "기업 카드 모음" | "�
   await page.locator('[data-el="메뉴"]').getByRole("button", { name: new RegExp(`^${name}`) }).click();
 }
 
+const isMobile = (page: Page) => (page.viewportSize()?.width ?? 0) <= 820;
+
+/** 지금 보는 직무와 회사 문구. PC는 고정 정보줄, 모바일은 메뉴 맨 위 한 줄이다 */
+async function statusText(page: Page): Promise<string> {
+  if (!isMobile(page)) return (await page.locator('[data-el="고정 정보줄"]').innerText()).replace(/\s+/g, " ");
+  await page.getByRole("button", { name: "메뉴", exact: true }).click();
+  const text = await page.getByRole("menu").locator(".mmenu-status").innerText();
+  await page.keyboard.press("Escape");
+  return text;
+}
+
+/** 메뉴 동작을 누른다. PC는 화면의 버튼, 모바일은 메뉴 목록의 항목 */
+async function menuAction(page: Page, name: string) {
+  if (isMobile(page)) {
+    await page.getByRole("button", { name: "메뉴", exact: true }).click();
+    await page.getByRole("menuitem", { name }).click();
+  } else {
+    await page.getByRole("button", { name }).first().click();
+  }
+}
+
 async function searchCompany(page: Page, name: string) {
   await page.getByLabel("메시지 입력").fill(name);
   await page.getByRole("button", { name: "보내기" }).click();
@@ -43,14 +64,16 @@ test("E2E-01 첫 방문: 직무 3개 버튼, 입력창은 직무를 고르기 �
     await expect(page.getByRole("button", { name: role, exact: true })).toBeVisible();
   }
   await expect(page.getByLabel("메시지 입력")).toBeDisabled();
-  // 고정 정보줄: 직무와 회사 둘 다 미정
-  await expect(page.getByText("미정", { exact: true })).toHaveCount(2);
+  // 직무와 회사 둘 다 미정 (PC는 고정 정보줄, 모바일은 메뉴 맨 위 한 줄)
+  const status = await statusText(page);
+  expect(status).toContain("직무 미정");
+  expect(status).toContain("회사 미정");
 });
 
 test("E2E-02 직무를 고르면 바로 회사를 묻고, 새로고침해도 직무가 남는다", async ({ page }) => {
   await chooseRole(page, "마케팅");
   await expect(page.getByLabel("메시지 입력")).toBeEnabled();
-  await expect(page.locator('[data-el="고정 정보줄"]')).toBeVisible();
+  if (!isMobile(page)) await expect(page.locator('[data-el="고정 정보줄"]')).toBeVisible();
   await page.reload();
   await expect(page.getByText("마케팅 직무로 볼게요. 어느 회사가 궁금하세요?")).toBeVisible();
 });
@@ -101,7 +124,7 @@ test("E2E-06 리포트 뒤 다음 행동: 다른 회사 보기, 직무 바꾸기
   await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
   await page.getByRole("button", { name: "다른 회사 보기" }).click();
   await expect(page.getByText("서비스기획 직무로 볼게요. 어느 회사가 궁금하세요?").last()).toBeVisible();
-  await page.getByRole("button", { name: "직무 변경하기", exact: true }).first().click();
+  await menuAction(page, "직무 변경하기");
   await expect(page.getByText("어떤 직무로 바꿀까요?")).toBeVisible();
   await page.getByRole("button", { name: "운영", exact: true }).last().click();
   await expect(page.getByText("운영 직무로 볼게요. 어느 회사가 궁금하세요?").last()).toBeVisible();
@@ -177,13 +200,14 @@ test("E2E-11 직무와 회사를 바꾼 뒤 리포트 카드는 지금 직무와
   expect(second).toContain("마케팅 직무");
   expect(second).not.toContain("하늘커머스");
   expect(second).not.toContain("기획자");
-  // 고정 정보줄도 같은 직무와 회사를 보여 준다
-  const bar = page.locator('[data-el="고정 정보줄"]');
-  await expect(bar).toContainText("마케팅");
-  await expect(bar).toContainText("주식회사 청솔기계");
+  // 직무와 회사 표시(PC 정보줄, 모바일 메뉴 맨 위)도 같은 값을 보여 준다
+  const status = await statusText(page);
+  expect(status).toContain("마케팅");
+  expect(status).toContain("주식회사 청솔기계");
 });
 
-test("E2E-12 길어진 대화에서도 머리글은 맨 위에, 직무와 회사 줄은 그 바로 아래에 붙어 있다", async ({ page }) => {
+test("E2E-12 길어진 대화에서도 머리글은 맨 위에, 직무와 회사 줄은 그 바로 아래에 붙어 있다 (PC)", async ({ page }) => {
+  test.skip(isMobile(page), "모바일은 정보줄 없이 채팅이 화면을 채운다 (E2E-25)");
   await chooseRole(page, "마케팅");
   await searchCompany(page, "별하늘랩스");
   await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
@@ -238,8 +262,6 @@ test("E2E-14 맞대결: 이전 판으로 돌아가면 진행 표시가 한 판 �
   await chooseRole(page, "운영");
   await searchCompany(page, "별하늘랩스");
   await page.getByRole("button", { name: "기업 맞대결로 내 성향 맞춤 판정 받기" }).click();
-  // 맞대결 중에는 모바일 둥근 버튼이 카드 오른쪽을 가리지 않게 숨는다
-  await expect(page.locator(".fab-stack")).toHaveAttribute("data-docked", "true");
   await page.getByRole("button", { name: "기업 B 선택" }).click({ position: { x: 12, y: 12 } });
   await expect(page.getByText("2 / 7")).toBeVisible();
   await page.getByRole("button", { name: "이전 판으로 돌아가기" }).click();
@@ -323,7 +345,7 @@ test("E2E-17 첫 직무 선택도 내 말풍선으로 남고, 메뉴로 튜토�
   await openView(page, "챗봇");
   await expect(page.getByLabel("메시지 입력")).toBeVisible();
   // 대화 새로 시작: 확인 창(가운데, X 닫기) 뒤에 말풍선이 지워지고 직무는 남는다
-  await page.getByRole("button", { name: "대화 새로 시작하기" }).click();
+  await menuAction(page, "대화 새로 시작하기");
   const dlg = page.getByRole("dialog", { name: "대화를 새로 시작할까요?" });
   await expect(dlg).toBeVisible();
   await dlg.getByRole("button", { name: "새로 시작" }).click();
@@ -335,6 +357,8 @@ test("E2E-20 튜토리얼: 다음만 눌러 가상 기업으로 끝까지 가고
   test.setTimeout(90_000);
   await openView(page, "튜토리얼");
   const titles = ["직무 고르기", "회사 이름 말하기", "AI 에이전트의 판단", "기업 카드", "3년차 공고와 비교", "내 기준 정하기", "기업 맞대결", "최종 판단 리포트", "에이전트 사고 과정"];
+  // 모바일에서만 입력창 오른쪽 메뉴 버튼 단계가 하나 더 있다 (PC에는 그 버튼이 없다)
+  if (isMobile(page)) titles.push("오른쪽 아래 메뉴 버튼");
   for (const [i, title] of titles.entries()) {
     const tip = page.getByRole("dialog", { name: `튜토리얼 ${i + 1}단계: ${title}` });
     await expect(tip).toBeVisible({ timeout: 15_000 });
@@ -389,17 +413,53 @@ test("E2E-18 모음 카드 창에서 근거 면을 보다가 아직 판정하지
   await expect(dlg.locator(".rc-back")).toHaveCount(0);
 });
 
-test("E2E-19 모바일: 맞대결 중 통합 버튼에 마우스를 올리면 메뉴가 뜨고, 벗어나면 닫힌다", async ({ page }) => {
-  test.skip((page.viewportSize()?.width ?? 0) > 820, "통합 버튼은 모바일 화면에만 있다");
+test("E2E-19 모바일: 메뉴 버튼은 늘 보이고, 누르면 직무와 회사 한 줄과 메뉴 항목이 뜨며, 바깥을 누르면 닫힌다", async ({ page }) => {
+  test.skip(!isMobile(page), "메뉴 버튼은 모바일 화면에만 있다");
   await chooseRole(page, "마케팅");
   await searchCompany(page, "별하늘랩스");
+  const btn = page.getByRole("button", { name: "메뉴", exact: true });
+  await expect(btn).toBeVisible();
+  // 맞대결 중에도 같은 자리에 있다 (카드를 가리지 않는다)
   await page.getByRole("button", { name: "기업 맞대결로 내 성향 맞춤 판정 받기" }).click();
-  const dock = page.getByRole("button", { name: "빠른 메뉴" });
-  await expect(dock).toBeVisible();
-  await dock.hover();
+  await expect(btn).toBeVisible();
+  await btn.click();
   const menu = page.getByRole("menu");
   await expect(menu).toBeVisible();
-  await expect(menu.getByRole("menuitem", { name: "에이전트 사고 과정 보기" })).toBeVisible();
-  await page.mouse.move(150, 150);
+  await expect(menu.locator(".mmenu-status")).toContainText("마케팅");
+  for (const name of ["직무 변경하기", "회사 변경하기", "대화 새로 시작하기", "에이전트 사고 과정 보기", "출처와 유의사항"]) {
+    await expect(menu.getByRole("menuitem", { name })).toBeVisible();
+  }
+  // 메뉴 항목 하나(출처와 유의사항)를 눌러 창을 열고 닫는다
+  await menu.getByRole("menuitem", { name: "출처와 유의사항" }).click();
+  const dlg = page.getByRole("dialog", { name: "출처와 유의사항" });
+  await expect(dlg).toContainText("기업 평가가 아닙니다");
+  await dlg.getByRole("button", { name: "닫기" }).click();
+  await btn.click();
+  await expect(menu).toBeVisible();
+  await page.mouse.click(150, 120);
   await expect(menu).toBeHidden();
+});
+
+test("E2E-25 모바일: 위쪽 정보줄과 입력창 아래 안내문, 면책 문구는 없고, 맨 위로, 맨 아래로 버튼이 있다", async ({ page }) => {
+  test.skip(!isMobile(page), "모바일 화면 전용");
+  await chooseRole(page, "마케팅");
+  await expect(page.locator('[data-el="고정 정보줄"]')).toBeHidden();
+  await expect(page.locator('[data-el="면책 문구"]')).toBeHidden();
+  await expect(page.locator(".inputbar .tiny")).toBeHidden();
+  // 입력창은 한 줄: 입력칸, 보내기(화살표), 메뉴가 가로로 나란히
+  const input = (await page.getByLabel("메시지 입력").boundingBox())!;
+  const send = (await page.getByRole("button", { name: "보내기" }).boundingBox())!;
+  const menu = (await page.getByRole("button", { name: "메뉴", exact: true }).boundingBox())!;
+  expect(Math.abs(input.y - send.y)).toBeLessThan(6);
+  expect(send.x).toBeGreaterThan(input.x + input.width - 1);
+  expect(menu.x).toBeGreaterThan(send.x + send.width - 1);
+  // 대화를 늘리면 맨 위로 버튼이 나타나고, 누르면 맨 위로 간다
+  await searchCompany(page, "별하늘랩스");
+  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await expect(page.getByText("최종 판단 리포트예요")).toBeVisible();
+  const up = page.getByRole("button", { name: "맨 위로" });
+  await expect(up).toBeVisible();
+  await up.click();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(5);
+  await expect(page.getByRole("button", { name: "맨 아래로" })).toBeVisible();
 });
