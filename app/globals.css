@@ -443,11 +443,6 @@ body {
 @media (max-width: 820px) { .only-pc { display: none !important; } .msg { scroll-margin-top: 140px; } }
 @media (min-width: 821px) { .only-mobile { display: none !important; } }
 /* 모바일 오른쪽 아래 둥근 버튼 (하단 탭과 입력창 위) */
-.fab-stack { position: fixed; right: 16px; bottom: var(--fab-bottom, 190px); z-index: 25; display: flex; flex-direction: column; gap: var(--s-3); }
-.fab { width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-.fab-ai { background: var(--yellow); border: 1px solid var(--yellow); color: var(--on-yellow); }
-.fab-quiet { background: var(--surface); border: 1px solid var(--line); color: var(--ink-2); }
-.fab:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
 /* 모음 카드 보기: 모든 칸 높이를 같게 */
 .coll-gallery { grid-auto-rows: 1fr; }
 /* 머리글은 모든 메뉴에서 맨 위에 둔다 */
@@ -482,10 +477,6 @@ body { padding-top: var(--header-h); }
 .infobar-side { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: var(--s-2); margin-left: auto; }
 .infobar-side .infobar-actions { margin-left: 0; }
 /* 모바일 둥근 버튼: 꾹 누르면 이름이 왼쪽에 뜬다 */
-.fab-wrap { position: relative; display: inline-flex; justify-content: flex-end; }
-.fab-label { position: absolute; right: calc(100% + 8px); top: 50%; transform: translateY(-50%); white-space: nowrap; padding: 6px 10px; border-radius: var(--r-2); background: var(--ink); color: #fff; font-size: 14px; font-weight: 600; }
-.fab-lilac { background: var(--lilac); border: 1px solid var(--purple); color: var(--purple-ink); }
-.fab { -webkit-touch-callout: none; user-select: none; touch-action: manipulation; }
 /* 창 안의 사고 과정: 창 제목이 있으니 패널 제목 없이 바로 내용 */
 .aside-bare { border: 0; padding: 0; background: none; }
 .aside-bare .panel-sub { margin-top: 0; }
@@ -518,34 +509,10 @@ body { padding-top: var(--header-h); }
   .wrap > .app > .cols > .chat-col > .chat { flex: 1; align-content: start; }
 }
 
-/* ===== 모바일 둥근 버튼 3개 <-> 통합 버튼 (11/22) =====
-   맞대결이 시작되면 세 버튼이 아래로 나란히 모여 보내기 버튼 아래 작은 통합 버튼이 되고, 끝나면 다시 위로 펼쳐진다.
-   transform과 opacity만 움직여 부드럽게(0.38초), 모션을 줄인 설정에서는 바로 바뀐다 */
-.fab-stack { transition: transform .38s cubic-bezier(.4, .2, .2, 1); }
-.fab-stack .fab-wrap { transition: transform .38s cubic-bezier(.4, .2, .2, 1), opacity .28s ease, visibility 0s 0s; }
-.fab-stack[data-docked="true"] { transform: translateY(var(--dock-dy, 100px)); pointer-events: none; }
-.fab-stack[data-docked="true"] .fab-wrap { opacity: 0; visibility: hidden; transition: transform .38s cubic-bezier(.4, .2, .2, 1), opacity .28s ease .1s, visibility 0s .4s; }
-.fab-stack[data-docked="true"] .fab-wrap:nth-last-child(2) { transform: translateY(60px) scale(.5); }
-.fab-stack[data-docked="true"] .fab-wrap:nth-last-child(3) { transform: translateY(120px) scale(.5); }
-.fab-stack[data-docked="true"] .fab-wrap:nth-last-child(1) { transform: scale(.5); }
 /* 통합 버튼: 입력창 오른쪽 아래 (보내기 버튼 바로 아래) */
-.fab-dock { position: fixed; right: 16px; bottom: 66px; z-index: 26; display: flex; flex-direction: column; align-items: flex-end; gap: var(--s-2); pointer-events: none; }
-.dock-btn { position: relative; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--purple); background: var(--lilac); color: var(--purple-ink); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transform: scale(.4); visibility: hidden; transition: transform .3s cubic-bezier(.4, .2, .2, 1), opacity .2s ease, visibility 0s .3s; }
-.dock-btn svg { width: 20px; height: 20px; }
-.fab-dock[data-docked="true"] .dock-btn { opacity: 1; transform: scale(1); visibility: visible; pointer-events: auto; transition: transform .3s cubic-bezier(.4, .2, .2, 1) .22s, opacity .2s ease .22s, visibility 0s .22s; }
-.dock-btn:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
-.dock-menu { display: flex; flex-direction: column; min-width: 190px; padding: var(--s-1); border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface); pointer-events: auto; }
-.dock-menu button { display: flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: 0 var(--s-3); border: 0; border-radius: var(--r-2); background: none; color: var(--ink); font: inherit; font-size: 14px; text-align: left; cursor: pointer; }
-.dock-menu button:hover { background: var(--fill); }
-.dock-menu svg { flex: none; color: var(--ink-2); }
 /* 통합 버튼이 입력창 안내 글을 가리지 않게 오른쪽을 비운다 */
-.app[data-docked="true"] .inputbar > p { padding-right: 60px; }
 /* 통합 버튼(48px)이 보내기 버튼 바로 아래에 들어갈 자리를 맞대결 중에만 만든다 */
 .inputbar { transition: padding-bottom .3s ease; }
-.app[data-docked="true"] .inputbar { padding-bottom: calc(var(--s-3) + 24px); }
-@media (prefers-reduced-motion: reduce) {
-  .fab-stack, .fab-stack .fab-wrap, .dock-btn, .fab-dock[data-docked="true"] .dock-btn, .inputbar { transition: none !important; }
-}
 
 /* 튜토리얼 (CDC-32, 11/22): 가상 기업 대본을 따라가며 단계별 말풍선이 지금 볼 곳을 가리킨다 */
 .tut-stage { position: relative; padding-bottom: 260px; }
@@ -596,3 +563,41 @@ body { padding-top: var(--header-h); }
 .inapp-notice p { margin: 0; }
 .inapp-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-3); }
 @media (max-width: 820px) { .inapp-notice { border-left: 0; border-right: 0; border-radius: 0; } }
+
+/* ===== 모바일 채팅 화면 꽉 채우기 (11/22 실사용 테스트 뒤) =====
+   모바일에서는 맨 위 헤더와 하단 탭을 빼고 채팅만 남긴다: 고정 정보줄, 입력창 아래 안내문, 면책 문구를 걷어 내고
+   (직무와 회사는 메뉴 맨 위 한 줄, 안내와 면책은 메뉴의 "출처와 유의사항"으로 옮김). 입력창은 한 줄: [입력칸][보내기 화살표][메뉴] */
+@media (max-width: 820px) {
+  .infobar { display: none; }
+  .inputbar { padding: var(--s-3) var(--s-3); }
+  .send-btn { min-width: 44px; width: 44px; padding: 0; }
+  .send-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .send-icon { display: block; margin: 0 auto; }
+  .msg { scroll-margin-top: calc(var(--header-h) + 16px); }
+}
+@media (min-width: 821px) { .send-icon, .mmenu { display: none; } }
+.send-btn { position: relative; }
+.send-btn .send-icon { display: none; }
+@media (max-width: 820px) { .send-btn .send-icon { display: block; } }
+
+/* 모바일 메뉴 버튼과 목록 */
+.mmenu { position: relative; flex: none; }
+.mmenu-btn { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--purple); background: var(--lilac); color: var(--purple-ink); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; touch-action: manipulation; }
+.mmenu-btn[aria-expanded="true"] { background: var(--purple); color: #fff; }
+.mmenu-btn:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.mmenu-pop { position: absolute; right: 0; bottom: calc(100% + 12px); min-width: 240px; padding: var(--s-1); border: 1px solid var(--line); border-radius: var(--r-3); background: var(--surface); transform-origin: right bottom; animation: mmenu-in .22s cubic-bezier(.4, .2, .2, 1) both; z-index: 30; }
+.mmenu-pop button { display: flex; align-items: center; gap: var(--s-3); width: 100%; min-height: 48px; padding: 0 var(--s-3); border: 0; border-radius: var(--r-2); background: none; color: var(--ink); font: inherit; font-size: 16px; text-align: left; cursor: pointer; }
+.mmenu-pop button:hover:not(:disabled), .mmenu-pop button:active:not(:disabled) { background: var(--fill); }
+.mmenu-pop button:disabled { color: var(--gray-3); cursor: default; }
+.mmenu-pop svg { flex: none; color: var(--ink-2); }
+.mmenu-status { margin: 0; padding: var(--s-3) var(--s-3) var(--s-2); border-bottom: 1px solid var(--line-2); font-size: 14px; font-weight: 700; color: var(--ink-2); }
+@keyframes mmenu-in { from { opacity: 0; transform: translateY(8px) scale(.92); } to { opacity: 1; transform: none; } }
+
+/* 맨 위로 / 맨 아래로 (모바일, 왼쪽 아래, 작은 회색 화살표) */
+.scroll-btns { position: fixed; left: 12px; bottom: calc(60px + env(safe-area-inset-bottom) + var(--inputbar-h, 72px) + 12px); z-index: 25; display: flex; flex-direction: column; gap: var(--s-2); }
+.scroll-btns button { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--gray-4); background: var(--surface); color: var(--ink-2); display: inline-flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; opacity: .92; touch-action: manipulation; }
+.scroll-btns button:active { background: var(--fill); }
+@media (prefers-reduced-motion: reduce) { .mmenu-pop { animation: none; } }
+/* 목업(개발) 모드에서만 보이는 헤더 오른쪽 배지와 카탈로그 링크는 좁은 화면에서 서비스 이름을 찌그러뜨려서 모바일에서는 숨긴다 */
+.brand { white-space: nowrap; }
+@media (max-width: 820px) { .header-end { display: none; } }
