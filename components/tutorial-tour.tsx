@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import script from "@/data/tutorial/script.json";
 import { AgentLogPanel } from "@/components/agent-log-panel";
 import { LogBadge } from "@/components/log-badge";
+import { CardsIcon, CompanyIcon, InfoIcon, RefreshIcon, RoleIcon, SparkleIcon } from "@/components/menu-icons";
+import { MobileMenu } from "@/components/mobile-menu";
 import { MessageList, type ChatMessage, type MessageWidget, type WidgetHandlers } from "@/components/message-list";
 import type { QuickReply } from "@/components/quick-replies";
 import { computeCareerGap } from "@/lib/career-gap";
@@ -17,7 +19,7 @@ import { PREFERENCE_TYPE_LABELS, type Preference, type Role } from "@/lib/types"
 /**
  * 튜토리얼 (CDC-32, 11/22). 가상 기업 "몽돌커머스"로 첫단추 흐름 전체를 따라가 본다.
  * - 실제 AI와 API를 부르지 않는다. 기업 후보와 기업 카드는 미리 만든 정적 대본(data/tutorial/script.json, 테스트 TUT-*)이고,
- *   AI가 일하는 모습은 판단 로그 줄이 하나씩 올라오는 연출로만 보여 준다. 3년차 비교, 맞대결, 리포트는 실제 코드로 계산한다.
+ *   AI가 일하는 모습은 판단 로그 줄이 하나씩 올라오는 연출로만 보여 준다. 3년차 비교, 밸런스 게임, 리포트는 실제 코드로 계산한다.
  * - 실제 세션(대화, 직무, 성향, 기업 카드 모음)은 건드리지 않는다. 튜토리얼을 닫으면 처음으로 돌아간다.
  * - 단계마다 말풍선(툴팁)이 지금 볼 곳을 가리키고, "다음"을 누르면 사용자가 할 행동을 대신 해 준다.
  */
@@ -32,8 +34,8 @@ const ROLE_REPLIES: QuickReply[] = [
   { label: "운영", value: "role:운영" },
 ];
 const PREF_REPLIES: QuickReply[] = [
-  { label: "기업 맞대결로 내 성향 맞춤 판정 받기", value: "pref:matchup", main: true },
-  { label: "건너뛰고 기본 기준으로", value: "pref:skip" },
+  { label: "기업 밸런스 게임 시작하기", value: "pref:matchup", main: true },
+  { label: "건너뛰기(일반 기준 적용)", value: "pref:skip" },
 ];
 const TYPED = "몽돌커머스 분석해줘";
 /** 말풍선 첫 스타일. 위치는 화면에 그린 뒤 place()가 DOM에 바로 넣는다 (같은 객체라 React가 덮어쓰지 않는다) */
@@ -45,11 +47,11 @@ const INTRO: ChatMessage = {
   replies: ROLE_REPLIES,
 };
 
-type StepId = "role" | "input" | "candidates" | "company" | "career" | "pref" | "matchup" | "report" | "think" | "done";
+type StepId = "role" | "input" | "candidates" | "company" | "career" | "pref" | "matchup" | "report" | "think" | "menu" | "done";
 
 const STEPS: { id: StepId; title: string; body: string }[] = [
   { id: "role", title: "직무 고르기", body: "직무에 따라 비교하는 3년차 공고가 달라져요. 직무 버튼을 눌러 보세요. 다음을 누르면 서비스기획으로 진행해요." },
-  { id: "input", title: "회사 이름 말하기", body: "궁금한 회사 이름을 입력창에 적어 보내요. 여기서는 가상 기업 몽돌커머스로 해 볼게요. 보내기나 다음을 눌러 보세요." },
+  { id: "input", title: "궁금한 회사 이름 입력", body: "궁금한 회사 이름을 입력창에 적어 보내요. 여기서는 가상 기업 몽돌커머스로 해 볼게요. 보내기나 다음을 눌러 보세요." },
   {
     id: "candidates",
     title: "AI 에이전트의 판단",
@@ -65,8 +67,8 @@ const STEPS: { id: StepId; title: string; body: string }[] = [
     title: "3년차 공고와 비교",
     body: "같은 직무 3년차 공고가 요구하는 역량을 신입 때 쌓을 수 있는 역량과 따로 채워야 하는 역량으로 코드가 나눠요.",
   },
-  { id: "pref", title: "내 기준 정하기", body: "회사명을 가린 카드 7판으로 내가 중요하게 보는 지표를 찾아요. 맞대결 버튼을 눌러 보세요." },
-  { id: "matchup", title: "기업 맞대결", body: "두 카드 중 더 끌리는 쪽을 눌러요. 7판을 다 하거나, 다음을 누르면 자동으로 끝까지 골라요." },
+  { id: "pref", title: "내 기준 정하기", body: "회사명을 가린 카드 7판으로 내가 중요하게 보는 지표를 찾아요. 밸런스 게임 버튼을 눌러 보세요." },
+  { id: "matchup", title: "기업 밸런스 게임", body: "두 카드 중 더 끌리는 쪽을 눌러요. 7판을 다 하거나, 다음을 누르면 자동으로 끝까지 골라요." },
   {
     id: "report",
     title: "최종 판단 리포트",
@@ -79,6 +81,19 @@ const STEPS: { id: StepId; title: string; body: string }[] = [
   },
   { id: "done", title: "준비 끝", body: "" },
 ];
+
+/** 모바일에서만 보이는 단계: 입력창 오른쪽 메뉴 버튼 (11/22). PC에는 이 버튼이 없고 정보줄의 버튼들이 같은 일을 한다 */
+const MENU_STEP: { id: StepId; title: string; body: string } = {
+  id: "menu",
+  title: "오른쪽 아래 메뉴 버튼",
+  body: "입력창 오른쪽의 보라색 둥근 버튼이에요. 누르면 위로 메뉴가 펼쳐져요: 직무 변경하기, 회사 변경하기, 기업 밸런스 게임 하기, 대화 새로 시작하기, 에이전트 사고 과정 보기, 출처와 유의사항. 맨 위 한 줄에는 지금 보는 직무와 회사가 나와요.",
+};
+
+const subscribeNarrow = (cb: () => void) => {
+  const mq = window.matchMedia("(max-width: 820px)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
 
 const reduceMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, reduceMotion() ? Math.min(ms, 80) : ms));
@@ -97,7 +112,9 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
   const ids = useRef<Record<string, number>>({ intro: INTRO.id });
   const nextId = useRef(INTRO.id + 1);
   const busy = ticker !== null;
-  const current = STEPS[step];
+  const mobile = useSyncExternalStore(subscribeNarrow, () => window.matchMedia("(max-width: 820px)").matches, () => false);
+  const steps = mobile ? [...STEPS.slice(0, -1), MENU_STEP, STEPS[STEPS.length - 1]] : STEPS;
+  const current = steps[Math.min(step, steps.length - 1)];
 
   const push = useCallback((items: Omit<ChatMessage, "id">[], tag?: string) => {
     const withIds = items.map((m) => ({ ...m, id: nextId.current++ }));
@@ -198,26 +215,26 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
   }
 
   function askPreference() {
-    push([{ from: "agent", text: "내 기준에 맞춰 최종 판정할까요? 회사명을 가린 카드 7판, 1분이면 돼요.", replies: PREF_REPLIES }], "pref");
+    push([{ from: "agent", text: "내 성향 맞춤 판단을 원하시나요? 회사명을 가린 카드 7판, 1분이면 돼요.", replies: PREF_REPLIES }], "pref");
     setStep(5);
   }
 
   function startMatchup() {
     push([
-      { from: "user", text: "기업 맞대결로 내 성향 맞춤 판정 받기" },
+      { from: "user", text: "기업 밸런스 게임 시작하기" },
       { from: "agent", text: "더 끌리는 카드를 눌러 주세요. 회사 이름은 가려져 있고, 실존 기업이 아닌 가상 카드예요.", widget: { type: "matchup" } },
     ], "matchup");
     setStep(6);
   }
 
-  /** 맞대결 결과(코드 계산)와 리포트. 성향 설명 문장은 실제 서비스에서 AI가 쓰는 자리라 연출을 한 번 보여 준다 */
+  /** 밸런스 게임 결과(코드 계산)와 리포트. 성향 설명 문장은 실제 서비스에서 AI가 쓰는 자리라 연출을 한 번 보여 준다 */
   async function finishMatchup(pref: Preference, skipped: boolean) {
     if (!COMPANY) return;
     setPreference(pref);
     const lines: LogLine[] = skipped
       ? []
       : [
-          { step: 0, type: "tool_call", title: "compute_preference: 맞대결 7판을 Bradley-Terry로 계산", reason: "같은 선택이면 항상 같은 결과", mode: "mock" },
+          { step: 0, type: "tool_call", title: "compute_preference: 밸런스 게임 7판을 Bradley-Terry로 계산", reason: "같은 선택이면 항상 같은 결과", mode: "mock" },
           { step: 0, type: "decision", title: "유형 설명 문장을 AI가 작성", reason: "중시 지표 순서만 근거로 씀, 숫자 없음", mode: "mock" },
         ];
     if (lines.length && !(await fakeCall(lines))) return;
@@ -225,7 +242,7 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
     const data = buildReportDraft({ company: COMPANY.company, graded: COMPANY.graded, log: PICKED.log, role, preference: pref, mode: "mock", checkedAt: today() });
     const report: MessageWidget = { type: "report", data, personalized: !skipped, analysis: { company: COMPANY.company, graded: COMPANY.graded }, log: PICKED.log };
     const items: Omit<ChatMessage, "id">[] = skipped
-      ? [{ from: "user", text: "건너뛰고 기본 기준으로" }, { from: "agent", text: "기본 기준으로 판정한 최종 판단 리포트예요.", widget: report }]
+      ? [{ from: "user", text: "건너뛰기(일반 기준 적용)" }, { from: "agent", text: "일반 기준으로 판정한 최종 판단 리포트예요.", widget: report }]
       : [
           { from: "agent", text: `내 성향은 ${PREFERENCE_TYPE_LABELS[pref.type!]}이에요.`, widget: { type: "preference", preference: pref, sentence: typeSentence(pref) } },
           { from: "agent", text: "내 성향으로 판정한 최종 판단 리포트예요.", widget: report },
@@ -235,7 +252,7 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
     setStep(7);
   }
 
-  /** 맞대결을 대신 끝까지 고른다 (매 판 왼쪽 카드) */
+  /** 밸런스 게임을 대신 끝까지 고른다 (매 판 왼쪽 카드) */
   function autoPicks(): string[] {
     const picks: string[] = [];
     for (let pair = currentPair(picks); pair; pair = currentPair(picks)) picks.push(pair[0].id);
@@ -263,7 +280,9 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
       case "report":
         return setStep(8);
       case "think":
-        return setStep(9);
+        return setStep(9); // 모바일은 메뉴 단계, PC는 마지막 화면
+      case "menu":
+        return setStep(10);
     }
   }
 
@@ -307,11 +326,13 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
       case "pref":
         return msg("pref")?.querySelector<HTMLElement>('[data-el="빠른 응답 버튼"]') ?? null;
       case "matchup":
-        return root.querySelector<HTMLElement>('[data-el="맞대결"]');
+        return root.querySelector<HTMLElement>('[data-el="밸런스 게임"]');
       case "report":
         return msg("report")?.querySelector<HTMLElement>('[data-el="리포트 구역"]') ?? null;
       case "think":
         return root.querySelector<HTMLElement>('[data-tut="think"]');
+      case "menu":
+        return root.querySelector<HTMLElement>(".mmenu-btn");
       default:
         return null;
     }
@@ -383,7 +404,7 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
   }, [place, messages.length]);
 
   useEffect(() => {
-    // 맞대결, 리포트처럼 그린 직후 크기가 바뀌는 부품이 있어 조금 뒤에 재고, 다 그려진 뒤 한 번 더 같은 계산으로 맞춘다
+    // 밸런스 게임, 리포트처럼 그린 직후 크기가 바뀌는 부품이 있어 조금 뒤에 재고, 다 그려진 뒤 한 번 더 같은 계산으로 맞춘다
     const first = setTimeout(() => {
       place();
       scrollToStep();
@@ -414,8 +435,9 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
     if (ticker && ticker.length > 0) rootRef.current?.querySelector('[data-tut="ticker"]')?.scrollIntoView({ block: "nearest" });
   }, [ticker]);
 
-  const showThink = current.id === "think" || current.id === "done";
-  const n = Math.min(step + 1, STEPS.length - 1);
+  const showThink = current.id === "think" || current.id === "menu" || current.id === "done";
+  const n = Math.min(step + 1, steps.length - 1);
+  const isLast = steps[step + 1]?.id === "done";
 
   return (
     <section className="coll tutorial" data-el="튜토리얼">
@@ -475,9 +497,26 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
                   placeholder={current.id === "input" ? "보내기를 누르면 몽돌커머스를 입력해요" : "튜토리얼에서는 버튼으로 진행해요"}
                   aria-label="튜토리얼 입력창"
                 />
-                <button type="submit" className="btn btn-ink" disabled={current.id !== "input" || busy}>
-                  보내기
+                <button type="submit" className="btn btn-ink send-btn" disabled={current.id !== "input" || busy}>
+                  <span className="send-label">보내기</span>
+                  <svg className="send-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 19V5" />
+                    <path d="M5 12l7-7 7 7" />
+                  </svg>
                 </button>
+                {/* 모바일 전용: 실제 챗봇 화면과 같은 메뉴 버튼. 메뉴 단계에서는 펼쳐 둔다 */}
+                <MobileMenu
+                  forceOpen={current.id === "menu"}
+                  status="서비스기획 · 몽돌커머스"
+                  items={[
+                    { key: "role", label: "직무 변경하기", icon: <RoleIcon />, onSelect: () => {} },
+                    { key: "company", label: "회사 변경하기", icon: <CompanyIcon />, onSelect: () => {} },
+                    { key: "matchup", label: "기업 밸런스 게임 하기", icon: <CardsIcon />, onSelect: () => {} },
+                    { key: "reset", label: "대화 새로 시작하기", icon: <RefreshIcon />, onSelect: () => {} },
+                    { key: "think", label: "에이전트 사고 과정 보기", icon: <SparkleIcon />, onSelect: () => {} },
+                    { key: "notice", label: "출처와 유의사항", icon: <InfoIcon />, onSelect: () => {} },
+                  ]}
+                />
               </form>
             </div>
           )}
@@ -491,7 +530,7 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
               <b>이제 실제 회사로 해 볼까요?</b>
               <p className="small">
                 챗봇에서는 {examples.join(", ")}을(를) 볼 수 있어요.{" "}
-                {preference && !preference.skipped && preference.type ? `튜토리얼에서 나온 성향(${PREFERENCE_TYPE_LABELS[preference.type]})은 저장되지 않으니 챗봇에서 맞대결을 다시 해 주세요.` : ""}
+                {preference && !preference.skipped && preference.type ? `튜토리얼에서 나온 성향(${PREFERENCE_TYPE_LABELS[preference.type]})은 저장되지 않으니 챗봇에서 밸런스 게임을 다시 해 주세요.` : ""}
               </p>
               <div className="tut-done-actions">
                 <button type="button" className="btn btn-primary" onClick={onFinish}>
@@ -514,13 +553,13 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
             style={TIP_START}
           >
             <span className="tut-step">
-              {n} / {STEPS.length - 1}
+              {n} / {steps.length - 1}
             </span>
             <b className="tut-title">{current.title}</b>
             <p>{current.body}</p>
             <div className="tut-actions">
               <button type="button" className="btn tut-next" onClick={next} disabled={busy}>
-                {current.id === "think" ? "마치기" : "다음"}
+                {isLast ? "마치기" : "다음"}
               </button>
               <button type="button" className="tut-skip" onClick={onFinish}>
                 건너뛰기

@@ -24,15 +24,8 @@ function IndicatorRow({ g, metric }: { g: GradedIndicator; metric?: string }) {
         )}
       </span>
       {g.grade === null && !unavailable ? <NoGradeBadge /> : <GradeBadge grade={g.grade} />}
-      <span className="src">
-        {unavailable && g.reason ? `이유: ${UNAVAILABLE_REASON_LABELS[g.reason]}` : g.basis}
-        {g.source && (
-          <>
-            <br />
-            출처: {g.source.name} · {g.source.checkedAt}
-          </>
-        )}
-      </span>
+      <span className="src">{unavailable && g.reason ? `이유: ${UNAVAILABLE_REASON_LABELS[g.reason]}` : g.basis}</span>
+      {g.source && (<span className="src src-from">출처: {g.source.name} · {g.source.checkedAt}</span>)}
     </div>
   );
 }

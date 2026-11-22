@@ -20,7 +20,7 @@ export const INDICATOR_HINTS: Record<IndicatorId, string> = {
   transparency: "나머지 지표 중 공식 출처로 확인된 비율이에요.",
 };
 
-/** 맞대결 카드 한 장: 기업명 없이 지표별 등급만. 카드 전체를 눌러 고른다 (PRD 02, 11/21 결정) */
+/** 밸런스 게임 카드 한 장: 기업명 없이 지표별 등급만. 카드 전체를 눌러 고른다 (PRD 02, 11/21 결정) */
 function MatchupCardView({
   card,
   title,
@@ -35,7 +35,7 @@ function MatchupCardView({
   disabled?: boolean;
 }) {
   return (
-    <div className={`mc${picked ? " picked" : ""}`} data-el="맞대결 카드">
+    <div className={`mc${picked ? " picked" : ""}`} data-el="밸런스 게임 카드">
       <button type="button" className="pick" aria-label={`${title} 선택`} onClick={onPick} disabled={disabled || !onPick} />
       <h3>{title}</h3>
       <ul>
@@ -72,19 +72,21 @@ function Progress({ done }: { done: number }) {
 /** 등급 범례: A, B, C가 등급이라는 것을 알려 준다 (11/20 피드백) */
 export function GradeLegend() {
   return (
-    <p className="legend">
-      <b>A, B, C는 지표별 등급이에요.</b>
+    <div className="legend-wrap">
+      <p className="legend-note">A, B, C는 지표별 등급이에요.</p>
+      <p className="legend">
       <span><GradeBadge grade="A" size="sm" /> 좋음</span>
       <span><GradeBadge grade="B" size="sm" /> 보통</span>
       <span><GradeBadge grade="C" size="sm" /> 미흡</span>
       <span><GradeBadge grade={null} size="sm" /> 확인 불가</span>
-    </p>
+      </p>
+    </div>
   );
 }
 
 /**
- * 맞대결 게임 한 번 (8강 토너먼트 7판). 고르면 0.5초 뒤 다음 판으로 넘어가고, 7판이 끝나면 onDone에 고른 기록을 넘긴다.
- * "이전 판으로 돌아가기"로 한 판씩 되돌리고, "건너뛰고 기본 기준으로"는 늘 보인다.
+ * 밸런스 게임 한 번 (8강 토너먼트 7판). 고르면 0.5초 뒤 다음 판으로 넘어가고, 7판이 끝나면 onDone에 고른 기록을 넘긴다.
+ * "이전 판으로 돌아가기"로 한 판씩 되돌리고, "건너뛰기(일반 기준 적용)"는 늘 보인다.
  */
 export function MatchupGame({
   onDone,
@@ -118,12 +120,12 @@ export function MatchupGame({
 
   if (!pair) return null;
   return (
-    <div className="mp-wrap" data-el="맞대결">
+    <div className="mp-wrap" data-el="밸런스 게임">
       <div className="mp-top">
         <b className="mp-title">더 끌리는 카드를 선택해 주세요</b>
         <Progress done={picks.length} />
-        <p className="mp-note" data-el="맞대결 안내">
-          진행 중인 맞대결은 임시 저장되지 않아요.
+        <p className="mp-note" data-el="밸런스 게임 안내">
+          진행 중인 밸런스 게임은 임시 저장되지 않아요.
           <br />
           새로고침하거나 창을 닫으면 첫 판부터 다시 시작돼요.
         </p>
@@ -139,17 +141,17 @@ export function MatchupGame({
           이전 판으로 돌아가기
         </button>
         <button type="button" className="btn btn-link small" disabled={disabled} onClick={onSkip}>
-          건너뛰고 기본 기준으로
+          건너뛰기(일반 기준 적용)
         </button>
       </div>
     </div>
   );
 }
 
-/** 카탈로그용: 맞대결 한 판의 모양만 (고를 수 없음) */
+/** 카탈로그용: 밸런스 게임 한 판의 모양만 (고를 수 없음) */
 export function MatchupPair({ cards }: { cards: [MatchupCardData, MatchupCardData] }) {
   return (
-    <div className="mp-wrap" data-el="맞대결">
+    <div className="mp-wrap" data-el="밸런스 게임">
       <div className="mp-top">
         <b className="mp-title">더 끌리는 카드를 선택해 주세요</b>
         <Progress done={0} />
