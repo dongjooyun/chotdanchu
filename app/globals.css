@@ -549,6 +549,8 @@ body { padding-top: var(--header-h); }
 .tut-skip { min-height: 40px; padding: 0 var(--s-2); border: 0; background: none; color: #c9c9d1; font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .tut-skip:hover { color: #fff; }
 .tut-next:focus-visible, .tut-skip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+/* AI 호출 연출 말풍선은 .chat 목록 밖에 있어서 목록과 같은 바깥 여백(--s-5)을 직접 준다 */
+.tut-ticker-msg { padding: 0 var(--s-5); margin-bottom: var(--s-5); }
 .tut-ticker { min-width: min(420px, 100%); }
 .tut-lines { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-1); font-size: 13px; }
 .tut-lines li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); animation: tut-in .3s ease both; }

@@ -439,7 +439,7 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
         <div className="chat-col">
           <MessageList messages={messages} pending={false} onSelectReply={onSelectReply} handlers={handlers} />
           {ticker && (
-            <div className="msg" data-tut="ticker" data-el="AI 호출 연출">
+            <div className="msg tut-ticker-msg" data-tut="ticker" data-el="AI 호출 연출">
               <div className="bubble tut-ticker">
                 <p className="small">
                   <span className="wait" aria-hidden="true">
