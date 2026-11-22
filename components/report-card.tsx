@@ -127,7 +127,7 @@ function Front({
             <dl className="rc-facts">
               <div>
                 <dt>내 성향</dt>
-                <dd>{d.preferenceType ?? "기본 기준 (맞대결 건너뜀)"}</dd>
+                <dd>{d.preferenceType ?? "기본 기준 (밸런스 게임 건너뜀)"}</dd>
               </div>
               {top && (
                 <div>
@@ -175,7 +175,7 @@ function Front({
             )}
             {d.fitLabel && origin && (
               <div className="rc-qr" data-el="카드 QR">
-                <QRCodeSVG value={`${origin}${shareHref(d.companyId, d.role, d.weightsParam)}`} size={64} level="M" marginSize={0} />
+                <QRCodeSVG value={`${origin}${shareHref(d.companyId, d.role, d.weightsParam)}`} size={52} level="M" marginSize={0} fgColor="#6b6b76" />
                 <span className="tiny muted">
                   스캔하여 기업 카드 자세히 보기
                   <br />

@@ -10,7 +10,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 export function ChatInput({
   onSend,
   disabled = false,
-  placeholder = "회사 이름을 입력해 주세요",
+  placeholder = "궁금한 기업명을 알려 주세요",
   trailing,
 }: {
   onSend?: (text: string) => void;
