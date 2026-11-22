@@ -338,7 +338,7 @@ test("E2E-20 튜토리얼: 다음만 눌러 가상 기업으로 끝까지 가고
     await next.click();
   }
   // AI 판단 줄과 실제 코드로 계산한 리포트가 보인다
-  await expect(page.locator('[data-el="튜토리얼"] .tag-ai').first()).toBeVisible();
+  await expect(page.locator('[data-tut="think"] .tag-ai').first()).toBeVisible();
   await expect(page.locator('[data-el="튜토리얼"] [data-el="리포트 구역"]')).toBeVisible();
   await expect(page.getByText("이제 실제 회사로 해 볼까요?")).toBeVisible();
   await page.getByRole("button", { name: "챗봇에서 시작하기" }).click();
