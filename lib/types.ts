@@ -1,5 +1,6 @@
 // 첫단추 데이터 타입. 설명과 예시는 docs/schema.md, 기준값은 docs/indicators.md.
 // 이 파일과 docs/schema.md는 항상 같이 고친다.
+import type { ReportCardData } from "@/lib/report-card";
 
 /** 직무. 역량 사전(data/competencies/competencies.json)의 role과 같은 이름 */
 export type Role = "서비스기획" | "마케팅" | "운영";
@@ -162,7 +163,7 @@ export const PREFERENCE_TYPE_LABELS: Record<PreferenceType, string> = {
 export interface MatchupCard {
   /** "card-1" ~ "card-8" */
   id: string;
-  /** 기업명 대신 보이는 이름 (예: "카드 A") */
+  /** 기업명 대신 보이는 이름. 화면에서는 판마다 왼쪽 "기업 A", 오른쪽 "기업 B"로 붙인다 */
   title: string;
   /** 이 카드를 설계할 때 겨냥한 유형 */
   archetype: PreferenceType;
@@ -179,16 +180,32 @@ export interface Preference {
   weights: Record<IndicatorId, number>;
 }
 
-/** 최근 분석 기록. 판단 로그를 같이 저장해 다시 열어볼 수 있다 */
+/** 직무 하나에 대해 저장한 최종 판단 리포트 카드 */
+export interface SavedReport {
+  report: ReportCardData;
+  /** 맞대결 결과로 판정했으면 true ("맞춤 판정 완료"), 건너뛰었거나 아직이면 false ("기본 기준") */
+  personalized: boolean;
+  /** ISO 8601 */
+  savedAt: string;
+}
+
+/**
+ * 기업 카드 모음의 한 장. 기업 하나에 한 장이고(번호는 OpenDART 고유번호), 직무별 리포트는 reports에 담는다.
+ * analysis는 맞춤 판정을 나중에 다시 받을 때 쓰는 기업 카드 내용이다 (브라우저에만 저장).
+ */
 export interface AnalysisRecord {
   companyId: string;
   name: string;
   /** ISO 8601 */
   analyzedAt: string;
-  /** 판단 리포트 라벨. 라벨 체계는 PRD 06에서 확정 */
+  /** 가장 최근 직무의 판정 라벨. 라벨 체계는 PRD 06 */
   label: string | null;
-  /** 판단 로그. 한 줄의 모양은 에이전트 루프(CDC-14)에서 확정 */
+  /** 판단 로그. 한 줄의 모양은 lib/chat.ts의 LogLine */
   log: unknown[];
+  analysis?: { company: Company; graded: GradedIndicator[] };
+  reports?: Partial<Record<Role, SavedReport>>;
+  /** 가장 최근에 본 직무 */
+  lastRole?: Role;
 }
 
 /** 브라우저 localStorage에 두는 세션 상태. 개인 식별 정보 없음 */

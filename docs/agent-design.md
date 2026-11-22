@@ -111,7 +111,7 @@
 | `compute_indicators` | 10가지 지표 계산, 확인 불가 처리 | 코드 | LLM이 숫자를 만들지 않음. `lib/indicators.ts` |
 | `search_job_postings` | 같은 기업·직무 3년차 공고, 없으면 유사 기업 | 코드 + LLM 판단 | **최대 리스크: 합법적 출처 확보** |
 | `extract_competencies` | 공고에서 요구 역량 추출·정규화 | LLM (작은 모델) + 코드 | 표현 뽑기는 LLM, 사전 이름으로 맞추기와 미매칭 모으기는 코드(`lib/competencies.ts`) |
-| `start_matchup` / `get_preference` | 맞대결 출제, 선호 가중치 계산 | 코드 | Bradley-Terry, 고정 대진 8강 토너먼트(7판) |
+| `start_matchup` / `get_preference` | 맞대결 출제, 선호 가중치 계산 | 코드 | Bradley-Terry, 고정 대진 8강 토너먼트(7판). 화면에서 바로 계산하고(`lib/matchup.ts`) LLM 도구로 부르지 않는다. 유형 설명 한 문장만 `/api/preference`가 작은 모델로 쓰고(USE_AGENT=true일 때), 검사에 걸리면 규칙 문장 |
 | `render_report` | 지표 + 선호 + 역량 갭 → 리포트 | LLM 문장 + 코드 레이아웃 | 면접 역질문 포함 |
 
 ## 세션 상태

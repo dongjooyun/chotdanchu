@@ -1,10 +1,14 @@
 import type { AppMode } from "@/lib/chat";
 
-/** 지금 목업 모드인지 실데이터 모드인지 보여준다 (PRD 07). 버튼이 아니라 표시만 한다 */
+/**
+ * 목업 모드 표시 (PRD 07). 실데이터(운영) 모드에서는 그리지 않는다: 사용자에게는 정보가 아니고 완성도가 떨어져 보인다 (11/21 결정).
+ * 실데이터 여부는 입력창 아래 출처 안내와 판단 로그에서 확인할 수 있다.
+ */
 export function ModeBadge({ mode }: { mode: AppMode }) {
+  if (mode === "live") return null;
   return (
-    <span className="rounded-full border border-line px-2 py-0.5 text-xs text-muted">
-      {mode === "mock" ? "목업 모드" : "실데이터 모드"}
+    <span className="tag" data-el="모드 배지">
+      목업 모드
     </span>
   );
 }

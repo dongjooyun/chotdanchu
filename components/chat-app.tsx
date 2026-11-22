@@ -2,16 +2,28 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AgentLogPanel } from "@/components/agent-log-panel";
+import { AppDialog } from "@/components/app-dialog";
+import { AppHeader } from "@/components/app-header";
 import { CardCollection } from "@/components/card-collection";
 import { ChatInput } from "@/components/chat-input";
-import { LofiBox } from "@/components/lofi-box";
-import { MessageList, type ChatMessage, type MessageWidget } from "@/components/message-list";
+import { Disclaimer } from "@/components/disclaimer";
+import { MessageList, type ChatMessage, type MessageWidget, type WidgetHandlers } from "@/components/message-list";
 import type { QuickReply } from "@/components/quick-replies";
 import { useSession } from "@/components/use-session";
 import type { AppMode, ChatRequest, ChatResponse, LogLine } from "@/lib/chat";
+import { preferenceFromPicks } from "@/lib/matchup";
+import { typeSentence } from "@/lib/preference-sentence";
 import { buildReportDraft, type ReportDraftInput } from "@/lib/report-draft";
-import { addAnalysis, skippedPreference } from "@/lib/session";
-import type { Preference, Role } from "@/lib/types";
+import { personalizedCount, saveReport, skippedPreference } from "@/lib/session";
+import {
+  PREFERENCE_TYPE_LABELS,
+  type AnalysisRecord,
+  type Company,
+  type GradedIndicator,
+  type Preference,
+  type Role,
+  type SessionState,
+} from "@/lib/types";
 
 /** 방금 본 기업의 카드 내용 (리포트 카드의 재료) */
 type Analysis = Pick<ReportDraftInput, "company" | "graded" | "log">;
@@ -33,28 +45,21 @@ function sourceNote(mode: AppMode, names: string[]): string {
   return `OpenDART 공시, 국민연금 가입 사업장, 국세청 사업자 상태로 미리 확인해 둔 회사만 볼 수 있어요: ${names.join(", ")}`;
 }
 
+/** 맞대결 권유. 원하는 행동(맞대결)만 연보라로 강조한다 */
 const PREF_REPLIES: QuickReply[] = [
-  { label: "내 기준 맞추기", value: "pref:matchup" },
+  { label: "기업 맞대결로 내 성향 맞춤 판정 받기", value: "pref:matchup", main: true },
   { label: "건너뛰고 기본 기준으로", value: "pref:skip" },
 ];
 
 /** 리포트가 끝난 뒤 마지막 말풍선에만 붙는 다음 행동. 매 말풍선마다 붙이면 시선이 흩어진다 */
-const NEXT_REPLIES: QuickReply[] = [
-  { label: "다른 회사 보기", value: "next:company" },
-  { label: "직무 바꾸기", value: "next:role" },
-];
-
-function ChipButton({ onClick, disabled, label }: { onClick: () => void; disabled: boolean; label: string }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className="rounded-full border border-line px-2 text-xs hover:bg-tag disabled:opacity-60"
-    >
-      {label}
-    </button>
-  );
+function nextReplies(personalized: boolean): QuickReply[] {
+  return [
+    { label: "다른 회사 보기", value: "next:company" },
+    { label: "직무 변경하기", value: "next:role" },
+    personalized
+      ? { label: "기업 맞대결 다시 하기", value: "pref:matchup" }
+      : { label: "기업 맞대결로 내 성향 맞춤 판정 받기", value: "pref:matchup", main: true },
+  ];
 }
 
 const GREETING =
@@ -73,7 +78,34 @@ function introMessage(role: Role | null, examples: QuickReply[]): ChatMessage {
   return { id: 0, from: "agent", text: `${GREETING} ${askCompany(role)}`, replies: examples };
 }
 
-/** 채팅 화면 전체: 말풍선과 진행 기록, 위젯, 빠른 응답, 직무 표시와 입력창, 판단 로그 패널, 내 카드 모음 */
+const isPersonalized = (p: Preference | null): p is Preference => Boolean(p && !p.skipped && p.type);
+
+/** 유형 설명 문장. 서버가 LLM 문장(USE_AGENT=true일 때)이나 규칙 문장을 준다. 실패하면 규칙 문장 */
+async function fetchSentence(pref: Preference): Promise<{ sentence: string; by: "llm" | "rule" }> {
+  try {
+    const res = await fetch("/api/preference", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: pref.type, topIndicators: pref.topIndicators }),
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    return (await res.json()) as { sentence: string; by: "llm" | "rule" };
+  } catch {
+    return { sentence: typeSentence(pref), by: "rule" };
+  }
+}
+
+/** 단색 반짝임 아이콘 (AI 표시). 색은 글자색을 따른다 */
+function SparkleIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+      <path d="M12 2c.6 4.9 2.6 7.4 8 8-5.4.6-7.4 3.1-8 8-.6-4.9-2.6-7.4-8-8 5.4-.6 7.4-3.1 8-8Z" />
+      <path d="M19 15c.3 2.3 1.2 3.4 3.5 3.7-2.3.3-3.2 1.4-3.5 3.7-.3-2.3-1.2-3.4-3.5-3.7 2.3-.3 3.2-1.4 3.5-3.7Z" />
+    </svg>
+  );
+}
+
+/** 채팅 화면 전체: 헤더, 고정 정보줄, 말풍선과 위젯, 입력창, 에이전트 사고 과정 패널, 면책 문구, 기업 카드 모음 */
 export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] }) {
   const EXAMPLE_REPLIES = exampleReplies(examples);
   const [session, setSession] = useSession();
@@ -86,6 +118,9 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   /** 가장 최근에 분석한 기업의 카드 내용. 리포트 카드를 만들 때 쓴다 */
   const [current, setCurrent] = useState<Analysis | null>(null);
   const [pending, setPending] = useState(false);
+  const [think, setThink] = useState(false);
+  /** 맞대결을 다시 해 성향이 바뀌었을 때 저장 카드를 어떻게 할지 묻는 창 */
+  const [retype, setRetype] = useState<{ from: Preference; to: Preference; count: number } | null>(null);
   const nextId = useRef(1);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -106,25 +141,36 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     setLog((prev) => [...prev, ...lines.map((l, i) => ({ ...l, step: prev.length + i + 1 }))]);
   }
 
-  /** 지금 직무와 방금 본 기업으로 리포트 말풍선의 위젯을 만든다 */
-  function reportWidget(a: Analysis, role: Role, preference: Preference | null): MessageWidget {
-    const no = session.analyzed.filter((r) => r.companyId !== a.company.id).length + 1;
-    const data = buildReportDraft({ ...a, role, preference, no, checkedAt: new Date().toISOString().slice(0, 10) });
-    return { type: "report", data };
+  /** 리포트 카드를 만들고 기업 카드 모음에도 담는다 (같은 기업은 한 장, 직무별로 저장) */
+  function withReport(s: SessionState, a: Analysis, role: Role, preference: Preference | null) {
+    const data = buildReportDraft({ ...a, role, preference, checkedAt: new Date().toISOString().slice(0, 10) });
+    const next = saveReport(
+      s,
+      { companyId: a.company.id, name: a.company.name, analyzedAt: new Date().toISOString(), log: a.log, analysis: { company: a.company, graded: a.graded } },
+      role,
+      data,
+      isPersonalized(preference),
+    );
+    const widget: MessageWidget = { type: "report", data };
+    return { next, widget };
   }
 
-  /** 기업 카드 다음 단계: 3년차 공고 비교 자리, 그다음 맞대결 권유 또는 바로 리포트 */
+  /** 기업 카드 다음 단계: 3년차 공고 안내, 그다음 맞대결 권유 또는 바로 리포트 */
   function afterCompanyCard(role: Role | null, a: Analysis) {
     const career: Omit<ChatMessage, "id"> = {
       from: "agent",
-      text: `[3년차 공고와 역량 갭 자리] ${role ?? "선택한"} 직무의 3년차 공고와 비교합니다. 공고 태스크(CDC-7, CDC-15)에서 채웁니다.`,
+      text: `${role ?? "선택한"} 직무의 3년차 공고 비교는 준비 중이라 이번 카드에는 "공고 비교 준비 중"으로 보여 드려요.`,
     };
+    // 이미 맞대결을 했거나 건너뛴 사용자는 다시 묻지 않고 그 기준으로 바로 판정한다. 건너뛴 사용자에게는 리포트 뒤에 맞대결 버튼을 다시 준다
     if (session.preference && role) {
+      const personal = isPersonalized(session.preference);
+      const { next, widget } = withReport(session, a, role, session.preference);
+      setSession(next);
       push(career, {
         from: "agent",
-        text: "판단 리포트 카드예요.",
-        widget: reportWidget(a, role, session.preference),
-        replies: NEXT_REPLIES,
+        text: personal ? "저장해 둔 내 성향으로 판정한 최종 판단 리포트예요." : "기본 기준으로 판정한 최종 판단 리포트예요.",
+        widget,
+        replies: nextReplies(personal),
       });
       return;
     }
@@ -148,19 +194,9 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       push({ from: "agent", text: data.reply, widget: data.widget, log: data.log });
       appendLog(data.log);
       if (data.widget?.type === "company") {
-        const company = data.widget.company;
-        const analysis: Analysis = { company, graded: data.widget.graded, log: data.log };
+        const analysis: Analysis = { company: data.widget.company, graded: data.widget.graded, log: data.log };
         setCurrent(analysis);
-        setCompany(company.name);
-        setSession(
-          addAnalysis(session, {
-            companyId: company.id,
-            name: company.name,
-            analyzedAt: new Date().toISOString(),
-            label: null,
-            log: data.log,
-          }),
-        );
+        setCompany(analysis.company.name);
         afterCompanyCard(session.role, analysis);
       }
     } catch {
@@ -180,6 +216,90 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     void ask({ pickCompanyId: id });
   }
 
+  /** "기업 카드 저장하기": 지금 성향 기준으로 이 직무의 카드를 모음에 담는다. 맞대결 전이면 "기본 기준" 카드 */
+  function onSaveCompany(c: Company, graded: GradedIndicator[]) {
+    if (!session.role) return;
+    const a = current?.company.id === c.id ? current : { company: c, graded, log: [] };
+    setSession(withReport(session, a, session.role, session.preference).next);
+  }
+
+  const isSaved = (companyId: string) =>
+    Boolean(session.role && session.analyzed.find((r) => r.companyId === companyId)?.reports?.[session.role]);
+
+  function startMatchup(userText: string) {
+    push(
+      { from: "user", text: userText },
+      { from: "agent", text: "더 끌리는 카드를 눌러 주세요. 회사 이름은 가려져 있고, 실존 기업이 아닌 가상 카드예요.", widget: { type: "matchup" } },
+    );
+  }
+
+  /** 7판이 끝나면: 선호 계산(코드) -> 유형 설명 문장 -> 결과 -> 리포트. 성향이 바뀌었고 맞춤 카드가 있으면 다시 판정할지 묻는다 */
+  async function onMatchupDone(picks: string[]) {
+    const pref = preferenceFromPicks(picks);
+    setPending(true);
+    const { sentence, by } = await fetchSentence(pref);
+    setPending(false);
+    appendLog([
+      { step: 0, type: "tool_call", title: "compute_preference: 맞대결 7판을 Bradley-Terry로 계산", reason: "같은 선택이면 항상 같은 결과", mode },
+      { step: 0, type: by === "llm" ? "decision" : "info", title: by === "llm" ? "유형 설명 문장을 AI가 작성" : "유형 설명 문장은 규칙 문장", reason: by === "llm" ? "중시 지표 순서만 근거로 씀, 숫자 없음" : undefined, mode },
+    ]);
+    const before = session.preference;
+    let next: SessionState = { ...session, preference: pref };
+    const items: Omit<ChatMessage, "id">[] = [
+      { from: "agent", text: `내 성향은 ${PREFERENCE_TYPE_LABELS[pref.type!]}이에요.`, widget: { type: "preference", preference: pref, sentence } },
+    ];
+    if (current && session.role) {
+      const r = withReport(next, current, session.role, pref);
+      next = r.next;
+      items.push({ from: "agent", text: "내 성향으로 판정한 최종 판단 리포트예요.", widget: r.widget, replies: nextReplies(true) });
+    } else {
+      items.push({ from: "agent", text: "성향을 저장했어요. 이제 회사를 고르면 이 성향으로 판정해 드려요.", replies: EXAMPLE_REPLIES });
+    }
+    setSession(next);
+    push(...items);
+    if (isPersonalized(before) && before.type !== pref.type && personalizedCount(session) > 0)
+      setRetype({ from: before, to: pref, count: personalizedCount(session) });
+  }
+
+  function onMatchupSkip() {
+    onSelectReply("pref:skip");
+  }
+
+  /** 성향이 바뀐 뒤 "새 성향으로 다시 판정": 맞춤 판정을 받은 직무 카드만 새 성향으로 다시 만든다 */
+  function rejudgeAll(to: Preference) {
+    let s = session;
+    for (const r of session.analyzed) {
+      if (!r.analysis) continue;
+      for (const [role, saved] of Object.entries(r.reports ?? {})) {
+        if (!saved?.personalized) continue;
+        s = withReport(s, { ...r.analysis, log: r.log as LogLine[] }, role as Role, to).next;
+      }
+    }
+    setSession({ ...s, preference: to });
+  }
+
+  function closeRetype(rejudge: boolean) {
+    if (rejudge && retype) rejudgeAll(retype.to);
+    setRetype(null);
+  }
+
+  /** 모음의 "맞춤 판정 받기": 그 카드의 기업과 직무로 맞대결을 시작한다 */
+  function onPersonalize(r: AnalysisRecord) {
+    if (!r.analysis) return;
+    const role = r.lastRole ?? session.role;
+    if (role && role !== session.role) setSession({ ...session, role });
+    setCurrent({ ...r.analysis, log: r.log as LogLine[] });
+    setCompany(r.name);
+    startMatchup(`${r.name} 맞춤 판정 받기`);
+  }
+
+  /** 카드 창의 "이 직무로 판정 받기": 직무를 바꾸고 같은 기업을 다시 분석한다 */
+  function onRequestRole(r: AnalysisRecord, role: Role) {
+    setSession({ ...session, role });
+    push({ from: "user", text: `${r.name}, ${role} 직무로 볼게요` });
+    void ask({ pickCompanyId: r.companyId });
+  }
+
   function onSelectReply(value: string) {
     if (value.startsWith("role:")) {
       const role = value.slice(5) as Role;
@@ -194,30 +314,24 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       return;
     }
     if (value === "pref:matchup") {
-      push(
-        { from: "user", text: "내 기준 맞추기" },
-        {
-          from: "agent",
-          text: "더 끌리는 카드를 눌러 주세요. 회사 이름은 가려져 있어요. 8강 진행과 선호 계산은 맞대결 태스크(CDC-23)에서 붙어요.",
-          widget: { type: "matchup" },
-          replies: [{ label: "건너뛰고 기본 기준으로", value: "pref:skip" }],
-        },
-      );
+      startMatchup("기업 맞대결로 내 성향 맞춤 판정 받기");
       return;
     }
     if (value === "pref:skip") {
       const preference = skippedPreference();
-      setSession({ ...session, preference });
-      if (!current || !session.role) return;
-      push(
-        { from: "user", text: "건너뛰고 기본 기준으로" },
-        {
-          from: "agent",
-          text: "모든 지표를 같은 비중으로 보고 판정했어요. 판단 리포트 카드예요.",
-          widget: reportWidget(current, session.role, preference),
-          replies: NEXT_REPLIES,
-        },
-      );
+      push({ from: "user", text: "건너뛰고 기본 기준으로" });
+      if (!current || !session.role) {
+        setSession({ ...session, preference });
+        return;
+      }
+      const { next, widget } = withReport({ ...session, preference }, current, session.role, preference);
+      setSession(next);
+      push({
+        from: "agent",
+        text: "모든 지표를 같은 비중으로 보고 판정했어요. 최종 판단 리포트예요.",
+        widget,
+        replies: nextReplies(false),
+      });
       return;
     }
     if (value === "next:company") {
@@ -227,49 +341,94 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     if (value === "next:role") onChangeRole();
   }
 
-  /** 직무 바꾸기: 직무 버튼을 다시 보여준다. 이미 분석한 카드는 그대로 남는다 */
+  /** 직무 변경하기: 직무 버튼을 다시 보여준다. 이미 저장한 카드는 그대로 남는다 */
   function onChangeRole() {
     push({ from: "agent", text: "어떤 직무로 바꿀까요?", replies: ROLE_REPLIES });
   }
 
-  /** 다른 회사 보기: 같은 직무로 새 회사를 묻는다 */
+  /** 회사 변경하기: 같은 직무로 새 회사를 묻는다 */
   function onChangeCompany() {
     if (!session.role) return;
     push({ from: "agent", text: askCompany(session.role), replies: EXAMPLE_REPLIES });
   }
 
+  const handlers: WidgetHandlers = { onPickCompany, onSaveCompany, isSaved, onMatchupDone, onMatchupSkip };
+
   return (
-    <div className="flex flex-col gap-3 md:grid md:grid-cols-[minmax(0,1fr)_320px] md:items-start">
-      <LofiBox label="채팅 영역" className="flex min-w-0 flex-col gap-3">
+    <>
+      <div className="app" data-think={think ? "open" : "closed"}>
+        <AppHeader mode={mode} />
         {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}
-        <div className="sticky top-0 z-10 -mx-1 flex flex-wrap items-center gap-x-3 gap-y-1 border-b-2 border-fg bg-box px-1 py-2 text-sm shadow-md">
-          <span className="text-[10px] text-muted">[고정 정보줄]</span>
-          <span className="flex items-center gap-1">
-            <span className="text-muted">직무</span>
-            <strong>{session.role ?? "미정"}</strong>
-            {session.role && <ChipButton onClick={onChangeRole} disabled={pending} label="바꾸기" />}
+        <div className="infobar" data-el="고정 정보줄">
+          <span>
+            <span className="muted">직무</span> <b>{session.role ?? "미정"}</b>{" "}
+            {session.role && (
+              <button type="button" className="btn btn-link small" aria-label="직무 변경하기" onClick={onChangeRole} disabled={pending}>
+                변경하기
+              </button>
+            )}
           </span>
-          <span className="flex items-center gap-1">
-            <span className="text-muted">회사</span>
-            <strong>{company ?? "미정"}</strong>
-            {company && <ChipButton onClick={onChangeCompany} disabled={pending} label="다른 회사" />}
+          <span>
+            <span className="muted">회사</span> <b>{company ?? "미정"}</b>{" "}
+            {company && (
+              <button type="button" className="btn btn-link small" aria-label="회사 변경하기" onClick={onChangeCompany} disabled={pending}>
+                변경하기
+              </button>
+            )}
           </span>
+          <button
+            type="button"
+            className="btn btn-ai think-toggle"
+            aria-expanded={think}
+            aria-controls="think-panel"
+            data-el="사고 과정 버튼"
+            onClick={() => setThink(!think)}
+          >
+            <SparkleIcon />
+            {think ? "에이전트 사고 과정 닫기" : `에이전트 사고 과정 보기 (${log.length}단계)`}
+          </button>
         </div>
-        <MessageList messages={shown} pending={pending} onSelectReply={onSelectReply} onPickCompany={onPickCompany} />
-        <div ref={bottomRef} />
-        <div className="sticky bottom-0 -mx-1 bg-box px-1 pb-1">
-          <ChatInput
-            onSend={onSend}
-            disabled={pending || !session.role}
-            placeholder={session.role ? "회사 이름을 입력해 주세요" : "먼저 위에서 직무를 골라 주세요"}
-          />
-          <p className="mt-1 text-xs text-muted">{sourceNote(mode, examples)}</p>
+        <div className="cols">
+          <div className="chat-col">
+            <MessageList messages={shown} pending={pending} onSelectReply={onSelectReply} handlers={handlers} />
+            <div ref={bottomRef} />
+            <div className="inputbar">
+              <ChatInput
+                onSend={onSend}
+                disabled={pending || !session.role}
+                placeholder={session.role ? "회사 이름을 입력해 주세요" : "먼저 위에서 직무를 골라 주세요"}
+              />
+              <p className="tiny muted" style={{ marginTop: 6 }}>
+                {sourceNote(mode, examples)}
+              </p>
+            </div>
+          </div>
+          {think && <AgentLogPanel lines={log} onClose={() => setThink(false)} />}
         </div>
-      </LofiBox>
-      <div className="flex flex-col gap-3 md:sticky md:top-3">
-        <AgentLogPanel lines={log} />
-        <CardCollection records={session.analyzed} />
+        <Disclaimer />
       </div>
-    </div>
+      <CardCollection records={session.analyzed} onPersonalize={onPersonalize} onRequestRole={onRequestRole} busy={pending} />
+      <AppDialog open={retype !== null} title="내 성향이 달라졌어요" choice onClose={() => closeRetype(false)}>
+        {retype && (
+          <div data-el="성향 변경 확인">
+            <p className="dlg-text">
+              이번 맞대결에서는 &quot;{PREFERENCE_TYPE_LABELS[retype.to.type!]}&quot;으로 나왔어요(이전: {PREFERENCE_TYPE_LABELS[retype.from.type!]}). 저장한 카드
+              중 맞춤 판정을 받은 {retype.count}장도 새 성향으로 다시 판정할까요?
+            </p>
+            <div className="dlg-actions">
+              <button type="button" className="btn btn-primary" onClick={() => closeRetype(true)}>
+                새 성향으로 다시 판정
+              </button>
+              <button type="button" className="btn" onClick={() => closeRetype(false)}>
+                기존 카드는 그대로 두기
+              </button>
+            </div>
+            <p className="tiny muted" style={{ marginTop: 12 }}>
+              그대로 두면 기존 카드에는 이전 성향이 계속 표시돼요.
+            </p>
+          </div>
+        )}
+      </AppDialog>
+    </>
   );
 }

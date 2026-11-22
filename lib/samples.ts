@@ -4,8 +4,11 @@ import type { MatchupCard } from "@/lib/types";
 
 /** 리포트 카드 모양 확인용. 회사와 수치는 모두 가상이다 */
 export const SAMPLE_REPORT_CARD: ReportCardData = {
-  no: 1,
+  no: "00000001",
+  companyId: "mock-001",
   companyName: "하늘커머스 (가상)",
+  logo: null,
+  monogram: "하늘",
   typeLabel: "외감 · 스타트업",
   role: "서비스기획",
   fitLabel: "도전",
@@ -52,13 +55,13 @@ export const FIT_LABELS = [
 export const SAMPLE_MATCHUP_PAIR: [MatchupCard, MatchupCard] = [
   {
     id: "sample-a",
-    title: "카드 A",
+    title: "기업 A",
     archetype: "autonomy_pioneer",
     grades: { growth: "A", funding_stage: "A", financial_health: "C", tenure: "unavailable", compensation: "B" },
   },
   {
     id: "sample-b",
-    title: "카드 B",
+    title: "기업 B",
     archetype: "stable_system",
     grades: { growth: "C", funding_stage: "unavailable", financial_health: "A", tenure: "A", compensation: "B" },
   },
