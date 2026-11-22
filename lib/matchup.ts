@@ -153,3 +153,13 @@ export function typeFromWeights(weights: Record<IndicatorId, number>): Preferenc
   if (scores[0].s - scores[1].s < 0.01) return "balance_practical";
   return scores[0].t;
 }
+
+/**
+ * 한 판에서 두 카드에 보일 지표: 두 카드의 등급이 다른 지표만 (11/22 실사용 피드백, 같은 등급은 고를 이유가 안 된다).
+ * 두 카드가 늘 같은 지표 목록을 쓰므로 보이는 개수도 같다. 판마다 개수는 다를 수 있고, 모두 같으면 전부 보인다.
+ * 예: A {growth: A, risk: B}, B {growth: A, risk: C} -> [risk]
+ */
+export function differingIndicators(a: MatchupCard, b: MatchupCard): IndicatorId[] {
+  const diff = MATCHUP_INDICATORS.filter((id) => (a.grades[id] ?? null) !== (b.grades[id] ?? null));
+  return diff.length > 0 ? diff : MATCHUP_INDICATORS;
+}

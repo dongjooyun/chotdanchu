@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { GradeBadge } from "@/components/grade-badge";
 import { InfoTip } from "@/components/info-tip";
-import { currentPair, MATCHUP_INDICATORS, MATCHUP_ROUNDS } from "@/lib/matchup";
+import { currentPair, differingIndicators, MATCHUP_ROUNDS } from "@/lib/matchup";
 import { INDICATOR_LABELS, type IndicatorId, type MatchupCard as MatchupCardData } from "@/lib/types";
 
 /** 지표 이름 옆 (i)에 보이는 설명. 숫자 없이 무엇을 보는 지표인지만 쓴다 */
@@ -23,12 +23,15 @@ export const INDICATOR_HINTS: Record<IndicatorId, string> = {
 /** 밸런스 게임 카드 한 장: 기업명 없이 지표별 등급만. 카드 전체를 눌러 고른다 (PRD 02, 11/21 결정) */
 function MatchupCardView({
   card,
+  ids,
   title,
   onPick,
   picked,
   disabled,
 }: {
   card: MatchupCardData;
+  /** 이 판에서 보일 지표 (두 카드의 등급이 다른 것만, 두 카드 같은 목록) */
+  ids: IndicatorId[];
   title: string;
   onPick?: () => void;
   picked: boolean;
@@ -39,7 +42,7 @@ function MatchupCardView({
       <button type="button" className="pick" aria-label={`${title} 선택`} onClick={onPick} disabled={disabled || !onPick} />
       <h3>{title}</h3>
       <ul>
-        {MATCHUP_INDICATORS.map((id) => (
+        {ids.map((id) => (
           <li key={id}>
             <span className="k">
               {INDICATOR_LABELS[id]}
@@ -73,7 +76,7 @@ function Progress({ done }: { done: number }) {
 export function GradeLegend() {
   return (
     <div className="legend-wrap">
-      <p className="legend-note">A, B, C는 지표별 등급이에요.</p>
+      <p className="legend-note">A, B, C는 지표별 등급이에요. 두 카드 등급이 같은 지표는 빼고 보여 줘요.</p>
       <p className="legend">
       <span><GradeBadge grade="A" size="sm" /> 좋음</span>
       <span><GradeBadge grade="B" size="sm" /> 보통</span>
@@ -119,6 +122,7 @@ export function MatchupGame({
   }
 
   if (!pair) return null;
+  const ids = differingIndicators(pair[0], pair[1]);
   return (
     <div className="mp-wrap" data-el="밸런스 게임">
       <div className="mp-top">
@@ -131,9 +135,9 @@ export function MatchupGame({
         </p>
       </div>
       <div className="mp">
-        <MatchupCardView card={pair[0]} title="기업 A" picked={picked === pair[0].id} onPick={() => pick(pair[0].id)} disabled={locked} />
+        <MatchupCardView card={pair[0]} ids={ids} title="기업 A" picked={picked === pair[0].id} onPick={() => pick(pair[0].id)} disabled={locked} />
         <span className="vs" aria-hidden="true">VS</span>
-        <MatchupCardView card={pair[1]} title="기업 B" picked={picked === pair[1].id} onPick={() => pick(pair[1].id)} disabled={locked} />
+        <MatchupCardView card={pair[1]} ids={ids} title="기업 B" picked={picked === pair[1].id} onPick={() => pick(pair[1].id)} disabled={locked} />
       </div>
       <GradeLegend />
       <div className="mp-foot">
@@ -157,9 +161,9 @@ export function MatchupPair({ cards }: { cards: [MatchupCardData, MatchupCardDat
         <Progress done={0} />
       </div>
       <div className="mp">
-        <MatchupCardView card={cards[0]} title="기업 A" picked={false} disabled />
+        <MatchupCardView card={cards[0]} ids={differingIndicators(cards[0], cards[1])} title="기업 A" picked={false} disabled />
         <span className="vs" aria-hidden="true">VS</span>
-        <MatchupCardView card={cards[1]} title="기업 B" picked={false} disabled />
+        <MatchupCardView card={cards[1]} ids={differingIndicators(cards[0], cards[1])} title="기업 B" picked={false} disabled />
       </div>
       <GradeLegend />
     </div>
