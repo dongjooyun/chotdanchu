@@ -234,7 +234,7 @@ test("E2E-14 맞대결: 이전 판으로 돌아가면 진행 표시가 한 판 �
   await searchCompany(page, "별하늘랩스");
   await page.getByRole("button", { name: "기업 맞대결로 내 성향 맞춤 판정 받기" }).click();
   // 맞대결 중에는 모바일 둥근 버튼이 카드 오른쪽을 가리지 않게 숨는다
-  await expect(page.locator(".fab-stack")).toBeHidden();
+  await expect(page.locator(".fab-stack")).toHaveAttribute("data-docked", "true");
   await page.getByRole("button", { name: "기업 B 선택" }).click({ position: { x: 12, y: 12 } });
   await expect(page.getByText("2 / 7")).toBeVisible();
   await page.getByRole("button", { name: "이전 판으로 돌아가기" }).click();
