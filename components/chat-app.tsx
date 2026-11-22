@@ -462,7 +462,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     <>
       <AppHeader mode={mode} onHome={goHome} />
       <InAppNotice />
-      <AppNav view={view} onChange={changeView} count={session.analyzed.length} />
+      <AppNav view={view} onChange={changeView} />
       {view === "tutorial" && <TutorialTour examples={examples} onFinish={() => changeView("chat")} />}
       {/* 메뉴를 바꿔도 대화와 밸런스 게임 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}
       <div className="app" data-think={think ? "open" : "closed"} hidden={view !== "chat"}>
