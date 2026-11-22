@@ -15,7 +15,7 @@ const ROLES: Role[] = ["서비스기획", "마케팅", "운영"];
 const DEMO = ["00258801", "01137727", "01153956", "01547845"];
 const AS_OF = new Date("2026-11-21");
 
-/** 맞대결에서 늘 안정형 카드(1, 4, 7)를 고른 사람과 늘 자율형 카드(2, 5, 8)를 고른 사람 */
+/** 밸런스 게임에서 늘 안정형 카드(1, 4, 7)를 고른 사람과 늘 자율형 카드(2, 5, 8)를 고른 사람 */
 const STABLE = preferenceFromPicks(["card-1", "card-4", "card-6", "card-7", "card-1", "card-7", "card-1"]);
 const AUTONOMY = preferenceFromPicks(["card-2", "card-3", "card-5", "card-8", "card-2", "card-5", "card-5"]);
 

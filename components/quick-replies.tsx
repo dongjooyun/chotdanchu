@@ -3,7 +3,7 @@
 export interface QuickReply {
   label: string;
   value: string;
-  /** 원하는 행동 하나만 연보라로 강조한다 (예: 기업 맞대결) */
+  /** 원하는 행동 하나만 연보라로 강조한다 (예: 기업 밸런스 게임) */
   main?: boolean;
 }
 

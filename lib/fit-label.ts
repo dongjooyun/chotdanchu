@@ -74,7 +74,7 @@ export function decideFit({ graded, weights, connect }: FitInput): FitResult {
   return { label, base, connect, rule: `이어짐 ${high ? "높음" : "낮음"}, 기반 ${good ? "좋음" : "약함"}` };
 }
 
-/** 맞대결을 건너뛰었을 때 쓰는 같은 비중 가중치 (lib/session.ts skippedPreference와 같다) */
+/** 밸런스 게임을 건너뛰었을 때 쓰는 같은 비중 가중치 (lib/session.ts skippedPreference와 같다) */
 export function equalWeights(): Record<IndicatorId, number> {
   return skippedPreference().weights;
 }

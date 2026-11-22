@@ -51,7 +51,7 @@ export const FIT_LABELS = [
   { id: "need_info", name: "정보 보강", description: "면접에서 더 알아볼 자리" },
 ] as const;
 
-/** 맞대결 카드 자리 확인용 두 장. 실제 카드 8장(data/matchup/)은 맞대결 태스크에서 만든다 */
+/** 밸런스 게임 카드 자리 확인용 두 장. 실제 카드 8장(data/matchup/)은 밸런스 게임 태스크에서 만든다 */
 export const SAMPLE_MATCHUP_PAIR: [MatchupCard, MatchupCard] = [
   {
     id: "sample-a",

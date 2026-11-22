@@ -1,5 +1,5 @@
 // 화면 흐름(E2E) 테스트. 실제 브라우저로 처음부터 끝까지 눌러 본다. 케이스 ID는 E2E-{번호}.
-// 상태 전이: 첫 방문 -> 직무 선택 -> 회사 입력 -> (동명이면 후보 선택) -> 기업 카드(저장) -> 맞대결 권유 -> (맞대결 7판) -> 최종 판단 리포트 -> 다음 행동
+// 상태 전이: 첫 방문 -> 직무 선택 -> 회사 입력 -> (동명이면 후보 선택) -> 기업 카드(저장) -> 밸런스 게임 권유 -> (밸런스 게임 7판) -> 최종 판단 리포트 -> 다음 행동
 // 같은 테스트를 데스크톱(1280px)과 모바일(375px) 두 화면에서 돈다 (playwright.config.ts의 projects).
 import { expect, test, type Page } from "@playwright/test";
 
@@ -105,10 +105,10 @@ test("E2E-04 기업 카드: 지표 자세히 보기를 열면 칸마다 등급�
   await expect(page.getByText(/스타트업 기준표/).first()).toBeVisible();
 });
 
-test("E2E-05 맞대결을 건너뛰면 리포트 카드가 나오고, 뒷면을 뒤집을 수 있다", async ({ page }) => {
+test("E2E-05 밸런스 게임을 건너뛰면 리포트 카드가 나오고, 뒷면을 뒤집을 수 있다", async ({ page }) => {
   await chooseRole(page, "서비스기획");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await expect(page.getByText("최종 판단 리포트예요")).toBeVisible();
   const flip = page.locator(".chat .flip");
   await expect(flip).not.toHaveClass(/is-back/);
@@ -121,7 +121,7 @@ test("E2E-05 맞대결을 건너뛰면 리포트 카드가 나오고, 뒷면을 
 test("E2E-06 리포트 뒤 다음 행동: 다른 회사 보기, 직무 바꾸기", async ({ page }) => {
   await chooseRole(page, "서비스기획");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await page.getByRole("button", { name: "다른 회사 보기" }).click();
   await expect(page.getByText("서비스기획 직무로 볼게요. 어느 회사가 궁금하세요?").last()).toBeVisible();
   await menuAction(page, "직무 변경하기");
@@ -142,7 +142,7 @@ test("E2E-08 리포트 아래 \"기업 카드 모음에 담기\"를 눌러야 �
   await searchCompany(page, "별하늘랩스");
   // 기업 카드만 봐서는 모음에 담기지 않는다 (11/22: 저장은 리포트 뒤 한 곳)
   await expect(page.getByRole("button", { name: "기업 카드 저장하기" })).toHaveCount(0);
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await openView(page, "기업 카드 모음");
   await expect(page.getByText("총 0장")).toBeVisible();
   await openView(page, "챗봇");
@@ -175,7 +175,7 @@ test("E2E-08 리포트 아래 \"기업 카드 모음에 담기\"를 눌러야 �
 test("E2E-09 가로 스크롤이 생기지 않는다 (기업 카드와 리포트 카드가 나온 뒤)", async ({ page }) => {
   await chooseRole(page, "서비스기획");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await expect(page.getByText("최종 판단 리포트예요")).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   expect(overflow).toBe(false);
@@ -184,7 +184,7 @@ test("E2E-09 가로 스크롤이 생기지 않는다 (기업 카드와 리포트
 test("E2E-11 직무와 회사를 바꾼 뒤 리포트 카드는 지금 직무와 회사를 보여 준다 (예시 카드가 아니다)", async ({ page }) => {
   await chooseRole(page, "서비스기획");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await expect(page.getByText("서비스기획 직무 · ").first()).toBeVisible();
   // 직무를 마케팅으로 바꾸고 다른 회사를 본다
   await page.getByRole("button", { name: "직무 변경하기", exact: true }).first().click();
@@ -210,7 +210,7 @@ test("E2E-12 길어진 대화에서도 머리글은 맨 위에, 직무와 회사
   test.skip(isMobile(page), "모바일은 정보줄 없이 채팅이 화면을 채운다 (E2E-25)");
   await chooseRole(page, "마케팅");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await expect(page.getByText("최종 판단 리포트예요")).toBeVisible();
   const bar = page.locator('[data-el="고정 정보줄"]');
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
@@ -229,14 +229,14 @@ test("E2E-12 길어진 대화에서도 머리글은 맨 위에, 직무와 회사
 test("E2E-10 화면 문구 규칙: em dash와 이모지를 쓰지 않는다", async ({ page }) => {
   await chooseRole(page, "서비스기획");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await expect(page.getByText("최종 판단 리포트예요")).toBeVisible();
   const text = await page.locator("body").innerText();
   expect(text).not.toContain("—");
   expect(text).not.toMatch(/\p{Extended_Pictographic}/u);
 });
 
-/** 맞대결 7판을 끝까지 둔다. side는 매 판 고를 쪽 */
+/** 밸런스 게임 7판을 끝까지 둔다. side는 매 판 고를 쪽 */
 async function playMatchup(page: Page, side: "기업 A" | "기업 B") {
   for (let i = 1; i <= 7; i++) {
     await expect(page.getByText(`${i} / 7`)).toBeVisible();
@@ -244,10 +244,10 @@ async function playMatchup(page: Page, side: "기업 A" | "기업 B") {
   }
 }
 
-test("E2E-13 맞대결 7판을 끝내면 내 성향과 맞춤 판정 리포트가 나오고, 모음에 맞춤 판정 완료로 담긴다", async ({ page }) => {
+test("E2E-13 밸런스 게임 7판을 끝내면 내 성향과 맞춤 판정 리포트가 나오고, 모음에 맞춤 판정 완료로 담긴다", async ({ page }) => {
   await chooseRole(page, "서비스기획");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "기업 맞대결로 내 성향 맞춤 판정 받기" }).click();
+  await page.getByRole("button", { name: "기업 밸런스 게임 시작하기" }).click();
   await expect(page.getByText("더 끌리는 카드를 선택해 주세요")).toBeVisible();
   await playMatchup(page, "기업 A");
   await expect(page.getByText("내 성향은 안정·시스템 지향이에요.")).toBeVisible();
@@ -258,28 +258,28 @@ test("E2E-13 맞대결 7판을 끝내면 내 성향과 맞춤 판정 리포트�
   await expect(page.getByText("맞춤 판정 완료")).toBeVisible();
 });
 
-test("E2E-14 맞대결: 이전 판으로 돌아가면 진행 표시가 한 판 줄고, 건너뛰면 기본 기준 리포트가 나온다", async ({ page }) => {
+test("E2E-14 밸런스 게임: 이전 판으로 돌아가면 진행 표시가 한 판 줄고, 건너뛰면 기본 기준 리포트가 나온다", async ({ page }) => {
   await chooseRole(page, "운영");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "기업 맞대결로 내 성향 맞춤 판정 받기" }).click();
+  await page.getByRole("button", { name: "기업 밸런스 게임 시작하기" }).click();
   await page.getByRole("button", { name: "기업 B 선택" }).click({ position: { x: 12, y: 12 } });
   await expect(page.getByText("2 / 7")).toBeVisible();
   await page.getByRole("button", { name: "이전 판으로 돌아가기" }).click();
   await expect(page.getByText("1 / 7")).toBeVisible();
-  await page.locator('[data-el="맞대결"]').getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.locator('[data-el="밸런스 게임"]').getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await expect(page.getByText("기본 기준으로 판정한 최종 판단 리포트예요.")).toBeVisible();
 });
 
-test("E2E-15 맞대결을 다시 해 성향이 바뀌면 저장 카드를 다시 판정할지 묻는다", async ({ page }) => {
+test("E2E-15 밸런스 게임을 다시 해 성향이 바뀌면 저장 카드를 다시 판정할지 묻는다", async ({ page }) => {
   await chooseRole(page, "마케팅");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "기업 맞대결로 내 성향 맞춤 판정 받기" }).click();
+  await page.getByRole("button", { name: "기업 밸런스 게임 시작하기" }).click();
   await playMatchup(page, "기업 A");
   await expect(page.getByText("내 성향은 안정·시스템 지향이에요.")).toBeVisible();
   // 맞춤 판정 카드를 모음에 담아 두어야 성향이 바뀔 때 다시 판정할지 묻는다
   await page.getByRole("button", { name: "기업 카드 모음에 담기" }).last().click();
   // 정보줄에도 같은 버튼이 있어 마지막(빠른 응답) 것을 누른다
-  await page.getByRole("button", { name: "기업 맞대결 다시 하기" }).last().click();
+  await page.getByRole("button", { name: "기업 밸런스 게임 다시 하기" }).last().click();
   await playMatchup(page, "기업 B");
   const dialog = page.getByRole("dialog", { name: "내 성향이 달라졌어요" });
   await expect(dialog).toBeVisible();
@@ -300,7 +300,7 @@ test("E2E-15 맞대결을 다시 해 성향이 바뀌면 저장 카드를 다시
 test("E2E-16 리포트 카드: 보이는 면 하나를 이미지로 저장하고, 카드를 눌러 뒤집고, QR 링크로 같은 카드가 다시 열린다", async ({ page }) => {
   await chooseRole(page, "마케팅");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await expect(page.getByText("최종 판단 리포트예요")).toBeVisible();
   const label = (await page.locator('.chat [data-el="판정 라벨"] b').last().textContent())?.trim();
   expect(label).toBeTruthy();
@@ -356,7 +356,7 @@ test("E2E-17 첫 직무 선택도 내 말풍선으로 남고, 메뉴로 튜토�
 test("E2E-20 튜토리얼: 다음만 눌러 가상 기업으로 끝까지 가고, 내 대화와 카드 모음은 그대로다", async ({ page }) => {
   test.setTimeout(90_000);
   await openView(page, "튜토리얼");
-  const titles = ["직무 고르기", "회사 이름 말하기", "AI 에이전트의 판단", "기업 카드", "3년차 공고와 비교", "내 기준 정하기", "기업 맞대결", "최종 판단 리포트", "에이전트 사고 과정"];
+  const titles = ["직무 고르기", "회사 이름 말하기", "AI 에이전트의 판단", "기업 카드", "3년차 공고와 비교", "내 기준 정하기", "기업 밸런스 게임", "최종 판단 리포트", "에이전트 사고 과정"];
   // 모바일에서만 입력창 오른쪽 메뉴 버튼 단계가 하나 더 있다 (PC에는 그 버튼이 없다)
   if (isMobile(page)) titles.push("오른쪽 아래 메뉴 버튼");
   for (const [i, title] of titles.entries()) {
@@ -400,7 +400,7 @@ test("E2E-21 처음 접속하면 튜토리얼부터 열리고, 한 번 벗어나
 test("E2E-18 모음 카드 창에서 근거 면을 보다가 아직 판정하지 않은 직무 탭을 누르면 앞면 안내로 돌아간다", async ({ page }) => {
   await chooseRole(page, "마케팅");
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await page.getByRole("button", { name: "기업 카드 모음에 담기" }).last().click();
   await openView(page, "기업 카드 모음");
   await page.locator(".coll-r").first().click({ position: { x: 8, y: 8 } });
@@ -419,8 +419,8 @@ test("E2E-19 모바일: 메뉴 버튼은 늘 보이고, 누르면 직무와 회�
   await searchCompany(page, "별하늘랩스");
   const btn = page.getByRole("button", { name: "메뉴", exact: true });
   await expect(btn).toBeVisible();
-  // 맞대결 중에도 같은 자리에 있다 (카드를 가리지 않는다)
-  await page.getByRole("button", { name: "기업 맞대결로 내 성향 맞춤 판정 받기" }).click();
+  // 밸런스 게임 중에도 같은 자리에 있다 (카드를 가리지 않는다)
+  await page.getByRole("button", { name: "기업 밸런스 게임 시작하기" }).click();
   await expect(btn).toBeVisible();
   await btn.click();
   const menu = page.getByRole("menu");
@@ -455,7 +455,7 @@ test("E2E-25 모바일: 위쪽 정보줄과 입력창 아래 안내문, 면책 �
   expect(menu.x).toBeGreaterThan(send.x + send.width - 1);
   // 대화를 늘리면 맨 위로 버튼이 나타나고, 누르면 맨 위로 간다
   await searchCompany(page, "별하늘랩스");
-  await page.getByRole("button", { name: "건너뛰고 기본 기준으로" }).click();
+  await page.getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
   await expect(page.getByText("최종 판단 리포트예요")).toBeVisible();
   const up = page.getByRole("button", { name: "맨 위로" });
   await expect(up).toBeVisible();

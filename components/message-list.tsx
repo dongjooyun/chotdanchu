@@ -38,13 +38,13 @@ export interface WidgetHandlers {
   onMatchupSkip: () => void;
 }
 
-/** 맞대결 결과: 내 유형, 설명 한 줄, 중시한 지표 3개, 어울리는 기업 성격 (PRD 02) */
+/** 밸런스 게임 결과: 내 유형, 설명 한 줄, 중시한 지표 3개, 어울리는 기업 성격 (PRD 02) */
 function PreferenceResult({ preference, sentence }: { preference: Preference; sentence: string }) {
   if (!preference.type) return null;
   return (
-    <div className="cc" data-el="맞대결 결과">
+    <div className="cc" data-el="밸런스 게임 결과">
       <div className="cc-head result">
-        <span className="small muted">내 성향</span>
+        <span className="small muted">기업 성향 테스트 결과</span>
         <span className="result-type">{PREFERENCE_TYPE_LABELS[preference.type]}</span>
         <p>{sentence}</p>
         <p className="small muted">
@@ -65,7 +65,7 @@ function Widget({ widget, active, h }: { widget: MessageWidget; active: boolean;
       return active ? (
         <MatchupGame onDone={h.onMatchupDone} onSkip={h.onMatchupSkip} />
       ) : (
-        <p className="small muted">맞대결을 마쳤거나 넘어갔어요.</p>
+        <p className="small muted">밸런스 게임을 마쳤거나 넘어갔어요.</p>
       );
     case "preference":
       return <PreferenceResult preference={widget.preference} sentence={widget.sentence} />;
@@ -133,7 +133,7 @@ function Markdown({ text }: { text: string }) {
   return <div className="md">{blocks}</div>;
 }
 
-/** 말풍선 목록. 에이전트 말풍선 아래에 위젯과 빠른 응답 버튼을 그린다. 버튼과 맞대결은 마지막 말풍선에서만 누를 수 있다 */
+/** 말풍선 목록. 에이전트 말풍선 아래에 위젯과 빠른 응답 버튼을 그린다. 버튼과 밸런스 게임은 마지막 말풍선에서만 누를 수 있다 */
 export function MessageList({
   messages,
   pending,

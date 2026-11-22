@@ -150,7 +150,7 @@ export interface Company {
   isMock: boolean;
 }
 
-/** 기업 선택 가치관 3유형 (맞대결 결과) */
+/** 기업 선택 가치관 3유형 (밸런스 게임 결과) */
 export type PreferenceType = "stable_system" | "autonomy_pioneer" | "balance_practical";
 
 export const PREFERENCE_TYPE_LABELS: Record<PreferenceType, string> = {
@@ -159,7 +159,7 @@ export const PREFERENCE_TYPE_LABELS: Record<PreferenceType, string> = {
   balance_practical: "밸런스·실속 지향",
 };
 
-/** 맞대결 카드. 가상 카드라 원시값 없이 등급만 둔다 (data/matchup/) */
+/** 밸런스 게임 카드. 가상 카드라 원시값 없이 등급만 둔다 (data/matchup/) */
 export interface MatchupCard {
   /** "card-1" ~ "card-8" */
   id: string;
@@ -171,7 +171,7 @@ export interface MatchupCard {
 }
 
 export interface Preference {
-  /** 맞대결을 건너뛰었으면 true. 이때 weights는 모두 같은 비중 */
+  /** 밸런스 게임을 건너뛰었으면 true. 이때 weights는 모두 같은 비중 */
   skipped: boolean;
   type: PreferenceType | null;
   /** 가장 중시하는 지표 3개 */
@@ -183,7 +183,7 @@ export interface Preference {
 /** 직무 하나에 대해 저장한 최종 판단 리포트 카드 */
 export interface SavedReport {
   report: ReportCardData;
-  /** 맞대결 결과로 판정했으면 true ("맞춤 판정 완료"), 건너뛰었거나 아직이면 false ("기본 기준") */
+  /** 밸런스 게임 결과로 판정했으면 true ("맞춤 판정 완료"), 건너뛰었거나 아직이면 false ("기본 기준") */
   personalized: boolean;
   /** ISO 8601 */
   savedAt: string;

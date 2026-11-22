@@ -1,4 +1,4 @@
-// 맞대결(PRD 02) 단위 테스트. 케이스 ID는 MAT-{번호}. 기법: 동등 분할(고르는 성향별), 경계값(0판, 7판), 결정성 검사.
+// 밸런스 게임(PRD 02) 단위 테스트. 케이스 ID는 MAT-{번호}. 기법: 동등 분할(고르는 성향별), 경계값(0판, 7판), 결정성 검사.
 import { describe, expect, test } from "vitest";
 import { cardNo, logoOf, monogram } from "@/lib/brand";
 import {
@@ -28,7 +28,7 @@ function play(chooser: (a: MatchupCard, b: MatchupCard) => MatchupCard): string[
 
 const byIndicator = (id: IndicatorId) => (a: MatchupCard, b: MatchupCard) => (score(b, id) > score(a, id) ? b : a);
 
-describe("맞대결 대진과 선호 계산", () => {
+describe("밸런스 게임 대진과 선호 계산", () => {
   test("MAT-01 8강 4판, 4강 2판, 결승 1판으로 7판에 끝나고, 8강은 매 판 다른 유형끼리 붙는다", () => {
     const picks = play((a) => a);
     expect(picks).toHaveLength(MATCHUP_ROUNDS);

@@ -59,8 +59,8 @@ export default function CatalogPage() {
         <QuickReplies replies={[{ label: "서비스기획", value: "a" }, { label: "마케팅", value: "b" }, { label: "운영", value: "c" }]} />
         <QuickReplies
           replies={[
-            { label: "기업 맞대결로 내 성향 맞춤 판정 받기", value: "a", main: true },
-            { label: "건너뛰고 기본 기준으로", value: "b" },
+            { label: "기업 밸런스 게임 시작하기", value: "a", main: true },
+            { label: "건너뛰기(일반 기준 적용)", value: "b" },
           ]}
         />
         <div className="inputbar" style={{ position: "static", border: 0, padding: 0 }}>
@@ -74,7 +74,7 @@ export default function CatalogPage() {
         </div>
       </Section>
 
-      <Section title="02 선호 파악 (맞대결, 380px 확인용)">
+      <Section title="02 선호 파악 (밸런스 게임, 380px 확인용)">
         <div style={{ maxWidth: 380 }}>
           <MatchupPair cards={SAMPLE_MATCHUP_PAIR} />
         </div>

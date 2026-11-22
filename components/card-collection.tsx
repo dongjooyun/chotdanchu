@@ -30,7 +30,7 @@ function StateTag({ personalized }: { personalized: boolean }) {
 /**
  * 기업 카드 모음 (data-el 내 카드 모음). 기업 한 곳에 카드 한 장, 브라우저에만 저장, 최대 10장.
  * 목록으로 보기와 카드로 보기를 오가고, 카드를 누르면 창으로 열어 직무 탭과 근거 보기로 본다.
- * 아직 맞춤 판정을 안 받은 카드는 "맞춤 판정 받기"로 맞대결을 이어 간다.
+ * 아직 맞춤 판정을 안 받은 카드는 "맞춤 판정 받기"로 밸런스 게임을 이어 간다.
  */
 export function CardCollection({
   records,

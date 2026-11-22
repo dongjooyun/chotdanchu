@@ -1,4 +1,4 @@
-// 맞대결 결과의 유형 설명 한 줄. USE_AGENT=true면 작은 모델이 문장만 다듬고, 아니면(기본, 테스트) 규칙 문장을 쓴다.
+// 밸런스 게임 결과의 유형 설명 한 줄. USE_AGENT=true면 작은 모델이 문장만 다듬고, 아니면(기본, 테스트) 규칙 문장을 쓴다.
 // LLM에는 유형 이름과 중시 지표 이름 순서만 보낸다. 개인정보와 숫자는 보내지 않는다 (CLAUDE.md 절대 규칙 1, 3).
 import { createAnthropicClient } from "@/lib/agent/llm";
 import { config } from "@/lib/config";

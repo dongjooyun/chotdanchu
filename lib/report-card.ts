@@ -18,7 +18,7 @@ export interface ReportCardData {
   fitLabel: string | null;
   /** 라벨 이유 한 줄. 숫자를 넣지 않는다 (지금은 규칙 문장) */
   fitReason: string;
-  /** 맞대결 결과 유형. 건너뛰었으면 null ("기본 기준") */
+  /** 밸런스 게임 결과 유형. 건너뛰었으면 null ("기본 기준") */
   preferenceType: string | null;
   /** 내가 중시한 지표 3개와 이 회사의 등급 */
   topIndicators: { id: IndicatorId; grade: Grade | null }[];
@@ -38,7 +38,7 @@ export interface ReportCardData {
   careerCheckedAt?: string;
   /** 유사 기업 공고로 대체했을 때 화면에 보일 사유 한 줄 (PRD 05). 없으면 생략 */
   substituteNote?: string;
-  /** 맞대결로 판정했을 때 선호 가중치를 링크용으로 줄인 값 (lib/share.ts). QR 링크에 들어간다. 기본 기준이면 생략 */
+  /** 밸런스 게임으로 판정했을 때 선호 가중치를 링크용으로 줄인 값 (lib/share.ts). QR 링크에 들어간다. 기본 기준이면 생략 */
   weightsParam?: string;
   /** 뒷면: 지표 10개 등급 */
   grades: { id: IndicatorId; grade: Grade | null }[];

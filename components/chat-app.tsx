@@ -51,10 +51,10 @@ function sourceNote(mode: AppMode, names: string[]): string {
   return `OpenDART 공시, 국민연금 가입 사업장, 국세청 사업자 상태로 미리 확인해 둔 회사만 볼 수 있어요: ${names.join(", ")}`;
 }
 
-/** 맞대결 권유. 원하는 행동(맞대결)만 연보라로 강조한다 */
+/** 밸런스 게임 권유. 원하는 행동(밸런스 게임)만 연보라로 강조한다 */
 const PREF_REPLIES: QuickReply[] = [
-  { label: "기업 맞대결로 내 성향 맞춤 판정 받기", value: "pref:matchup", main: true },
-  { label: "건너뛰고 기본 기준으로", value: "pref:skip" },
+  { label: "기업 밸런스 게임 시작하기", value: "pref:matchup", main: true },
+  { label: "건너뛰기(일반 기준 적용)", value: "pref:skip" },
 ];
 
 /** 리포트가 끝난 뒤 마지막 말풍선에만 붙는 다음 행동. 매 말풍선마다 붙이면 시선이 흩어진다 */
@@ -63,8 +63,8 @@ function nextReplies(personalized: boolean): QuickReply[] {
     { label: "다른 회사 보기", value: "next:company" },
     { label: "직무 변경하기", value: "next:role" },
     personalized
-      ? { label: "기업 맞대결 다시 하기", value: "pref:matchup" }
-      : { label: "기업 맞대결로 내 성향 맞춤 판정 받기", value: "pref:matchup", main: true },
+      ? { label: "기업 밸런스 게임 다시 하기", value: "pref:matchup" }
+      : { label: "기업 밸런스 게임 시작하기", value: "pref:matchup", main: true },
   ];
 }
 
@@ -143,13 +143,13 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
   const view: AppView = picked ?? (hydrated && tutorialSeen !== true ? "tutorial" : "chat");
   /** "대화 새로 시작" 확인 창 */
   const [resetAsk, setResetAsk] = useState(false);
-  /** 맞대결을 한 번이라도 끝까지 했는지 (건너뛴 뒤에도 "다시 하기"로 보이게) */
+  /** 밸런스 게임을 한 번이라도 끝까지 했는지 (건너뛴 뒤에도 "다시 하기"로 보이게) */
   const [matchupDone, setMatchupDone] = useStoredState("chotdanchu:matchup-done", false);
   /** 모바일에서 사고 과정을 여는 창 */
   const [thinkModal, setThinkModal] = useState(false);
   const [pending, setPending] = useState(false);
   const [think, setThink] = useState(false);
-  /** 맞대결을 다시 해 성향이 바뀌었을 때 저장 카드를 어떻게 할지 묻는 창 */
+  /** 밸런스 게임을 다시 해 성향이 바뀌었을 때 저장 카드를 어떻게 할지 묻는 창 */
   const [retype, setRetype] = useState<{ from: Preference; to: Preference; count: number } | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -238,10 +238,10 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     return { from: "agent", text: careerMessage(gap, role), log: lines };
   }
 
-  /** 기업 카드 다음 단계: 3년차 공고 안내, 그다음 맞대결 권유 또는 바로 리포트 */
+  /** 기업 카드 다음 단계: 3년차 공고 안내, 그다음 밸런스 게임 권유 또는 바로 리포트 */
   function afterCompanyCard(role: Role | null, a: Analysis) {
     const career = careerStep(role, a);
-    // 이미 맞대결을 했거나 건너뛴 사용자는 다시 묻지 않고 그 기준으로 바로 판정한다. 건너뛴 사용자에게는 리포트 뒤에 맞대결 버튼을 다시 준다
+    // 이미 밸런스 게임을 했거나 건너뛴 사용자는 다시 묻지 않고 그 기준으로 바로 판정한다. 건너뛴 사용자에게는 리포트 뒤에 밸런스 게임 버튼을 다시 준다
     if (session.preference && role) {
       const personal = isPersonalized(session.preference);
       const { next, widget } = withReport(session, a, role, session.preference);
@@ -256,7 +256,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     }
     push(career, {
       from: "agent",
-      text: "내 기준에 맞춰 최종 판정할까요? 회사명을 가린 카드 7판, 1분이면 돼요.",
+      text: "내 성향 맞춤 판단을 원하시나요? 회사명을 가린 카드 7판, 1분이면 돼요.",
       replies: PREF_REPLIES,
     });
   }
@@ -296,7 +296,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     void ask({ pickCompanyId: id });
   }
 
-  /** 리포트 아래 "기업 카드 모음에 담기": 그 리포트(기업, 직무, 판정)를 모음에 담는다. 맞대결 전이면 "기본 기준" 카드 */
+  /** 리포트 아래 "기업 카드 모음에 담기": 그 리포트(기업, 직무, 판정)를 모음에 담는다. 밸런스 게임 전이면 "기본 기준" 카드 */
   function onSaveReport(w: Extract<MessageWidget, { type: "report" }>) {
     if (!w.analysis) return;
     const a: Analysis = { ...w.analysis, log: w.log ?? [] };
@@ -321,7 +321,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     const { sentence, by } = await fetchSentence(pref);
     setPending(false);
     appendLog([
-      { step: 0, type: "tool_call", title: "compute_preference: 맞대결 7판을 Bradley-Terry로 계산", reason: "같은 선택이면 항상 같은 결과", mode },
+      { step: 0, type: "tool_call", title: "compute_preference: 밸런스 게임 7판을 Bradley-Terry로 계산", reason: "같은 선택이면 항상 같은 결과", mode },
       { step: 0, type: by === "llm" ? "decision" : "info", title: by === "llm" ? "유형 설명 문장을 AI가 작성" : "유형 설명 문장은 규칙 문장", reason: by === "llm" ? "중시 지표 순서만 근거로 씀, 숫자 없음" : undefined, mode },
     ]);
     const before = session.preference;
@@ -364,7 +364,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     setRetype(null);
   }
 
-  /** 모음의 "맞춤 판정 받기": 그 카드의 기업과 직무로 맞대결을 시작한다 */
+  /** 모음의 "맞춤 판정 받기": 그 카드의 기업과 직무로 밸런스 게임을 시작한다 */
   function onPersonalize(r: AnalysisRecord) {
     if (!r.analysis) return;
     const role = r.lastRole ?? session.role;
@@ -394,12 +394,12 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       return;
     }
     if (value === "pref:matchup") {
-      startMatchup("기업 맞대결로 내 성향 맞춤 판정 받기");
+      startMatchup("기업 밸런스 게임 시작하기");
       return;
     }
     if (value === "pref:skip") {
       const preference = skippedPreference();
-      push({ from: "user", text: "건너뛰고 기본 기준으로" });
+      push({ from: "user", text: "건너뛰기(일반 기준 적용)" });
       if (!current || !session.role) {
         setSession({ ...session, preference });
         return;
@@ -432,7 +432,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
     push({ from: "agent", text: askCompany(session.role), replies: EXAMPLE_REPLIES });
   }
 
-  const matchupLabel = matchupDone || isPersonalized(session.preference) ? "기업 맞대결 다시 하기" : "기업 맞대결 하기";
+  const matchupLabel = matchupDone || isPersonalized(session.preference) ? "기업 밸런스 게임 다시 하기" : "기업 밸런스 게임 하기";
   const mobileMenu = (
     <MobileMenu
       status={`${session.role ?? "직무 미정"} · ${company ?? "회사 미정"}`}
@@ -464,7 +464,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       <InAppNotice />
       <AppNav view={view} onChange={changeView} count={session.analyzed.length} />
       {view === "tutorial" && <TutorialTour examples={examples} onFinish={() => changeView("chat")} />}
-      {/* 메뉴를 바꿔도 대화와 맞대결 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}
+      {/* 메뉴를 바꿔도 대화와 밸런스 게임 진행이 사라지지 않게 챗봇 화면은 숨기기만 한다 */}
       <div className="app" data-think={think ? "open" : "closed"} hidden={view !== "chat"}>
         {/* 고정 정보줄: 지금 무엇을 기준으로 보고 있는지 항상 보이고, 여기서 바로 바꾼다 */}
         <div className="infobar" data-el="고정 정보줄">
@@ -489,11 +489,11 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
               </span>
             </div>
           </div>
-          {/* PC: 오른쪽 두 줄(맞대결·새로 시작 / 사고 과정)로 왼쪽 두 줄과 높이를 맞춘다. 모바일은 오른쪽 아래 둥근 버튼 */}
+          {/* PC: 오른쪽 두 줄(밸런스 게임·새로 시작 / 사고 과정)로 왼쪽 두 줄과 높이를 맞춘다. 모바일은 오른쪽 아래 둥근 버튼 */}
           <div className="infobar-side only-pc">
             <span className="infobar-actions">
               {session.role && (
-                <button type="button" className="btn btn-link small" onClick={() => startMatchup(matchupLabel)} disabled={pending} data-el="맞대결 버튼">
+                <button type="button" className="btn btn-link small" onClick={() => startMatchup(matchupLabel)} disabled={pending} data-el="밸런스 게임 버튼">
                   {matchupLabel}
                 </button>
               )}
@@ -524,7 +524,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
               <ChatInput
                 onSend={onSend}
                 disabled={pending || !session.role}
-                placeholder={session.role ? "회사 이름을 입력해 주세요" : "먼저 직무를 골라 주세요"}
+                placeholder={session.role ? "궁금한 기업명을 알려 주세요" : "먼저 직무를 골라 주세요"}
                 trailing={mobileMenu}
               />
               <p className="tiny muted only-pc" style={{ marginTop: 6 }}>
@@ -581,7 +581,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
         {retype && (
           <div data-el="성향 변경 확인">
             <p className="dlg-text">
-              이번 맞대결에서는 &quot;{PREFERENCE_TYPE_LABELS[retype.to.type!]}&quot;으로 나왔어요(이전: {PREFERENCE_TYPE_LABELS[retype.from.type!]}). 저장한 카드
+              이번 밸런스 게임에서는 &quot;{PREFERENCE_TYPE_LABELS[retype.to.type!]}&quot;으로 나왔어요(이전: {PREFERENCE_TYPE_LABELS[retype.from.type!]}). 저장한 카드
               중 맞춤 판정을 받은 {retype.count}장도 새 성향으로 다시 판정할까요?
             </p>
             <div className="dlg-actions">

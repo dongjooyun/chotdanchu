@@ -1,6 +1,6 @@
 // 메뉴와 버튼에 쓰는 작은 아이콘들 (선 두께 2, 글자색을 따라간다). 모바일 메뉴(chat-app)와 튜토리얼이 같이 쓴다
 
-/** 맞대결 아이콘 (겹친 카드 두 장) */
+/** 밸런스 게임 아이콘 (겹친 카드 두 장) */
 export function CardsIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
