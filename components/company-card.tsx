@@ -96,7 +96,7 @@ function BusinessSummaryBlock({ summary }: { summary: BusinessSummary }) {
             {summary.method === "llm" ? "AI가 요약했고 숫자는 쓰지 않았어요. " : "원문 문장 중 숫자가 없는 문장만 골랐어요. "}
             원문:{" "}
             {summary.source.url ? (
-              <a href={summary.source.url} target="_blank" rel="noreferrer">
+              <a href={summary.source.url} target="_blank" rel="noreferrer" className="src-link">
                 {summary.source.name}
               </a>
             ) : (

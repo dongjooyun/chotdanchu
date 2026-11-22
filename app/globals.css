@@ -197,7 +197,6 @@ body {
 .cc-biz-l { margin: var(--s-2) 0 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: var(--s-1); font-size: 14px; line-height: 1.6; list-style: decimal; }
 .cc-biz-v { margin-top: var(--s-2); font-size: 14px; font-weight: 600; }
 .cc-biz-n { margin-top: var(--s-2); font-size: 12px; line-height: 1.5; color: var(--ink-2); }
-.cc-biz-n a { color: var(--purple-ink); text-decoration: underline; }
 .cc-biz + .cc-foot { padding-top: 0; }
 
 /* ===== 맞대결 ===== */
@@ -260,7 +259,7 @@ body {
 .rc-src { margin: var(--s-4) 0 0; font-size: 12px; }
 /* 공고 원문 링크: 회색 글씨에 연보라 형광펜. 누르면 열리는 주소라는 표시 */
 .src-line { display: block; }
-.src-link { color: var(--purple-ink); text-decoration: none; background: var(--lilac); padding: 1px 2px; -webkit-box-decoration-break: clone; box-decoration-break: clone; border-radius: 2px; }
+.src-link { color: var(--purple-ink); text-decoration: underline; text-decoration-color: var(--gray-2); text-decoration-thickness: 1px; text-underline-offset: 3px; background: var(--lilac); padding: 1px 2px; -webkit-box-decoration-break: clone; box-decoration-break: clone; border-radius: 2px; }
 .src-link:hover { background: var(--lilac-strong); }
 .rc-q h4 { margin: 0 0 var(--s-2); font-size: 16px; font-weight: 700; }
 .rc-q ol { margin: 0; padding-left: 1.3em; font-size: 13px; line-height: 1.6; list-style: decimal; }

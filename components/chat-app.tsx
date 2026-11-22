@@ -172,6 +172,8 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
 
   const intro = introMessage(introRole === undefined ? session.role : introRole, EXAMPLE_REPLIES);
   const shown = [intro, ...messages];
+  // 맞대결이 진행 중이면(마지막 말풍선이 맞대결) 모바일 둥근 버튼을 숨겨 카드 오른쪽 등급 배지와 "건너뛰고 기본 기준으로"를 가리지 않게 한다 (11/22)
+  const matchupOpen = messages.at(-1)?.widget?.type === "matchup";
 
   // 새 말풍선이 생기면(보냈거나 받았거나) 그 묶음의 첫 말풍선이 화면 위쪽에 오게 스크롤한다 (11/22).
   // 처음 화면이 뜰 때(저장된 대화를 불러올 때)는 움직이지 않는다
@@ -571,7 +573,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
         <Disclaimer />
       </div>
       {/* 모바일: 사고 과정과 대화 새로 시작은 오른쪽 아래 둥근 아이콘 버튼. 사고 과정은 창으로 연다 */}
-      {view === "chat" && (
+      {view === "chat" && !matchupOpen && (
         <div className="fab-stack only-mobile">
           {messages.length > 0 && (
             <Fab tone="quiet" label="대화 새로 시작하기" onClick={() => setResetAsk(true)} disabled={pending}>
