@@ -30,6 +30,8 @@
 | 라이브러리 | ESLint 9, eslint-config-next | https://eslint.org | 코드 검사 | MIT | 사용 중 |
 | 라이브러리 | html-to-image 1.11.13 | https://github.com/bubkoo/html-to-image | 리포트 카드 앞면을 이미지(PNG)로 저장 | MIT | 사용 중 (11/22 팀 승인). 브라우저 안에서만 동작하고 외부로 보내지 않음 |
 | 라이브러리 | qrcode.react 4.2.0 | https://github.com/zpao/qrcode.react | 카드 QR (기업 ID, 직무, 선호 가중치가 든 링크) | ISC | 사용 중 (11/22 팀 승인). 브라우저 안에서만 동작하고 외부로 보내지 않음 |
+| 라이브러리 | @vercel/analytics 2.0.1 | https://github.com/vercel/analytics | 방문 통계 (Vercel Web Analytics). 방문 수, 페이지, 국가, 기기 종류 | MIT | 사용 중 (11/22 팀 승인). 쿠키를 쓰지 않고 익명 집계만 함. 이름, 입력 내용, 대화는 보내지 않음. Hobby 요금제라 최근 30일만 조회 |
+| 글꼴 파일 | Pretendard 1.3.6 (ExtraBold, SemiBold OTF) | https://github.com/orioncactus/pretendard | 링크 공유 미리보기 이미지 `public/og.png`의 글자. 이미지로만 굽고 폰트 파일은 레포에 넣지 않음 | SIL Open Font License 1.1 | 사용 중 (11/22) |
 | 라이브러리 | Vitest | https://vitest.dev | 단위 테스트 (지표 등급, 역량 매칭 등) | MIT | 사용 중 (개발 전용) |
 | 라이브러리 | Playwright (@playwright/test) | https://playwright.dev | 화면 흐름 E2E 테스트 | Apache-2.0 | 사용 중 (개발 전용) |
 
