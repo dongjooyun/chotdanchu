@@ -20,6 +20,11 @@
 | AI | Higgsfield (GPT Image 2.6 모델) | https://higgsfield.ai | 서비스 로고와 파비콘 후보 2개 생성 (보라 단추, 과녁 단추와 다트). `design/logo-candidates/` | 서비스 이용 약관. 생성 이미지라 실존 브랜드나 사람을 쓰지 않음 | 11/22 후보 A(보라 단추)를 헤더와 파비콘에 임시 적용, 최종 선택 전 |
 | AI | Perplexity | https://www.perplexity.ai | 수동 확인 대상(투자 단계, KIPRIS 등록 특허, 기업 공식 채용 페이지의 3년차 공고)의 공식 출처 후보 검색 | 서비스 이용 약관. 서비스 코드와 LLM 프롬프트에는 들어가지 않는 사람의 조사 도구 | 사용 중. 사람이 원문을 직접 확인한 값만 기록 |
 | AI | ChatGPT (OpenAI GPT) | https://chatgpt.com | 위와 같은 수동 확인의 출처 후보 검색 보조 | 서비스 이용 약관. 서비스 코드와 LLM 프롬프트에는 들어가지 않는 사람의 조사 도구 | 사용 중. 사람이 원문을 직접 확인한 값만 기록 |
+| AI | Gemini (Google) | https://gemini.google.com | 프로젝트 소개서 슬라이드의 시각화 개선 기능으로 슬라이드 디자인을 다듬음 | 서비스 이용 약관. 서비스 코드와 LLM 프롬프트에는 들어가지 않음 | 사용 중 (소개서 제작) |
+| AI 생성 영상 | Google Flow (Veo 3.1 Fast) | https://labs.google/flow | 시연 영상 도입부 문제 상황 3컷(약 13초). 등장 인물과 배경은 실제가 아닌 AI 생성 장면이고, 서비스 화면은 전부 실제 프로토타입 녹화. 영상에 "AI 생성" 표시 | 서비스 이용 약관 | 사용 중 (시연 영상) |
+| 영상 도구 | CapCut | https://www.capcut.com | 시연 영상 편집과 자막 | CapCut 이용 약관 | 사용 중 (시연 영상) |
+| 음원 | positive, confident, present, progress, corporate VP(1518395) / KosukeKawaguchi | CapCut 음악 라이브러리 | 시연 영상 배경음 | CapCut 약관에 따른 무료 이용. 수상작 홍보 활용 시 이용 범위 확인 필요 | 사용 중 (시연 영상) |
+| 글꼴 | 시스템 (CapCut 기본 글꼴) | CapCut 편집기 | 시연 영상 자막 | CapCut 약관 | 사용 중 (시연 영상) |
 | 라이브러리 | @anthropic-ai/sdk 1.11.0 | https://github.com/anthropics/anthropic-sdk-typescript | Claude API 호출 (에이전트 루프) | MIT | 사용 중 |
 | 라이브러리 | Next.js 16.4.6 | https://nextjs.org | 웹 프레임워크 (화면, API 라우트) | MIT | 사용 중 |
 | 라이브러리 | React 19.3.0 | https://react.dev | 화면 구성 | MIT | 사용 중 |
