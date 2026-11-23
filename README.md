@@ -17,7 +17,7 @@
 ![Tests](https://img.shields.io/badge/tests-437%20unit%20%2B%2028%20E2E-2EA043)
 
 <a href="https://chotdanchu.vercel.app"><img src="docs/images/demo-qr.png" width="120" alt="라이브 데모 QR"></a><br>
-<sub>휴대폰으로 스캔해서 바로 써 보세요</sub>
+<sub>▲ QR 스캔하여 바로 써보기</sub>
 
 </div>
 
