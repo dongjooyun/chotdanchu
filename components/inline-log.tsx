@@ -2,7 +2,7 @@ import { isAgentDecision, LogBadge } from "@/components/log-badge";
 import type { LogLine } from "@/lib/chat";
 
 /**
- * 말풍선 안의 진행 기록 (PRD 07). 도출 근거는 사용자보다 개발자와 심사위원이 보는 정보라 기본은 접어 두고,
+ * 말풍선 안의 진행 기록 (PRD 07). 도출 근거는 사용자보다 개발자가 보는 정보라 기본은 접어 두고,
  * "어떻게 도출했나요?"를 누르면 도구 호출과 AI 판단 줄이 펼쳐진다. 전체 기록은 에이전트 사고 과정 패널에 있다.
  */
 export function InlineLog({ lines: all }: { lines: LogLine[] }) {
