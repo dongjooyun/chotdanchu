@@ -7,7 +7,7 @@
 import { skippedPreference } from "@/lib/session";
 import type { GradedIndicator, IndicatorId } from "@/lib/types";
 
-export type FitLabel = "최적" | "도전" | "안정" | "고려" | "정보 보강";
+export type FitLabel = "최적" | "도전" | "안정" | "고려" | "정보 보강" | "판단 필요";
 
 /** 라벨 설명 한 줄 (PRD 06 표 그대로) */
 export const FIT_DESCRIPTIONS: Record<FitLabel, string> = {
@@ -16,6 +16,7 @@ export const FIT_DESCRIPTIONS: Record<FitLabel, string> = {
   안정: "든든하지만 일부 역량은 따로 채우기",
   고려: "다른 선택지와 비교해 볼 자리",
   "정보 보강": "면접에서 더 알아볼 자리",
+  "판단 필요": "내 기준을 알려 주면 판정해 드려요",
 };
 
 /** 회사 기반 "좋음"의 기준값 */
@@ -46,6 +47,11 @@ export interface FitInput {
   weights: Record<IndicatorId, number>;
   /** 이어짐 비율. 3년차 공고가 없으면 null */
   connect: number | null;
+  /**
+   * 밸런스 게임으로 내 선호를 알았는지. false(건너뜀, 일반 기준)면 라벨을 매기지 않고 "판단 필요"로 둔다 (11/23 준오 QA).
+   * 회사 기반 축은 "내 선호로 본" 점수인데, 선호를 모르면 같은 비중으로 세게 되어 시연 기업 대부분이 기준값 0.75에 딱 걸려 늘 최적이 나왔다.
+   */
+  personalized?: boolean;
 }
 
 export interface FitResult {
@@ -57,11 +63,12 @@ export interface FitResult {
 }
 
 /**
- * 라벨을 고른다. 정보 투명도 C이거나 두 축 중 하나를 셀 수 없으면 정보 보강.
+ * 라벨을 고른다. 밸런스 게임을 건너뛰었으면 판단 필요. 정보 투명도 C이거나 두 축 중 하나를 셀 수 없으면 정보 보강.
  * 예: 기반 0.7, 이어짐 0.8 -> 최적 / 기반 0.4, 이어짐 0.8 -> 도전 / 기반 0.7, 이어짐 0.4 -> 안정 / 둘 다 0.4 -> 고려
  */
-export function decideFit({ graded, weights, connect }: FitInput): FitResult {
+export function decideFit({ graded, weights, connect, personalized = true }: FitInput): FitResult {
   const base = baseScore(graded, weights);
+  if (!personalized) return { label: "판단 필요", base, connect, rule: "일반 기준(밸런스 게임 건너뜀)" };
   const transparency = graded.find((g) => g.id === "transparency")?.grade;
   if (transparency === "C") return { label: "정보 보강", base, connect, rule: "정보 투명도 C" };
   if (base === null || connect === null) {

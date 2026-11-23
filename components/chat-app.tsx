@@ -248,7 +248,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       setSession(next);
       push(career, {
         from: "agent",
-        text: personal ? "저장해 둔 내 성향으로 판정한 최종 판단 리포트예요." : "일반 기준으로 판정한 최종 판단 리포트예요.",
+        text: personal ? "저장해 둔 내 성향으로 판정한 최종 판단 리포트예요." : "일반 기준으로 만든 최종 판단 리포트예요. 판정은 밸런스 게임으로 내 성향을 알려 주면 해 드려요.",
         widget,
         replies: nextReplies(personal),
       });
@@ -408,7 +408,7 @@ export function ChatApp({ mode, examples }: { mode: AppMode; examples: string[] 
       setSession(next);
       push({
         from: "agent",
-        text: "일반 기준으로 판정한 최종 판단 리포트예요.",
+        text: "일반 기준으로 만든 최종 판단 리포트예요. 판정은 밸런스 게임으로 내 성향을 알려 주면 해 드려요.",
         widget,
         replies: nextReplies(false),
       });

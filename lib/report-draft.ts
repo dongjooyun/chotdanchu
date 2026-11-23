@@ -51,7 +51,12 @@ export function buildReportDraft(input: ReportDraftInput): ReportCardData {
   const gap = stopped ? null : computeCareerGap(company.id, role, input.mode);
   const fit = stopped
     ? null
-    : decideFit({ graded, weights: preference?.weights ?? equalWeights(), connect: gap ? connectRatio(gap.counts) : null });
+    : decideFit({
+        graded,
+        weights: preference?.weights ?? equalWeights(),
+        connect: gap ? connectRatio(gap.counts) : null,
+        personalized: Boolean(preference && !preference.skipped),
+      });
   const top = preference?.topIndicators ?? [];
   return {
     no: cardNo(company.id),
@@ -123,6 +128,8 @@ export function fitReason(fit: FitResult, top: IndicatorId[], graded: GradedIndi
         : `${strongText}${n} 든든하지만, 3년차 때 요구되는 역량 일부는 따로 채워야 해요.`;
     case "고려":
       return "내 기준으로 본 회사 기반과 3년차 역량 모두 아쉬운 점이 있어, 다른 회사와 비교해 보면 좋아요.";
+    case "판단 필요":
+      return "밸런스 게임을 건너뛰어 아직 내 기준을 몰라요. 기업 밸런스 게임으로 내 성향을 알려 주면 이 자리가 나에게 맞는지 판정해 드려요.";
     case "정보 보강":
       return fit.rule === "3년차 공고 없음"
         ? "같은 직무의 3년차 공고를 찾지 못해, 쌓을 수 있는 역량은 면접에서 확인해야 해요."

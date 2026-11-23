@@ -242,7 +242,7 @@ export function TutorialTour({ examples, onFinish }: { examples: string[]; onFin
     const data = buildReportDraft({ company: COMPANY.company, graded: COMPANY.graded, log: PICKED.log, role, preference: pref, mode: "mock", checkedAt: today() });
     const report: MessageWidget = { type: "report", data, personalized: !skipped, analysis: { company: COMPANY.company, graded: COMPANY.graded }, log: PICKED.log };
     const items: Omit<ChatMessage, "id">[] = skipped
-      ? [{ from: "user", text: "건너뛰기(일반 기준 적용)" }, { from: "agent", text: "일반 기준으로 판정한 최종 판단 리포트예요.", widget: report }]
+      ? [{ from: "user", text: "건너뛰기(일반 기준 적용)" }, { from: "agent", text: "일반 기준으로 만든 최종 판단 리포트예요. 판정은 밸런스 게임으로 내 성향을 알려 주면 해 드려요.", widget: report }]
       : [
           { from: "agent", text: `내 성향은 ${PREFERENCE_TYPE_LABELS[pref.type!]}이에요.`, widget: { type: "preference", preference: pref, sentence: typeSentence(pref) } },
           { from: "agent", text: "내 성향으로 판정한 최종 판단 리포트예요.", widget: report },

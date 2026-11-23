@@ -250,3 +250,28 @@ describe("카드 공유 링크 (QR)", () => {
     expect(again.gap).toEqual(personal.gap);
   });
 });
+
+describe("일반 기준은 판단 필요 (11/23 준오 QA)", () => {
+  test("FIT-09 밸런스 게임을 건너뛰면(일반 기준) 시연 기업 어디서나 라벨은 판단 필요, 성향을 반영하면 기존 라벨", () => {
+    for (const id of DEMO)
+      for (const role of ROLES) {
+        const company = realCompanies.find((c) => c.id === id)!;
+        const closed = Boolean(company.indicators.find((i) => i.id === "risk")?.extra?.closed);
+        if (closed) continue;
+        expect(report(id, role).fitLabel, `${id} ${role}`).toBe("판단 필요");
+        expect(report(id, role, STABLE).fitLabel, `${id} ${role}`).not.toBe("판단 필요");
+      }
+    // 링크로 연 카드처럼 선호가 아예 없어도(null) 판단 필요
+    const company = realCompanies.find((c) => c.id === "01153956")!;
+    const d = buildReportDraft({ company, graded: computeIndicators(company, AS_OF), role: "서비스기획", preference: null, log: [], checkedAt: "2026-11-21", mode: "live" });
+    expect(d.fitLabel).toBe("판단 필요");
+  });
+
+  test("FIT-10 decideFit: personalized=false면 기반, 이어짐과 상관없이 판단 필요, 이유 문장은 밸런스 게임을 권한다", () => {
+    const w = equalWeights();
+    const good = gradedWithBase(9, 0);
+    expect(decideFit({ graded: good, weights: w, connect: 1, personalized: false }).label).toBe("판단 필요");
+    expect(decideFit({ graded: good, weights: w, connect: 1 }).label).toBe("최적");
+    expect(report("01153956", "서비스기획").fitReason).toContain("밸런스 게임");
+  });
+});
