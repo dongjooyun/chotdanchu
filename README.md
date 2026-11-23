@@ -16,10 +16,12 @@
 ![Claude](https://img.shields.io/badge/Claude-haiku--5--5-6B4BC8)
 ![Tests](https://img.shields.io/badge/tests-437%20unit%20%2B%2028%20E2E-2EA043)
 
+<a href="https://chotdanchu.vercel.app"><img src="docs/images/demo-qr.png" width="120" alt="라이브 데모 QR"></a><br>
+<sub>▲ QR 스캔하여 바로 써보기</sub>
+
 </div>
 
-> **[이미지 자리] 대표 화면** `docs/images/hero.png` (모바일 리포트 카드와 PC 채팅 화면)
-<!-- <p align="center"><img src="docs/images/hero.png" width="860" alt="첫단추 대표 화면"></p> -->
+<p align="center"><img src="docs/images/hero.png" width="860" alt="첫단추 대표 화면"></p>
 
 ## 한눈에 보기
 
@@ -54,14 +56,9 @@
 
 | 1. 법인 확인 | 2. 지표 카드 | 3. 밸런스 게임 | 4. 최종 판단 리포트 |
 |:---:|:---:|:---:|:---:|
-| **[이미지 자리]**<br>`flow-1-candidates.png` | **[이미지 자리]**<br>`flow-2-company-card.png` | **[이미지 자리]**<br>`flow-3-matchup.png` | **[이미지 자리]**<br>`flow-4-report.png` |
+| <img src="docs/images/flow-1-candidates.jpg" width="200"> | <img src="docs/images/flow-2-company-card.jpg" width="200"> | <img src="docs/images/flow-3-matchup.jpg" width="200"> | <img src="docs/images/flow-4-report.jpg" width="200"> |
 | 같은 이름의 법인 2곳을 가려 되묻습니다 | 10가지 지표와 하는 일 세 줄 요약 | 가려진 카드 7판으로 내 기준을 찾습니다 | 판정, 3년차 역량 비교, 면접 질문 |
 
-<!--
-| 1. 법인 확인 | 2. 지표 카드 | 3. 밸런스 게임 | 4. 최종 판단 리포트 |
-|:---:|:---:|:---:|:---:|
-| <img src="docs/images/flow-1-candidates.png" width="200"> | <img src="docs/images/flow-2-company-card.png" width="200"> | <img src="docs/images/flow-3-matchup.png" width="200"> | <img src="docs/images/flow-4-report.png" width="200"> |
--->
 
 ## 주요 기능
 
@@ -76,8 +73,7 @@
 | **에이전트 사고 과정** | 에이전트가 어떤 도구를 왜 불렀는지, AI가 정한 곳과 코드가 계산한 곳이 화면에 남습니다. |
 | **기업 카드 모음** | 리포트를 기업별 카드로 모읍니다(최대 10장). 로그인 없이 브라우저에만 저장됩니다. |
 
-> **[이미지 자리] 리포트 카드 앞면과 뒷면** `docs/images/report-card-front-back.png`
-<!-- <p align="center"><img src="docs/images/report-card-front-back.png" width="760" alt="최종 판단 리포트 카드 앞면과 뒷면"></p> -->
+<p align="center"><img src="docs/images/report-card-front-back.jpg" width="620" alt="최종 판단 리포트 카드 앞면과 뒷면"></p>
 
 ## 판정 라벨
 
@@ -128,8 +124,7 @@ AI가 하지 않는 일: 모든 수치, 등급, 역량 갭 분류, 선호 가중
 
 ## 아키텍처
 
-> **[이미지 자리] 서비스 아키텍처** `docs/images/architecture.png`
-<!-- <p align="center"><img src="docs/images/architecture.png" width="900" alt="첫단추 서비스 아키텍처"></p> -->
+<p align="center"><img src="docs/images/architecture.png" width="900" alt="첫단추 서비스 아키텍처"></p>
 
 - 브라우저 상태(직무, 대화, 카드 모음)는 localStorage에만 두고, 서버는 상태를 갖지 않습니다.
 - 실행 중에는 외부 데이터 API를 부르지 않습니다. 시연 기업 4곳(카카오, 무신사, 컬리, 당근마켓)은 OpenDART, 국민연금, 국세청 데이터를 사전에 계산해 `data/real/`에 두고 읽습니다. 목록에 없는 회사는 "아직 준비되지 않은 회사"로 안내합니다.
