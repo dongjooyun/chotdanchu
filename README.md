@@ -46,7 +46,11 @@
 
 ## 시연 영상
 
-> **[링크 자리] 시연 영상** (유튜브 링크)
+<p align="center">
+  <a href="https://youtu.be/T17dqL4nC1I"><img src="https://img.youtube.com/vi/T17dqL4nC1I/hqdefault.jpg" width="640" alt="첫단추 시연 영상 (유튜브)"></a>
+</p>
+
+<p align="center">▲ 누르면 유튜브에서 시연 영상(3분 이내)을 볼 수 있습니다.</p>
 
 ## 사용 흐름
 
