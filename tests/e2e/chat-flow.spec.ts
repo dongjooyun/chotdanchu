@@ -275,7 +275,9 @@ test("E2E-14 밸런스 게임: 이전 판으로 돌아가면 진행 표시가 �
   await page.getByRole("button", { name: "이전 판으로 돌아가기" }).click();
   await expect(page.getByText("1 / 7")).toBeVisible();
   await page.locator('[data-el="밸런스 게임"]').getByRole("button", { name: "건너뛰기(일반 기준 적용)" }).click();
-  await expect(page.getByText("일반 기준으로 판정한 최종 판단 리포트예요.")).toBeVisible();
+  await expect(page.getByText("일반 기준으로 만든 최종 판단 리포트예요. 판정은 밸런스 게임으로 내 성향을 알려 주면 해 드려요.")).toBeVisible();
+  // 일반 기준(건너뜀)이면 라벨은 매기지 않고 "판단 필요" (11/23 준오 QA)
+  await expect(page.locator('.chat [data-el="판정 라벨"]').last()).toContainText("판단 필요");
   await expect(page.locator('.chat [data-el="중시 지표 비교"]')).toHaveCount(0);
 });
 
