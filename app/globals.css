@@ -148,6 +148,10 @@ body {
 .chat-col { display: flex; flex-direction: column; min-width: 0; }
 .chat { flex: 1; padding: var(--s-5); display: flex; flex-direction: column; gap: var(--s-5); min-width: 0; }
 .aside { border-left: 1px solid var(--line); padding: var(--s-5); background: var(--canvas); display: flex; flex-direction: column; gap: var(--s-4); min-width: 0; }
+/* PC: 사고 과정 패널은 대화를 아래로 내려도 정보줄 바로 아래에 붙어 따라온다 (스크롤을 맨 위로 올리지 않아도 보이게) */
+@media (min-width: 821px) {
+  .cols > .only-pc > .aside:not(.aside-bare) { position: sticky; top: calc(var(--header-h) + var(--infobar-h, 108px)); max-height: calc(100dvh - var(--header-h) - var(--infobar-h, 108px)); overflow-y: auto; }
+}
 .inputbar { position: sticky; bottom: 0; z-index: 9; padding: var(--s-4) var(--s-5) var(--s-3); border-top: 1px solid var(--line); background: var(--surface); }
 .inputbar form { display: flex; gap: var(--s-2); }
 .disc { padding: var(--s-3) var(--s-5); border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-2); background: var(--surface); }
