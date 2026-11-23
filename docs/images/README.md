@@ -1,14 +1,11 @@
-# 이미지 자리
+# README 이미지
 
-README의 `[이미지 자리]` 표시마다 아래 파일 이름으로 넣고, README 해당 줄의 주석(`<!-- -->`)을 풀면 보인다.
+README에 쓰는 화면 캡처와 그림이다. 모두 실제 서비스 화면 캡처이고, `hero.png`는 실제 캡처를 휴대폰, 노트북 프레임에 합성한 것이다(AI 생성 이미지 아님).
 
-| 파일 | 내용 | 권장 크기 |
-|---|---|---|
-| `hero.png` | 대표 화면. 모바일 리포트 카드와 PC 채팅 화면을 나란히 | 1600x900 |
-| `flow-1-candidates.png` | 1단계: "카카오" 입력 후 동명 법인 후보 2곳 | 750x1200 (2:3) |
-| `flow-2-company-card.png` | 2단계: 기업 카드(하는 일 세 줄 요약, 지표 등급) | 750x1200 |
-| `flow-3-matchup.png` | 3단계: 밸런스 게임 진행 화면 | 750x1200 |
-| `flow-4-report.png` | 4단계: 최종 판단 리포트 카드 앞면 | 750x1200 |
-| `report-card-front-back.png` | 리포트 카드 앞면과 뒷면(근거) 나란히 | 1600x1000 |
-| `architecture.png` | 서비스 아키텍처 다이어그램 | 1800x1200 |
-| `demo-qr.png` | 배포 주소 QR (선택) | 600x600 |
+| 파일 | 내용 |
+|---|---|
+| `hero.png` | 대표 화면 (모바일 리포트 카드와 PC 채팅 화면) |
+| `flow-1-candidates.jpg` ~ `flow-4-report.jpg` | 법인 확인, 지표 카드, 밸런스 게임, 최종 판단 리포트 |
+| `report-card-front-back.jpg` | 리포트 카드 앞면과 뒷면 |
+| `architecture.png` | 서비스 아키텍처 다이어그램 |
+| `demo-qr.png` | 배포 주소 QR |
